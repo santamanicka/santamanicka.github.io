@@ -94,8 +94,8 @@
     .header-text { flex: 1; min-width: 0; }
 
     .headshot {
-      width: 112px;
-      height: 112px;
+      width: 150px;
+      height: 150px;
       border-radius: 50%;
       object-fit: cover;
       object-position: center top;
@@ -368,7 +368,7 @@
     <div class="header-inner">
       <div class="header-text">
         <h1>Santosh Manicka</h1>
-        <div class="subtitle">Affiliate Research Scientist, Allen Discovery Center<br>Tufts University</div>
+        <div class="subtitle">Affiliate Research Scientist<br>Allen Discovery Center, Tufts University</div>
         <nav>
           <a href="#about">About</a>
           <a href="#research">Research</a>
@@ -766,57 +766,77 @@
         </p>
         <div class="card-refs">
           <a href="#pub-field">Manicka &amp; Levin, 2025</a> &middot;
-          <a href="#pub-grnmemory">Biswas, Manicka, Hoel &amp; Levin, 2021</a> &middot;
           <em style="opacity:0.6">collective rescue: ongoing</em>
         </div>
       </div>
       <div class="card">
         <div class="card-fig">
           <svg viewBox="0 0 380 90" xmlns="http://www.w3.org/2000/svg" style="background:white;">
-            <!-- 8 input lines converging on a gene node -->
-            <!-- Faded (buffered) inputs -->
+            <!-- LEFT PANEL: Attention (effective connectivity) -->
+            <!-- Buffered inputs (faint) -->
             <g stroke="#5a5a56" stroke-width="0.7" opacity="0.12">
-              <line x1="60" y1="12" x2="172" y2="40"/><line x1="60" y1="30" x2="172" y2="42"/>
-              <line x1="60" y1="48" x2="172" y2="44"/><line x1="60" y1="78" x2="172" y2="50"/>
-              <line x1="60" y1="66" x2="172" y2="48"/><line x1="60" y1="88" x2="172" y2="52"/>
+              <line x1="12" y1="8"  x2="85" y2="42"/><line x1="12" y1="19" x2="85" y2="43"/>
+              <line x1="12" y1="30" x2="85" y2="44"/><line x1="12" y1="63" x2="85" y2="48"/>
+              <line x1="12" y1="74" x2="85" y2="49"/><line x1="12" y1="85" x2="85" y2="50"/>
             </g>
             <!-- Active (effective) inputs -->
             <g stroke="#d97757" stroke-width="1.8" opacity="0.6">
-              <line x1="60" y1="38" x2="172" y2="43"/><line x1="60" y1="56" x2="172" y2="47"/>
+              <line x1="12" y1="41" x2="85" y2="45"/><line x1="12" y1="52" x2="85" y2="47"/>
             </g>
             <!-- Input dots -->
             <g fill="#5a5a56" opacity="0.15">
-              <circle cx="56" cy="12" r="3"/><circle cx="56" cy="30" r="3"/><circle cx="56" cy="48" r="3"/><circle cx="56" cy="66" r="3"/><circle cx="56" cy="78" r="3"/><circle cx="56" cy="88" r="3"/>
+              <circle cx="12" cy="8"  r="3"/><circle cx="12" cy="19" r="3"/><circle cx="12" cy="30" r="3"/>
+              <circle cx="12" cy="63" r="3"/><circle cx="12" cy="74" r="3"/><circle cx="12" cy="85" r="3"/>
             </g>
             <g fill="#d97757" opacity="0.6">
-              <circle cx="56" cy="38" r="3.5"/><circle cx="56" cy="56" r="3.5"/>
+              <circle cx="12" cy="41" r="3.5"/><circle cx="12" cy="52" r="3.5"/>
             </g>
             <!-- Gene node -->
-            <circle cx="190" cy="45" r="14" fill="#d97757" opacity="0.8" stroke="#bf5a3a" stroke-width="1"/>
-            <!-- K labels -->
-            <text x="30" y="50" text-anchor="middle" font-family="monospace" font-size="9" fill="#5a5a56" opacity="0.6">K=8</text>
-            <!-- Arrow to right -->
-            <line x1="208" y1="45" x2="240" y2="45" stroke="#d97757" stroke-width="1" opacity="0.4"/>
-            <polygon points="240,42.5 247,45 240,47.5" fill="#d97757" opacity="0.4"/>
-            <!-- K_eff label -->
-            <text x="290" y="42" font-family="monospace" font-size="10" fill="#d97757" opacity="0.8">K<tspan font-size="7" dy="3">eff</tspan><tspan dy="-3"> = 2</tspan></text>
+            <circle cx="97" cy="46" r="12" fill="#d97757" opacity="0.8" stroke="#bf5a3a" stroke-width="1"/>
+            <!-- Arrow + K_eff label -->
+            <line x1="111" y1="46" x2="131" y2="46" stroke="#d97757" stroke-width="1" opacity="0.4"/>
+            <polygon points="131,43.5 138,46 131,48.5" fill="#d97757" opacity="0.4"/>
+            <text x="150" y="43" font-family="monospace" font-size="9" fill="#d97757" opacity="0.8">K<tspan font-size="6" dy="3">eff</tspan><tspan dy="-3">=2</tspan></text>
+            <!-- Panel label -->
+            <text x="90" y="84" text-anchor="middle" font-family="monospace" font-size="7" fill="#5a5a56" opacity="0.6">attention</text>
+            <!-- Divider -->
+            <line x1="190" y1="8" x2="190" y2="82" stroke="#e0dfd8" stroke-width="0.5" stroke-dasharray="3,3"/>
+            <!-- RIGHT PANEL: Memory (input retention in bio vs random GRNs) -->
+            <line x1="205" y1="73" x2="370" y2="73" stroke="#e0dfd8" stroke-width="0.8"/>
+            <line x1="205" y1="73" x2="205" y2="10" stroke="#e0dfd8" stroke-width="0.8"/>
+            <!-- Brief input pulse -->
+            <path d="M207,72 L207,30 L219,30 L219,72" stroke="#5a5a56" stroke-width="1" fill="none" opacity="0.4"/>
+            <text x="213" y="24" text-anchor="middle" font-family="monospace" font-size="7" fill="#5a5a56" opacity="0.55">input</text>
+            <!-- Biological GRN: slow decay (retains memory) -->
+            <path d="M219,30 C240,30 265,38 295,48 C320,54 345,58 368,61"
+                  stroke="#d97757" stroke-width="1.5" fill="none" opacity="0.65"/>
+            <!-- Random network: fast decay (forgets quickly) -->
+            <path d="M219,30 C230,30 243,48 258,62 C265,68 272,72 280,73 L368,73"
+                  stroke="#5a5a56" stroke-width="1.2" fill="none" stroke-dasharray="4,3" opacity="0.4"/>
+            <!-- Trace labels -->
+            <text x="355" y="55" text-anchor="end" font-family="monospace" font-size="7" fill="#d97757" opacity="0.7">bio</text>
+            <text x="285" y="68" text-anchor="middle" font-family="monospace" font-size="7" fill="#5a5a56" opacity="0.55">rnd</text>
+            <!-- Panel label -->
+            <text x="287" y="84" text-anchor="middle" font-family="monospace" font-size="7" fill="#5a5a56" opacity="0.6">memory</text>
           </svg>
         </div>
-        <h3>How gene networks might use attention to compute</h3>
+        <h3>How gene networks might use attention to compute and remember</h3>
         <p>
           A gene with eight regulators may in practice be controlled by two — the rest are
           buffered by the logic of the regulatory function. I developed measures that expose this
-          hidden simplicity: effective connectivity (K<sub>eff</sub>), which counts the inputs that
-          truly matter, and unified canalization (K<sub>u</sub>), which exploits permutation symmetry
-          among interchangeable inputs. Applied to 70+ published biological networks, these measures
-          explain why living systems sit near dynamical criticality even when their wiring diagrams
-          predict chaos. Decomposing Boolean functions into their Taylor series further stratifies
-          how a network processes information: which contributions are linear, which are pairwise,
-          and which are irreducibly higher-order.
+          hidden simplicity: effective connectivity (K<sub>eff</sub>) counts the inputs that truly
+          matter; unified canalization (K<sub>u</sub>) exploits permutation symmetry among
+          interchangeable ones. Across 70+ published biological networks, these measures explain why
+          living systems sit near dynamical criticality even when their wiring predicts chaos.
+          The same sparsity that makes a gene selective also shapes what it remembers: biological
+          GRNs carry more memory of certain kinds than random networks of equal size, and that
+          memory structure is carved by canalization. Attention and memory are two faces of the
+          same computational architecture.
         </p>
         <div class="card-refs">
           <a href="#pub-keff">Manicka, Marques-Pita &amp; Rocha, 2022</a> &middot;
           <a href="#pub-nonlinearity">Manicka, Johnson, Levin &amp; Murrugarra, 2023</a> &middot;
+          <a href="#pub-grnmemory">Biswas, Manicka, Hoel &amp; Levin, 2021</a> &middot;
           <a href="#pub-dissertation">Manicka, 2017 (dissertation)</a>
         </div>
       </div>
