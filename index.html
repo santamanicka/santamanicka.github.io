@@ -84,6 +84,30 @@
       color: var(--fg);
     }
 
+    .header-inner {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 32px;
+    }
+
+    .header-text { flex: 1; min-width: 0; }
+
+    .headshot {
+      width: 112px;
+      height: 112px;
+      border-radius: 50%;
+      object-fit: cover;
+      object-position: center top;
+      flex-shrink: 0;
+      border: 2px solid var(--faint);
+    }
+
+    @media (max-width: 520px) {
+      .header-inner { flex-direction: column-reverse; gap: 16px; }
+      .headshot { width: 80px; height: 80px; }
+    }
+
     /* ---- Sections ---- */
     section {
       padding: clamp(28px, 4vw, 48px) 0;
@@ -341,16 +365,21 @@
 
   <!-- ==================== HEADER ==================== -->
   <header class="site-header">
-    <h1>Santosh Manicka</h1>
-    <div class="subtitle">Affiliate Research Scientist, Allen Discovery Center, Tufts University</div>
-    <nav>
-      <a href="#about">About</a>
-      <a href="#research">Research</a>
-      <a href="#publications">Publications</a>
-      <a href="#software">Software</a>
-      <a href="#education">Education</a>
-      <a href="#contact">Contact</a>
-    </nav>
+    <div class="header-inner">
+      <div class="header-text">
+        <h1>Santosh Manicka</h1>
+        <div class="subtitle">Affiliate Research Scientist, Allen Discovery Center, Tufts University</div>
+        <nav>
+          <a href="#about">About</a>
+          <a href="#research">Research</a>
+          <a href="#publications">Publications</a>
+          <a href="#software">Software</a>
+          <a href="#education">Education</a>
+          <a href="#contact">Contact</a>
+        </nav>
+      </div>
+      <img src="Headshot.jpg" alt="Santosh Manicka" class="headshot">
+    </div>
   </header>
 
 
@@ -374,7 +403,7 @@
         </p>
       </div>
       <div class="figure-container">
-        <svg viewBox="0 0 260 160" xmlns="http://www.w3.org/2000/svg" style="background:white;border-radius:6px;">
+        <svg viewBox="0 0 290 160" xmlns="http://www.w3.org/2000/svg" style="background:white;border-radius:6px;">
           <defs>
             <marker id="qArr" markerWidth="6" markerHeight="4" refX="5" refY="2" orient="auto">
               <polygon points="0 0,6 2,0 4" fill="#d97757" opacity="0.5"/>
@@ -400,7 +429,7 @@
           <path d="M34,54 C48,38 66,28 80,24" stroke="#d97757" stroke-width="1" stroke-dasharray="3,2" fill="none" opacity="0.3" marker-end="url(#qArr)"/>
           <path d="M120,56 C132,68 138,80 144,86" stroke="#d97757" stroke-width="1" stroke-dasharray="3,2" fill="none" opacity="0.3" marker-end="url(#qArr)"/>
           <!-- The four interpretability questions -->
-          <g font-family="monospace" font-size="8">
+          <g font-family="monospace" font-size="10">
             <circle cx="172" cy="28" r="1.5" fill="#d97757" opacity="0.4"/>
             <text x="178" y="31" fill="#d97757" opacity="0.55">representations?</text>
             <circle cx="172" cy="58" r="1.5" fill="#d97757" opacity="0.4"/>
@@ -794,52 +823,52 @@
       <div class="card">
         <div class="card-fig">
           <svg viewBox="0 0 380 90" xmlns="http://www.w3.org/2000/svg" style="background:white;">
-            <!-- Ring 1: intact pattern -->
-            <g transform="translate(80,45)">
-              <g fill="#f0efe8" stroke="#c8c7c0" stroke-width="0.8">
-                <circle cx="0" cy="-22" r="7"/><circle cx="16" cy="-16" r="7"/><circle cx="22" cy="0" r="7"/>
-                <circle cx="16" cy="16" r="7"/><circle cx="0" cy="22" r="7"/><circle cx="-16" cy="16" r="7"/>
-                <circle cx="-22" cy="0" r="7"/><circle cx="-16" cy="-16" r="7"/>
-              </g>
-              <g fill="#d97757" stroke="none">
-                <circle cx="0" cy="-22" r="7" opacity="0.8"/><circle cx="16" cy="-16" r="7" opacity="0.6"/>
-                <circle cx="-16" cy="-16" r="7" opacity="0.6"/>
-              </g>
+            <defs>
+              <marker id="cgArr" markerWidth="6" markerHeight="4" refX="5" refY="2" orient="auto">
+                <polygon points="0 0,6 2,0 4" fill="#d97757"/>
+              </marker>
+            </defs>
+            <!-- LEFT: Ring of cells colored by causal module membership -->
+            <!-- Fine-grained ring connections (faint: complex cell-level wiring) -->
+            <g stroke="#c8c7c0" stroke-width="1.2" opacity="0.25">
+              <line x1="111" y1="44" x2="103" y2="25"/><line x1="103" y1="25" x2="85"  y2="18"/>
+              <line x1="85"  y1="18" x2="67"  y2="25"/><line x1="67"  y1="25" x2="59"  y2="44"/>
+              <line x1="59"  y1="44" x2="67"  y2="63"/><line x1="67"  y1="63" x2="85"  y2="70"/>
+              <line x1="85"  y1="70" x2="103" y2="63"/><line x1="103" y1="63" x2="111" y2="44"/>
             </g>
-            <!-- Arrow 1 -->
-            <line x1="115" y1="45" x2="140" y2="45" stroke="#5a5a56" stroke-width="0.8" opacity="0.3"/>
-            <polygon points="140,43 146,45 140,47" fill="#5a5a56" opacity="0.3"/>
-            <!-- Damage label -->
-            <text x="117" y="38" font-family="monospace" font-size="7.5" fill="#5a5a56" opacity="0.6">damage</text>
-            <!-- Ring 2: damaged (gap where top cells were) -->
-            <g transform="translate(190,45)">
-              <g fill="#f0efe8" stroke="#c8c7c0" stroke-width="0.8">
-                <circle cx="22" cy="0" r="7"/><circle cx="16" cy="16" r="7"/>
-                <circle cx="0" cy="22" r="7"/><circle cx="-16" cy="16" r="7"/>
-                <circle cx="-22" cy="0" r="7"/>
-              </g>
-              <!-- Damaged area: dashed arcs -->
-              <path d="M-12,-18 A22,22 0 0,1 12,-18" stroke="#d97757" stroke-width="1" stroke-dasharray="3,2" fill="none" opacity="0.4"/>
-              <circle cx="-16" cy="-16" r="7" fill="none" stroke="#d97757" stroke-width="0.8" stroke-dasharray="2,2" opacity="0.3"/>
-              <circle cx="0" cy="-22" r="7" fill="none" stroke="#d97757" stroke-width="0.8" stroke-dasharray="2,2" opacity="0.3"/>
-              <circle cx="16" cy="-16" r="7" fill="none" stroke="#d97757" stroke-width="0.8" stroke-dasharray="2,2" opacity="0.3"/>
-            </g>
-            <!-- Arrow 2 -->
-            <line x1="225" y1="45" x2="250" y2="45" stroke="#d97757" stroke-width="0.8" opacity="0.4"/>
-            <polygon points="250,43 256,45 250,47" fill="#d97757" opacity="0.4"/>
-            <text x="220" y="38" font-family="monospace" font-size="7.5" fill="#d97757" opacity="0.65">regenerate</text>
-            <!-- Ring 3: regenerated -->
-            <g transform="translate(300,45)">
-              <g fill="#f0efe8" stroke="#c8c7c0" stroke-width="0.8">
-                <circle cx="0" cy="-22" r="7"/><circle cx="16" cy="-16" r="7"/><circle cx="22" cy="0" r="7"/>
-                <circle cx="16" cy="16" r="7"/><circle cx="0" cy="22" r="7"/><circle cx="-16" cy="16" r="7"/>
-                <circle cx="-22" cy="0" r="7"/><circle cx="-16" cy="-16" r="7"/>
-              </g>
-              <g fill="#d97757" stroke="none">
-                <circle cx="0" cy="-22" r="7" opacity="0.8"/><circle cx="16" cy="-16" r="7" opacity="0.6"/>
-                <circle cx="-16" cy="-16" r="7" opacity="0.6"/>
-              </g>
-            </g>
+            <!-- M1: top-right (terracotta) -->
+            <circle cx="111" cy="44" r="7" fill="#d97757" opacity="0.75" stroke="#bf5a3a" stroke-width="0.8"/>
+            <circle cx="103" cy="25" r="7" fill="#d97757" opacity="0.75" stroke="#bf5a3a" stroke-width="0.8"/>
+            <circle cx="85"  cy="18" r="7" fill="#d97757" opacity="0.75" stroke="#bf5a3a" stroke-width="0.8"/>
+            <!-- M2: left (medium gray) -->
+            <circle cx="67" cy="25" r="7" fill="#7a7a70" opacity="0.55" stroke="#5a5a56" stroke-width="0.8"/>
+            <circle cx="59" cy="44" r="7" fill="#7a7a70" opacity="0.55" stroke="#5a5a56" stroke-width="0.8"/>
+            <circle cx="67" cy="63" r="7" fill="#7a7a70" opacity="0.55" stroke="#5a5a56" stroke-width="0.8"/>
+            <!-- M3: bottom-right (light) -->
+            <circle cx="85"  cy="70" r="7" fill="#f0efe8" stroke="#c8c7c0" stroke-width="1"/>
+            <circle cx="103" cy="63" r="7" fill="#f0efe8" stroke="#c8c7c0" stroke-width="1"/>
+            <!-- Module labels -->
+            <text x="115" y="11" font-family="monospace" font-size="7" fill="#d97757" opacity="0.8">M<tspan font-size="5" dy="2">1</tspan></text>
+            <text x="33"  y="47" text-anchor="end" font-family="monospace" font-size="7" fill="#7a7a70" opacity="0.7">M<tspan font-size="5" dy="2">2</tspan></text>
+            <text x="117" y="70" font-family="monospace" font-size="7" fill="#5a5a56" opacity="0.55">M<tspan font-size="5" dy="2">3</tspan></text>
+            <!-- Divider -->
+            <line x1="140" y1="8" x2="140" y2="82" stroke="#e0dfd8" stroke-width="0.5" stroke-dasharray="3,3"/>
+            <!-- RIGHT: Coarse-grained causal module graph -->
+            <!-- M1 node -->
+            <circle cx="240" cy="27" r="15" fill="#d97757" opacity="0.7" stroke="#bf5a3a" stroke-width="1"/>
+            <text x="240" y="31" text-anchor="middle" font-family="monospace" font-size="8" fill="white" opacity="0.95">M<tspan font-size="5.5" dy="2">1</tspan></text>
+            <!-- M2 node -->
+            <circle cx="215" cy="63" r="15" fill="#7a7a70" opacity="0.5" stroke="#5a5a56" stroke-width="1"/>
+            <text x="215" y="67" text-anchor="middle" font-family="monospace" font-size="8" fill="white" opacity="0.9">M<tspan font-size="5.5" dy="2">2</tspan></text>
+            <!-- M3 node -->
+            <circle cx="318" cy="55" r="15" fill="#f0efe8" stroke="#c8c7c0" stroke-width="1.2"/>
+            <text x="318" y="59" text-anchor="middle" font-family="monospace" font-size="8" fill="#5a5a56" opacity="0.7">M<tspan font-size="5.5" dy="2">3</tspan></text>
+            <!-- Causal arrows between modules -->
+            <line x1="231" y1="39" x2="224" y2="51" stroke="#d97757" stroke-width="1.5" opacity="0.65" marker-end="url(#cgArr)"/>
+            <line x1="254" y1="32" x2="306" y2="50" stroke="#d97757" stroke-width="1.5" opacity="0.65" marker-end="url(#cgArr)"/>
+            <line x1="230" y1="62" x2="305" y2="57" stroke="#d97757" stroke-width="1"   opacity="0.35" marker-end="url(#cgArr)"/>
+            <!-- Panel label -->
+            <text x="265" y="84" text-anchor="middle" font-family="monospace" font-size="7" fill="#5a5a56" opacity="0.6">causal modules</text>
           </svg>
         </div>
         <h3>How multicellular patterning networks might leverage coarse-grained causation</h3>
@@ -886,14 +915,20 @@
             <text x="100" y="84" text-anchor="middle" font-family="monospace" font-size="7" fill="#5a5a56" opacity="0.6">state space</text>
             <!-- Divider -->
             <line x1="193" y1="8" x2="193" y2="82" stroke="#e0dfd8" stroke-width="0.5" stroke-dasharray="3,3"/>
-            <!-- RIGHT PANEL: Behavioral time series -->
+            <!-- RIGHT PANEL: Correlated env + internal state traces -->
             <line x1="207" y1="73" x2="370" y2="73" stroke="#e0dfd8" stroke-width="0.8"/>
-            <line x1="207" y1="73" x2="207" y2="8" stroke="#e0dfd8" stroke-width="0.8"/>
-            <text x="374" y="76" font-family="monospace" font-size="7" fill="#5a5a56" opacity="0.6">t</text>
-            <!-- Sustained oscillating behavior trace -->
-            <path d="M207,41 C220,22 234,22 247,41 C260,60 274,60 287,41 C300,22 314,22 327,41 C340,60 354,60 367,41" stroke="#d97757" stroke-width="1.5" fill="none" opacity="0.65"/>
+            <line x1="207" y1="73" x2="207" y2="8"  stroke="#e0dfd8" stroke-width="0.8"/>
+            <!-- Environmental signal (gray dashed) -->
+            <path d="M207,42 C218,26 236,26 247,42 C258,58 276,58 287,42 C298,26 316,26 327,42 C338,58 356,58 367,42"
+                  stroke="#5a5a56" stroke-width="1.2" fill="none" stroke-dasharray="4,3" opacity="0.45"/>
+            <!-- Internal state (terracotta solid, slightly lagged — tracks environment) -->
+            <path d="M207,50 C220,26 238,24 252,42 C264,60 280,60 292,42 C304,26 320,24 336,42 C348,60 362,58 367,50"
+                  stroke="#d97757" stroke-width="1.5" fill="none" opacity="0.65"/>
+            <!-- Trace labels near first peak -->
+            <text x="229" y="21" text-anchor="middle" font-family="monospace" font-size="7" fill="#5a5a56" opacity="0.6">env</text>
+            <text x="250" y="13" text-anchor="middle" font-family="monospace" font-size="7" fill="#d97757" opacity="0.7">state</text>
             <!-- Panel label -->
-            <text x="287" y="84" text-anchor="middle" font-family="monospace" font-size="7" fill="#5a5a56" opacity="0.6">sustained behavior</text>
+            <text x="287" y="84" text-anchor="middle" font-family="monospace" font-size="7" fill="#5a5a56" opacity="0.6">state encodes world</text>
           </svg>
         </div>
         <h3>How minimal adaptive agents cognize in the dynamic state space</h3>
