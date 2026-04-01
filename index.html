@@ -1,0 +1,1115 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Santosh Manicka</title>
+  <meta name="description" content="Santosh Manicka — computational biology, bioelectricity, morphogenesis, complex systems.">
+  <style>
+    :root {
+      --bg: #f5f4ed;
+      --fg: #141413;
+      --muted: #5a5a56;
+      --faint: rgba(20,20,19,.10);
+      --accent: #d97757;
+      --card: rgba(255,255,255,.50);
+      --max: 920px;
+      --pad: clamp(20px, 4vw, 40px);
+      --serif: Georgia, 'Times New Roman', Times, serif;
+      --sans: -apple-system, system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      --mono: 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--fg);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: var(--fg); }
+    a:hover { color: var(--accent); }
+
+    .wrap {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 0 var(--pad);
+    }
+
+    /* ---- Header ---- */
+    .site-header {
+      padding: clamp(40px, 6vw, 80px) 0 clamp(30px, 4vw, 50px);
+      border-bottom: 1px solid var(--faint);
+    }
+
+    .site-header h1 {
+      font-family: var(--serif);
+      font-size: clamp(32px, 5vw, 52px);
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      line-height: 1.1;
+    }
+
+    .site-header .subtitle {
+      margin-top: 8px;
+      font-size: clamp(14px, 1.6vw, 17px);
+      color: var(--muted);
+      font-family: var(--mono);
+      letter-spacing: -0.01em;
+    }
+
+    nav {
+      margin-top: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    nav a {
+      padding: 6px 14px;
+      border: 1px solid var(--faint);
+      border-radius: 999px;
+      font-size: 13px;
+      font-family: var(--mono);
+      color: var(--muted);
+      text-decoration: none;
+      transition: border-color .15s;
+    }
+
+    nav a:hover {
+      border-color: var(--accent);
+      color: var(--fg);
+    }
+
+    /* ---- Sections ---- */
+    section {
+      padding: clamp(28px, 4vw, 48px) 0;
+      border-bottom: 1px solid var(--faint);
+    }
+
+    section:last-of-type { border-bottom: none; }
+
+    h2 {
+      font-family: var(--serif);
+      font-size: clamp(22px, 2.8vw, 30px);
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+    }
+
+    h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin: 20px 0 6px;
+    }
+
+    p, li { max-width: 68ch; }
+
+    .lead {
+      font-size: clamp(16px, 1.8vw, 19px);
+      color: var(--muted);
+      line-height: 1.55;
+      max-width: 62ch;
+    }
+
+    .muted { color: var(--muted); }
+
+    /* ---- About split layout ---- */
+    .about-split {
+      display: grid;
+      grid-template-columns: 1fr 280px;
+      gap: 32px;
+      align-items: center;
+      margin-bottom: 28px;
+    }
+
+    .about-split .text p { max-width: none; }
+
+    @media (max-width: 800px) {
+      .about-split { grid-template-columns: 1fr; gap: 16px; }
+      .about-split .figure-container { order: -1; }
+    }
+
+    .figure-container {
+      background: var(--card);
+      border: 1px solid var(--faint);
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .figure-container svg {
+      width: 100%;
+      height: auto;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .figure-caption {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.03em;
+    }
+
+    /* ---- Grid ---- */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    @media (max-width: 700px) {
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      border: 1px solid var(--faint);
+      border-radius: 14px;
+      padding: 20px;
+      background: var(--card);
+    }
+
+    .card h3 {
+      margin: 0 0 6px;
+      font-family: var(--serif);
+      font-size: 17px;
+    }
+
+    .card p {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .card-fig {
+      margin: -6px -6px 14px;
+    }
+
+    .card-fig svg {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 8px;
+    }
+
+    /* ---- Pills ---- */
+    .pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .pill {
+      padding: 5px 12px;
+      border: 1px solid var(--faint);
+      border-radius: 999px;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* ---- Publications ---- */
+    .pub-year {
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--accent);
+      margin-top: 22px;
+      margin-bottom: 4px;
+      letter-spacing: 0.02em;
+    }
+
+    .pub-year:first-child { margin-top: 0; }
+
+    .pub {
+      padding: 10px 0;
+      border-bottom: 1px solid var(--faint);
+    }
+
+    .pub:last-child { border-bottom: none; }
+
+    .pub .title {
+      font-weight: 600;
+      font-size: 15px;
+      letter-spacing: -0.01em;
+      line-height: 1.4;
+    }
+
+    .pub .title a { text-decoration: none; }
+    .pub .title a:hover { text-decoration: underline; }
+
+    .pub .meta {
+      font-size: 13.5px;
+      color: var(--muted);
+      margin-top: 2px;
+      line-height: 1.45;
+    }
+
+    /* ---- Software ---- */
+    .repo {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--faint);
+    }
+
+    .repo:last-child { border-bottom: none; }
+
+    .repo-name {
+      font-family: var(--mono);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .repo-name a { text-decoration: none; }
+    .repo-name a:hover { text-decoration: underline; }
+
+    .repo-desc {
+      font-size: 13.5px;
+      color: var(--muted);
+      text-align: right;
+      flex-shrink: 1;
+    }
+
+    @media (max-width: 600px) {
+      .repo { flex-direction: column; gap: 2px; }
+      .repo-desc { text-align: left; }
+    }
+
+    /* ---- Education ---- */
+    .edu {
+      padding: 8px 0;
+    }
+
+    .edu .degree {
+      font-weight: 600;
+      font-size: 15px;
+    }
+
+    .edu .where {
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    /* ---- Footer ---- */
+    footer {
+      padding: 24px 0 40px;
+      font-size: 13px;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    footer a { color: var(--muted); }
+    footer a:hover { color: var(--accent); }
+
+    /* ---- Inline refs in cards ---- */
+    .card-refs {
+      margin-top: 10px;
+      padding-top: 8px;
+      border-top: 1px solid var(--faint);
+      font-size: 12.5px;
+      line-height: 1.5;
+      color: var(--muted);
+    }
+
+    .card-refs a {
+      color: var(--muted);
+      text-decoration: underline;
+      text-decoration-color: var(--faint);
+      text-underline-offset: 2px;
+    }
+
+    .card-refs a:hover {
+      color: var(--accent);
+      text-decoration-color: var(--accent);
+    }
+  </style>
+</head>
+
+<body>
+<div class="wrap">
+
+  <!-- ==================== HEADER ==================== -->
+  <header class="site-header">
+    <h1>Santosh Manicka</h1>
+    <div class="subtitle">Affiliate Research Scientist, Allen Discovery Center, Tufts University</div>
+    <nav>
+      <a href="#about">About</a>
+      <a href="#research">Research</a>
+      <a href="#publications">Publications</a>
+      <a href="#software">Software</a>
+      <a href="#education">Education</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+
+  <!-- ==================== ABOUT ==================== -->
+  <section id="about">
+    <h2>About</h2>
+    <p class="lead" style="margin-bottom:24px;">
+      Understanding what biological systems compute and how.
+    </p>
+
+    <!-- Beat 1: The problem -->
+    <div class="about-split">
+      <div class="text">
+        <p>
+          Non-neural biological systems routinely solve problems that look cognitive: a developing embryo
+          coordinates millions of cells into a body plan, a gene regulatory network forms and recalls
+          associative memories, an embryonic collective communicates to mount a rescue response under
+          duress. We know a great deal about the molecular parts. What we lack is an understanding of
+          <em>what these systems are actually computing</em> — what is represented, how information flows
+          across space and time, where the decision boundaries lie, and how the outcome stays robust.
+        </p>
+      </div>
+      <div class="figure-container">
+        <svg viewBox="0 0 260 160" xmlns="http://www.w3.org/2000/svg" style="background:white;border-radius:6px;">
+          <defs>
+            <marker id="qArr" markerWidth="6" markerHeight="4" refX="5" refY="2" orient="auto">
+              <polygon points="0 0,6 2,0 4" fill="#d97757" opacity="0.5"/>
+            </marker>
+          </defs>
+          <!-- Cell lattice: 5x4 with voltage gradient (left=polarized, right=depolarized) -->
+          <g fill="#f0efe8" stroke="#c8c7c0" stroke-width="1">
+            <circle cx="20" cy="22" r="11"/><circle cx="52" cy="22" r="11"/><circle cx="84" cy="22" r="11"/><circle cx="116" cy="22" r="11"/><circle cx="148" cy="22" r="11"/>
+            <circle cx="20" cy="56" r="11"/><circle cx="52" cy="56" r="11"/><circle cx="84" cy="56" r="11"/><circle cx="116" cy="56" r="11"/><circle cx="148" cy="56" r="11"/>
+            <circle cx="20" cy="90" r="11"/><circle cx="52" cy="90" r="11"/><circle cx="84" cy="90" r="11"/><circle cx="116" cy="90" r="11"/><circle cx="148" cy="90" r="11"/>
+            <circle cx="20" cy="124" r="11"/><circle cx="52" cy="124" r="11"/><circle cx="84" cy="124" r="11"/><circle cx="116" cy="124" r="11"/><circle cx="148" cy="124" r="11"/>
+          </g>
+          <!-- Voltage gradient overlay -->
+          <g fill="#d97757" stroke="none">
+            <circle cx="84" cy="22" r="11" opacity="0.15"/><circle cx="84" cy="56" r="11" opacity="0.2"/><circle cx="84" cy="90" r="11" opacity="0.18"/><circle cx="84" cy="124" r="11" opacity="0.12"/>
+            <circle cx="116" cy="22" r="11" opacity="0.5"/><circle cx="116" cy="56" r="11" opacity="0.6"/><circle cx="116" cy="90" r="11" opacity="0.55"/><circle cx="116" cy="124" r="11" opacity="0.45"/>
+            <circle cx="148" cy="22" r="11" opacity="0.8"/><circle cx="148" cy="56" r="11" opacity="0.85"/><circle cx="148" cy="90" r="11" opacity="0.78"/><circle cx="148" cy="124" r="11" opacity="0.82"/>
+          </g>
+          <!-- Hidden decision boundary (dashed, wavy) -->
+          <path d="M68,4 C80,24 58,38 70,56 C82,74 58,88 70,106 C82,124 58,138 68,156"
+                stroke="#d97757" stroke-width="1.3" stroke-dasharray="5,3" fill="none" opacity="0.35"/>
+          <!-- Hidden information flow (dashed arrows) -->
+          <path d="M34,54 C48,38 66,28 80,24" stroke="#d97757" stroke-width="1" stroke-dasharray="3,2" fill="none" opacity="0.3" marker-end="url(#qArr)"/>
+          <path d="M120,56 C132,68 138,80 144,86" stroke="#d97757" stroke-width="1" stroke-dasharray="3,2" fill="none" opacity="0.3" marker-end="url(#qArr)"/>
+          <!-- The four interpretability questions -->
+          <g font-family="monospace" font-size="8">
+            <circle cx="172" cy="28" r="1.5" fill="#d97757" opacity="0.4"/>
+            <text x="178" y="31" fill="#d97757" opacity="0.55">representations?</text>
+            <circle cx="172" cy="58" r="1.5" fill="#d97757" opacity="0.4"/>
+            <text x="178" y="61" fill="#d97757" opacity="0.55">information flow?</text>
+            <circle cx="172" cy="92" r="1.5" fill="#d97757" opacity="0.4"/>
+            <text x="178" y="95" fill="#d97757" opacity="0.55">boundaries?</text>
+            <circle cx="172" cy="122" r="1.5" fill="#d97757" opacity="0.4"/>
+            <text x="178" y="125" fill="#d97757" opacity="0.55">robustness?</text>
+          </g>
+        </svg>
+        <div class="figure-caption">The interpretability gap</div>
+      </div>
+    </div>
+
+    <!-- Beat 2: Minimality (figure on left) -->
+    <div class="about-split" style="grid-template-columns: 280px 1fr;">
+      <div class="figure-container">
+        <svg viewBox="0 0 260 160" xmlns="http://www.w3.org/2000/svg" style="background:white;border-radius:6px;">
+          <!-- Left: complex opaque network -->
+          <g transform="translate(65,72)">
+            <g stroke="#5a5a56" stroke-width="0.7" opacity="0.2">
+              <line x1="-28" y1="-38" x2="22" y2="-12"/><line x1="-28" y1="-38" x2="-32" y2="18"/>
+              <line x1="-28" y1="-38" x2="8" y2="28"/><line x1="22" y1="-12" x2="-32" y2="18"/>
+              <line x1="22" y1="-12" x2="28" y2="32"/><line x1="22" y1="-12" x2="-8" y2="-32"/>
+              <line x1="-32" y1="18" x2="28" y2="32"/><line x1="-32" y1="18" x2="8" y2="28"/>
+              <line x1="8" y1="28" x2="28" y2="32"/><line x1="-8" y1="-32" x2="8" y2="28"/>
+              <line x1="28" y1="32" x2="-8" y2="-32"/><line x1="-28" y1="-38" x2="28" y2="32"/>
+            </g>
+            <g fill="#5a5a56" opacity="0.35">
+              <circle cx="-28" cy="-38" r="5"/><circle cx="22" cy="-12" r="5"/><circle cx="-32" cy="18" r="5"/>
+              <circle cx="8" cy="28" r="5"/><circle cx="28" cy="32" r="5"/><circle cx="-8" cy="-32" r="5"/>
+            </g>
+          </g>
+          <!-- Arrow -->
+          <line x1="115" y1="72" x2="142" y2="72" stroke="#d97757" stroke-width="1.5" stroke-dasharray="4,2"/>
+          <polygon points="142,69 150,72 142,75" fill="#d97757"/>
+          <!-- Right: minimal interpretable network -->
+          <g transform="translate(195,72)">
+            <g stroke="#d97757" stroke-width="1.5" opacity="0.5">
+              <line x1="0" y1="-32" x2="-28" y2="20"/><line x1="0" y1="-32" x2="28" y2="20"/><line x1="-28" y1="20" x2="28" y2="20"/>
+            </g>
+            <g fill="#d97757">
+              <circle cx="0" cy="-32" r="7"/><circle cx="-28" cy="20" r="7"/><circle cx="28" cy="20" r="7"/>
+            </g>
+          </g>
+          <!-- Labels -->
+          <text x="65" y="142" text-anchor="middle" font-family="monospace" font-size="9.5" fill="#5a5a56" opacity="0.6">opaque</text>
+          <text x="195" y="142" text-anchor="middle" font-family="monospace" font-size="9.5" fill="#d97757">interpretable</text>
+        </svg>
+        <div class="figure-caption">Minimality as interpretability strategy</div>
+      </div>
+      <div class="text">
+        <p>
+          That is the problem I work on. My approach has two steps. First, I build deliberately minimal
+          models — stripped to the fewest components that still produce the behavior of interest. Minimality
+          is not an aesthetic choice; it is a strategy for understanding. A model with two essential variables
+          can be fully understood; a model with two hundred cannot.
+        </p>
+      </div>
+    </div>
+
+    <!-- Beat 3: The Cognitive Lens -->
+    <div class="about-split">
+      <div class="text">
+        <p>
+          Second, I develop and apply analytical methods — spatiotemporal sensitivity fields, causal network
+          decompositions, information-theoretic measures — that extract the computational and cognitive
+          structure hidden in these models. In a 2019 framework paper (<em>The Cognitive Lens</em>), I
+          laid out this program: treat biological patterning as information processing, then use integration
+          methods to read out what the system represents, when it shifts from being externally driven to
+          self-maintaining, and which cells integrate information from which others. The goal is not just
+          to make models interpretable, but to discover whether cognition-like processes — decision-making,
+          memory, communication — are genuinely at work in non-neural biology.
+        </p>
+      </div>
+      <div class="figure-container">
+        <svg viewBox="0 0 260 160" xmlns="http://www.w3.org/2000/svg" style="background:white;border-radius:6px;">
+          <defs>
+            <marker id="sArr" markerWidth="6" markerHeight="4" refX="5" refY="2" orient="auto">
+              <polygon points="0 0,6 2,0 4" fill="#d97757"/>
+            </marker>
+          </defs>
+          <!-- Stage 1: Detailed (dense tangled network) -->
+          <g transform="translate(42,65)">
+            <rect x="-30" y="-30" width="60" height="60" rx="6" fill="none" stroke="#e0dfd8" stroke-width="1"/>
+            <g stroke="#5a5a56" stroke-width="0.7" opacity="0.3">
+              <line x1="-18" y1="-18" x2="8" y2="-6"/><line x1="-18" y1="-18" x2="-14" y2="14"/>
+              <line x1="-18" y1="-18" x2="18" y2="16"/><line x1="8" y1="-6" x2="-14" y2="14"/>
+              <line x1="8" y1="-6" x2="18" y2="16"/><line x1="8" y1="-6" x2="16" y2="-18"/>
+              <line x1="-14" y1="14" x2="18" y2="16"/><line x1="-14" y1="14" x2="-4" y2="22"/>
+              <line x1="18" y1="16" x2="-4" y2="22"/><line x1="16" y1="-18" x2="18" y2="16"/>
+              <line x1="16" y1="-18" x2="-18" y2="-18"/><line x1="-4" y1="22" x2="8" y2="-6"/>
+            </g>
+            <g fill="#5a5a56" opacity="0.45">
+              <circle cx="-18" cy="-18" r="3"/><circle cx="8" cy="-6" r="3"/><circle cx="-14" cy="14" r="3"/>
+              <circle cx="18" cy="16" r="3"/><circle cx="-4" cy="22" r="3"/><circle cx="16" cy="-18" r="3"/>
+            </g>
+          </g>
+          <!-- Arrow 1 -->
+          <line x1="78" y1="65" x2="96" y2="65" stroke="#d97757" stroke-width="1.2"/>
+          <polygon points="96,62.5 103,65 96,67.5" fill="#d97757"/>
+          <!-- Stage 2: J, H (Jacobian heatmap) -->
+          <g transform="translate(130,65)">
+            <rect x="-24" y="-24" width="48" height="48" rx="4" fill="none" stroke="#d97757" stroke-width="1.2"/>
+            <rect x="-20" y="-20" width="11" height="11" fill="#d97757" opacity="0.8" rx="1"/>
+            <rect x="-6" y="-20" width="11" height="11" fill="#d97757" opacity="0.15" rx="1"/>
+            <rect x="9" y="-20" width="11" height="11" fill="#d97757" opacity="0.45" rx="1"/>
+            <rect x="-20" y="-6" width="11" height="11" fill="#d97757" opacity="0.25" rx="1"/>
+            <rect x="-6" y="-6" width="11" height="11" fill="#d97757" opacity="0.9" rx="1"/>
+            <rect x="9" y="-6" width="11" height="11" fill="#d97757" opacity="0.1" rx="1"/>
+            <rect x="-20" y="9" width="11" height="11" fill="#d97757" opacity="0.35" rx="1"/>
+            <rect x="-6" y="9" width="11" height="11" fill="#d97757" opacity="0.55" rx="1"/>
+            <rect x="9" y="9" width="11" height="11" fill="#d97757" opacity="0.7" rx="1"/>
+          </g>
+          <!-- Arrow 2 -->
+          <line x1="160" y1="65" x2="178" y2="65" stroke="#d97757" stroke-width="1.2"/>
+          <polygon points="178,62.5 185,65 178,67.5" fill="#d97757"/>
+          <!-- Stage 3: Sifted (clean directed causal graph) -->
+          <g transform="translate(218,65)">
+            <rect x="-30" y="-30" width="60" height="60" rx="6" fill="none" stroke="#e0dfd8" stroke-width="1"/>
+            <line x1="-10" y1="-10" x2="8" y2="-10" stroke="#d97757" stroke-width="1.8" marker-end="url(#sArr)"/>
+            <line x1="10" y1="-5" x2="2" y2="10" stroke="#d97757" stroke-width="1.8" marker-end="url(#sArr)"/>
+            <circle cx="-14" cy="-10" r="5" fill="#d97757"/>
+            <circle cx="14" cy="-10" r="5" fill="#d97757" opacity="0.75"/>
+            <circle cx="0" cy="16" r="5" fill="#d97757" opacity="0.5"/>
+          </g>
+          <!-- Labels -->
+          <text x="42" y="118" text-anchor="middle" font-family="monospace" font-size="9" fill="#5a5a56">Detailed</text>
+          <text x="130" y="118" text-anchor="middle" font-family="monospace" font-size="9" fill="#5a5a56">J, H</text>
+          <text x="218" y="118" text-anchor="middle" font-family="monospace" font-size="9" fill="#d97757">Sifted</text>
+        </svg>
+        <div class="figure-caption">The Cognitive Lens framework</div>
+      </div>
+    </div>
+
+    <p>
+      Before Tufts, I studied adaptive agents at Sussex and Boolean network dynamics at Indiana. Across
+      all three settings, the question has been the same: what and how do collectives of simple components
+      compute — and can we ground these complex phenomena in fundamental physical principles?
+    </p>
+
+    <div class="pills">
+      <span class="pill">Interpretability</span>
+      <span class="pill">Theoretical biology</span>
+      <span class="pill">Complex systems</span>
+      <span class="pill">Bioelectricity</span>
+      <span class="pill">Morphogenesis</span>
+      <span class="pill">Boolean networks</span>
+      <span class="pill">Information theory</span>
+      <span class="pill">Dynamical systems</span>
+      <span class="pill">Basal cognition</span>
+    </div>
+  </section>
+
+
+  <!-- ==================== RESEARCH ==================== -->
+  <section id="research">
+    <h2>Research</h2>
+    <p class="lead">
+      Each project builds a minimal model of a biological phenomenon, then uses the cognitive
+      lens to ask: what is this system computing?
+    </p>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-fig">
+          <svg viewBox="0 0 380 90" xmlns="http://www.w3.org/2000/svg" style="background:white;">
+            <!-- Row of cells -->
+            <g fill="#f0efe8" stroke="#c8c7c0" stroke-width="1">
+              <circle cx="22" cy="55" r="10"/><circle cx="62" cy="55" r="10"/><circle cx="102" cy="55" r="10"/><circle cx="142" cy="55" r="10"/><circle cx="190" cy="55" r="10"/><circle cx="238" cy="55" r="10"/><circle cx="278" cy="55" r="10"/><circle cx="318" cy="55" r="10"/><circle cx="358" cy="55" r="10"/>
+            </g>
+            <!-- Bilateral pattern cells -->
+            <g fill="#d97757" stroke="none">
+              <circle cx="102" cy="55" r="10" opacity="0.8"/><circle cx="278" cy="55" r="10" opacity="0.8"/><circle cx="190" cy="55" r="10" opacity="0.5"/>
+            </g>
+            <!-- Field gradient bar -->
+            <rect x="18" y="22" width="344" height="5" rx="2.5" fill="#d97757" opacity="0.12"/>
+            <!-- Stigmergic arrows: cell → field → cell -->
+            <line x1="102" y1="43" x2="102" y2="30" stroke="#d97757" stroke-width="0.8" opacity="0.45"/>
+            <polygon points="100,31 102,25 104,31" fill="#d97757" opacity="0.45"/>
+            <line x1="278" y1="43" x2="278" y2="30" stroke="#d97757" stroke-width="0.8" opacity="0.45"/>
+            <polygon points="276,31 278,25 280,31" fill="#d97757" opacity="0.45"/>
+            <!-- Long-range causal arc -->
+            <path d="M107,42 Q190,4 273,42" stroke="#d97757" stroke-width="1.2" stroke-dasharray="4,2" fill="none" opacity="0.4"/>
+            <text x="190" y="84" text-anchor="middle" font-family="monospace" font-size="8" fill="#5a5a56" opacity="0.6">field-mediated long-range coordination</text>
+          </svg>
+        </div>
+        <h3>How electric fields might coordinate collective cell decisions</h3>
+        <p>
+          Cells in a tissue are coupled by gap junctions and bathed in a self-generated electric field.
+          I showed that when ion channel conductances are modulated by this field — a stigmergic loop
+          where each cell modifies the shared medium it also reads — a lattice of identical cells can
+          spontaneously break symmetry and produce face-like voltage pre-patterns. Jacobian and Hessian
+          time-series analysis reveals that the field acts as a single low-dimensional control parameter,
+          catalyzing long-range causal interactions among cells that have no direct knowledge of one
+          another. The field is the medium through which the tissue computes a global plan from purely
+          local rules.
+        </p>
+        <div class="card-refs">
+          <a href="#pub-field">Manicka &amp; Levin, 2025</a> &middot;
+          <a href="#pub-coglens">Manicka &amp; Levin, 2019</a> &middot;
+          <a href="#pub-frogbrain">Manicka, Pai &amp; Levin, 2023</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-fig">
+          <svg viewBox="0 0 380 90" xmlns="http://www.w3.org/2000/svg" style="background:white;">
+            <defs>
+              <marker id="scArr" markerWidth="6" markerHeight="4" refX="5" refY="2" orient="auto">
+                <polygon points="0 0,6 2,0 4" fill="#d97757"/>
+              </marker>
+            </defs>
+            <!-- Input A: transient pulse -->
+            <g transform="translate(30,20)">
+              <path d="M0,18 L0,18 L8,18 L8,0 L20,0 L20,18 L28,18" stroke="#5a5a56" stroke-width="1.2" fill="none" opacity="0.4"/>
+              <text x="14" y="23" text-anchor="middle" font-family="monospace" font-size="8" fill="#5a5a56" opacity="0.65">A</text>
+            </g>
+            <!-- Input B: transient pulse -->
+            <g transform="translate(30,48)">
+              <path d="M0,18 L0,18 L8,18 L8,0 L20,0 L20,18 L28,18" stroke="#5a5a56" stroke-width="1.2" fill="none" opacity="0.4"/>
+              <text x="14" y="26" text-anchor="middle" font-family="monospace" font-size="8" fill="#5a5a56" opacity="0.65">B</text>
+            </g>
+            <!-- Arrows into network -->
+            <line x1="62" y1="34" x2="100" y2="38" stroke="#5a5a56" stroke-width="0.8" opacity="0.35" marker-end="url(#scArr)"/>
+            <line x1="62" y1="62" x2="100" y2="52" stroke="#5a5a56" stroke-width="0.8" opacity="0.35" marker-end="url(#scArr)"/>
+            <!-- 2x2 bioelectric lattice -->
+            <g fill="#f0efe8" stroke="#c8c7c0" stroke-width="1">
+              <circle cx="115" cy="32" r="10"/><circle cx="145" cy="32" r="10"/>
+              <circle cx="115" cy="58" r="10"/><circle cx="145" cy="58" r="10"/>
+            </g>
+            <!-- Gap junction connections -->
+            <line x1="126" y1="32" x2="134" y2="32" stroke="#c8c7c0" stroke-width="1.5"/>
+            <line x1="126" y1="58" x2="134" y2="58" stroke="#c8c7c0" stroke-width="1.5"/>
+            <line x1="115" y1="43" x2="115" y2="47" stroke="#c8c7c0" stroke-width="1.5"/>
+            <line x1="145" y1="43" x2="145" y2="47" stroke="#c8c7c0" stroke-width="1.5"/>
+            <!-- Voltage highlights on active cells -->
+            <circle cx="115" cy="32" r="10" fill="#d97757" opacity="0.5" stroke="none"/>
+            <circle cx="145" cy="58" r="10" fill="#d97757" opacity="0.35" stroke="none"/>
+            <!-- Arrow out -->
+            <line x1="158" y1="45" x2="195" y2="45" stroke="#d97757" stroke-width="1" opacity="0.5" marker-end="url(#scArr)"/>
+            <!-- Output: computed result -->
+            <g transform="translate(220,30)">
+              <rect x="-16" y="-2" width="72" height="32" rx="4" fill="none" stroke="#d97757" stroke-width="1" opacity="0.5"/>
+              <text x="20" y="17" text-anchor="middle" font-family="monospace" font-size="10" fill="#d97757" opacity="0.8">A AND B</text>
+            </g>
+            <!-- Output persists after input removed -->
+            <text x="240" y="68" text-anchor="middle" font-family="monospace" font-size="7.5" fill="#d97757" opacity="0.65">persists</text>
+            <!-- Small persistence trace: flat high line showing memory retained -->
+            <line x1="305" y1="32" x2="355" y2="32" stroke="#d97757" stroke-width="1.2" opacity="0.5"/>
+            <line x1="305" y1="55" x2="305" y2="32" stroke="#5a5a56" stroke-width="0.8" stroke-dasharray="2,2" opacity="0.45"/>
+            <text x="330" y="22" text-anchor="middle" font-family="monospace" font-size="7" fill="#d97757" opacity="0.6">emergent</text>
+            <text x="330" y="30" text-anchor="middle" font-family="monospace" font-size="7" fill="#d97757" opacity="0.6">memory</text>
+            <text x="305" y="65" text-anchor="middle" font-family="monospace" font-size="7" fill="#5a5a56" opacity="0.55">input off</text>
+          </svg>
+        </div>
+        <h3>How bioelectric tissues might compute without a brain</h3>
+        <p>
+          Non-neural cells can compute. I showed that a small bioelectric network — cells coupled by
+          gap junctions — can implement AND, OR, and NOT logic gates through learned ion channel
+          conductance parameters acting as weights and biases. The inputs are transient: set externally
+          at discrete moments, then removed. Yet the output persists. The network dynamically fixes the
+          input state after each stimulus — a form of memory that emerges from the learned ion-channel
+          dynamics, not from any dedicated memory structure. Computation and memory co-emerge from the
+          same biophysics. But this memory is implicit and fragile. What makes biological memory
+          robust — durable enough to anchor a cell fate across a lifetime?
+        </p>
+        <div class="card-refs">
+          <a href="#pub-ben">Manicka &amp; Levin, 2019</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-fig">
+          <svg viewBox="0 0 380 90" xmlns="http://www.w3.org/2000/svg" style="background:white;">
+            <!-- LEFT HALF: CaMKII persistence trace -->
+            <!-- Time axis -->
+            <line x1="12" y1="70" x2="175" y2="70" stroke="#e0dfd8" stroke-width="0.5"/>
+            <!-- Vmem: brief pulse then gone -->
+            <path d="M12,68 C18,68 22,22 30,20 L55,20 C62,20 68,50 78,62 C85,68 95,69 175,69" stroke="#5a5a56" stroke-width="1" fill="none" opacity="0.25"/>
+            <!-- CaMKII: rises and locks -->
+            <path d="M12,68 C30,68 55,55 75,38 C95,22 110,16 130,15 L175,15" stroke="#d97757" stroke-width="1.8" fill="none" opacity="0.75"/>
+            <!-- Labels -->
+            <text x="50" y="17" font-family="monospace" font-size="7" fill="#5a5a56" opacity="0.6">Vmem</text>
+            <text x="155" y="12" font-family="monospace" font-size="7" fill="#d97757" opacity="0.75" text-anchor="end">CaMKII</text>
+            <text x="22" y="82" font-family="monospace" font-size="7" fill="#5a5a56" opacity="0.6">signal</text>
+            <text x="145" y="82" font-family="monospace" font-size="7" fill="#d97757" opacity="0.65" text-anchor="end">memory</text>
+            <!-- Divider -->
+            <line x1="190" y1="8" x2="190" y2="82" stroke="#e0dfd8" stroke-width="0.5" stroke-dasharray="3,3"/>
+            <!-- RIGHT HALF: Collective rescue -->
+            <!-- Three stressed embryos -->
+            <g transform="translate(228,28)">
+              <ellipse cx="0" cy="0" rx="12" ry="8" fill="#f0efe8" stroke="#c8c7c0" stroke-width="0.8"/>
+              <circle cx="-4" cy="-1" r="2" fill="#d97757" opacity="0.6"/>
+              <circle cx="4" cy="-1" r="2" fill="#d97757" opacity="0.6"/>
+            </g>
+            <g transform="translate(260,60)">
+              <ellipse cx="0" cy="0" rx="12" ry="8" fill="#f0efe8" stroke="#c8c7c0" stroke-width="0.8"/>
+              <circle cx="-4" cy="-1" r="2" fill="#d97757" opacity="0.6"/>
+              <circle cx="4" cy="-1" r="2" fill="#d97757" opacity="0.6"/>
+            </g>
+            <g transform="translate(228,60)">
+              <ellipse cx="0" cy="0" rx="12" ry="8" fill="#f0efe8" stroke="#c8c7c0" stroke-width="0.8"/>
+              <circle cx="-4" cy="-1" r="2" fill="#d97757" opacity="0.6"/>
+              <circle cx="4" cy="-1" r="2" fill="#d97757" opacity="0.6"/>
+            </g>
+            <!-- Stress signals radiating out (small waves) -->
+            <path d="M241,30 C248,34 248,38 255,42" stroke="#d97757" stroke-width="0.7" fill="none" opacity="0.3"/>
+            <path d="M241,58 C248,52 248,48 255,44" stroke="#d97757" stroke-width="0.7" fill="none" opacity="0.3"/>
+            <path d="M228,50 C232,46 236,44 240,42" stroke="#d97757" stroke-width="0.7" fill="none" opacity="0.3"/>
+            <!-- Convergence point -->
+            <circle cx="258" cy="42" r="3" fill="#d97757" opacity="0.4"/>
+            <!-- Arrow to threshold -->
+            <line x1="264" y1="42" x2="290" y2="42" stroke="#d97757" stroke-width="1" opacity="0.5"/>
+            <!-- Threshold line -->
+            <line x1="295" y1="18" x2="295" y2="68" stroke="#d97757" stroke-width="1.2" stroke-dasharray="4,2" opacity="0.5"/>
+            <text x="295" y="78" text-anchor="middle" font-family="monospace" font-size="7" fill="#d97757" opacity="0.65">threshold</text>
+            <!-- Arrow past threshold -->
+            <line x1="300" y1="42" x2="325" y2="42" stroke="#d97757" stroke-width="1.2" opacity="0.6"/>
+            <polygon points="325,40 332,42 325,44" fill="#d97757" opacity="0.6"/>
+            <!-- RESCUE label -->
+            <text x="352" y="46" text-anchor="middle" font-family="monospace" font-size="8" fill="#d97757" opacity="0.75" font-weight="bold">RESCUE</text>
+          </svg>
+        </div>
+        <h3>How inter-embryonic communication might create collective memories</h3>
+        <p>
+          A voltage pattern may last seconds; a cell fate lasts a lifetime. I model the cascade from
+          membrane voltage through calcium influx to CaMKII activation, where competitive
+          self-reinforcement creates a bistable switch: cells that saw high calcium lock ON, cells that
+          didn't lock OFF, and the pattern persists after the original signal is gone. This persistent
+          memory then enables something unexpected: when embryos are stressed, CaMKII-derived signals
+          produce a diffusive stress field. A single embryo's signal is too weak to trigger repair — the
+          self-cure paradox. But when multiple stressed embryos share a medium, their fields sum and cross
+          a collective threshold, triggering group rescue. Memory makes computation durable; collective
+          communication makes it powerful.
+        </p>
+        <div class="card-refs">
+          <a href="#pub-field">Manicka &amp; Levin, 2025</a> &middot;
+          <a href="#pub-grnmemory">Biswas, Manicka, Hoel &amp; Levin, 2021</a> &middot;
+          <em style="opacity:0.6">collective rescue: ongoing</em>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-fig">
+          <svg viewBox="0 0 380 90" xmlns="http://www.w3.org/2000/svg" style="background:white;">
+            <!-- 8 input lines converging on a gene node -->
+            <!-- Faded (buffered) inputs -->
+            <g stroke="#5a5a56" stroke-width="0.7" opacity="0.12">
+              <line x1="60" y1="12" x2="172" y2="40"/><line x1="60" y1="30" x2="172" y2="42"/>
+              <line x1="60" y1="48" x2="172" y2="44"/><line x1="60" y1="78" x2="172" y2="50"/>
+              <line x1="60" y1="66" x2="172" y2="48"/><line x1="60" y1="88" x2="172" y2="52"/>
+            </g>
+            <!-- Active (effective) inputs -->
+            <g stroke="#d97757" stroke-width="1.8" opacity="0.6">
+              <line x1="60" y1="38" x2="172" y2="43"/><line x1="60" y1="56" x2="172" y2="47"/>
+            </g>
+            <!-- Input dots -->
+            <g fill="#5a5a56" opacity="0.15">
+              <circle cx="56" cy="12" r="3"/><circle cx="56" cy="30" r="3"/><circle cx="56" cy="48" r="3"/><circle cx="56" cy="66" r="3"/><circle cx="56" cy="78" r="3"/><circle cx="56" cy="88" r="3"/>
+            </g>
+            <g fill="#d97757" opacity="0.6">
+              <circle cx="56" cy="38" r="3.5"/><circle cx="56" cy="56" r="3.5"/>
+            </g>
+            <!-- Gene node -->
+            <circle cx="190" cy="45" r="14" fill="#d97757" opacity="0.8" stroke="#bf5a3a" stroke-width="1"/>
+            <!-- K labels -->
+            <text x="30" y="50" text-anchor="middle" font-family="monospace" font-size="9" fill="#5a5a56" opacity="0.6">K=8</text>
+            <!-- Arrow to right -->
+            <line x1="208" y1="45" x2="240" y2="45" stroke="#d97757" stroke-width="1" opacity="0.4"/>
+            <polygon points="240,42.5 247,45 240,47.5" fill="#d97757" opacity="0.4"/>
+            <!-- K_eff label -->
+            <text x="290" y="42" font-family="monospace" font-size="10" fill="#d97757" opacity="0.8">K<tspan font-size="7" dy="3">eff</tspan><tspan dy="-3"> = 2</tspan></text>
+          </svg>
+        </div>
+        <h3>How gene networks might use attention to compute</h3>
+        <p>
+          A gene with eight regulators may in practice be controlled by two — the rest are
+          buffered by the logic of the regulatory function. I developed measures that expose this
+          hidden simplicity: effective connectivity (K<sub>eff</sub>), which counts the inputs that
+          truly matter, and unified canalization (K<sub>u</sub>), which exploits permutation symmetry
+          among interchangeable inputs. Applied to 70+ published biological networks, these measures
+          explain why living systems sit near dynamical criticality even when their wiring diagrams
+          predict chaos. Decomposing Boolean functions into their Taylor series further stratifies
+          how a network processes information: which contributions are linear, which are pairwise,
+          and which are irreducibly higher-order.
+        </p>
+        <div class="card-refs">
+          <a href="#pub-keff">Manicka, Marques-Pita &amp; Rocha, 2022</a> &middot;
+          <a href="#pub-nonlinearity">Manicka, Johnson, Levin &amp; Murrugarra, 2023</a> &middot;
+          <a href="#pub-dissertation">Manicka, 2017 (dissertation)</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-fig">
+          <svg viewBox="0 0 380 90" xmlns="http://www.w3.org/2000/svg" style="background:white;">
+            <!-- Ring 1: intact pattern -->
+            <g transform="translate(80,45)">
+              <g fill="#f0efe8" stroke="#c8c7c0" stroke-width="0.8">
+                <circle cx="0" cy="-22" r="7"/><circle cx="16" cy="-16" r="7"/><circle cx="22" cy="0" r="7"/>
+                <circle cx="16" cy="16" r="7"/><circle cx="0" cy="22" r="7"/><circle cx="-16" cy="16" r="7"/>
+                <circle cx="-22" cy="0" r="7"/><circle cx="-16" cy="-16" r="7"/>
+              </g>
+              <g fill="#d97757" stroke="none">
+                <circle cx="0" cy="-22" r="7" opacity="0.8"/><circle cx="16" cy="-16" r="7" opacity="0.6"/>
+                <circle cx="-16" cy="-16" r="7" opacity="0.6"/>
+              </g>
+            </g>
+            <!-- Arrow 1 -->
+            <line x1="115" y1="45" x2="140" y2="45" stroke="#5a5a56" stroke-width="0.8" opacity="0.3"/>
+            <polygon points="140,43 146,45 140,47" fill="#5a5a56" opacity="0.3"/>
+            <!-- Damage label -->
+            <text x="117" y="38" font-family="monospace" font-size="7.5" fill="#5a5a56" opacity="0.6">damage</text>
+            <!-- Ring 2: damaged (gap where top cells were) -->
+            <g transform="translate(190,45)">
+              <g fill="#f0efe8" stroke="#c8c7c0" stroke-width="0.8">
+                <circle cx="22" cy="0" r="7"/><circle cx="16" cy="16" r="7"/>
+                <circle cx="0" cy="22" r="7"/><circle cx="-16" cy="16" r="7"/>
+                <circle cx="-22" cy="0" r="7"/>
+              </g>
+              <!-- Damaged area: dashed arcs -->
+              <path d="M-12,-18 A22,22 0 0,1 12,-18" stroke="#d97757" stroke-width="1" stroke-dasharray="3,2" fill="none" opacity="0.4"/>
+              <circle cx="-16" cy="-16" r="7" fill="none" stroke="#d97757" stroke-width="0.8" stroke-dasharray="2,2" opacity="0.3"/>
+              <circle cx="0" cy="-22" r="7" fill="none" stroke="#d97757" stroke-width="0.8" stroke-dasharray="2,2" opacity="0.3"/>
+              <circle cx="16" cy="-16" r="7" fill="none" stroke="#d97757" stroke-width="0.8" stroke-dasharray="2,2" opacity="0.3"/>
+            </g>
+            <!-- Arrow 2 -->
+            <line x1="225" y1="45" x2="250" y2="45" stroke="#d97757" stroke-width="0.8" opacity="0.4"/>
+            <polygon points="250,43 256,45 250,47" fill="#d97757" opacity="0.4"/>
+            <text x="220" y="38" font-family="monospace" font-size="7.5" fill="#d97757" opacity="0.65">regenerate</text>
+            <!-- Ring 3: regenerated -->
+            <g transform="translate(300,45)">
+              <g fill="#f0efe8" stroke="#c8c7c0" stroke-width="0.8">
+                <circle cx="0" cy="-22" r="7"/><circle cx="16" cy="-16" r="7"/><circle cx="22" cy="0" r="7"/>
+                <circle cx="16" cy="16" r="7"/><circle cx="0" cy="22" r="7"/><circle cx="-16" cy="16" r="7"/>
+                <circle cx="-22" cy="0" r="7"/><circle cx="-16" cy="-16" r="7"/>
+              </g>
+              <g fill="#d97757" stroke="none">
+                <circle cx="0" cy="-22" r="7" opacity="0.8"/><circle cx="16" cy="-16" r="7" opacity="0.6"/>
+                <circle cx="-16" cy="-16" r="7" opacity="0.6"/>
+              </g>
+            </g>
+          </svg>
+        </div>
+        <h3>How multicellular patterning networks might leverage coarse-grained causation</h3>
+        <p>
+          A ring of twelve cells, each containing an identical local gene network, can learn to maintain
+          and regenerate a spatial pattern — if you let the inner network tune the outer network's
+          weights. I use machine learning to discover these two-level architectures, then causal-network
+          analysis to interpret what the learned system is actually doing: breaking symmetry, establishing
+          long-range influence, and partitioning into modular control domains. The point is not just that
+          the system works, but that it is small enough to fully explain — a proof of sufficiency where
+          every mechanism earns its place.
+        </p>
+        <div class="card-refs">
+          <a href="#pub-mindev">Manicka &amp; Levin, 2022</a> &middot;
+          <a href="#pub-esn">Manicka, Hammelman, Siegelmann &amp; Levin, 2019</a> &middot;
+          <a href="#pub-lifelong">Kudithipudi, ..., Manicka, ..., Siegelmann, 2022</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-fig">
+          <svg viewBox="0 0 380 90" xmlns="http://www.w3.org/2000/svg" style="background:white;">
+            <defs>
+              <marker id="agF" markerWidth="5" markerHeight="4" refX="4" refY="2" orient="auto">
+                <polygon points="0 0,5 2,0 4" fill="#d97757"/>
+              </marker>
+              <marker id="agI" markerWidth="5" markerHeight="4" refX="4" refY="2" orient="auto">
+                <polygon points="0 0,5 2,0 4" fill="#5a5a56"/>
+              </marker>
+            </defs>
+            <!-- LEFT PANEL: Phase portrait (state space) -->
+            <line x1="25" y1="73" x2="178" y2="73" stroke="#e0dfd8" stroke-width="0.8"/>
+            <line x1="25" y1="73" x2="25" y2="8" stroke="#e0dfd8" stroke-width="0.8"/>
+            <!-- Limit cycle attractor -->
+            <ellipse cx="100" cy="40" rx="52" ry="28" fill="none" stroke="#d97757" stroke-width="1.5" opacity="0.7"/>
+            <!-- Flow direction arrows tangent to cycle at four cardinal points -->
+            <line x1="97" y1="12" x2="104" y2="12" stroke="#d97757" stroke-width="1.2" opacity="0.65" marker-end="url(#agF)"/>
+            <line x1="152" y1="37" x2="152" y2="44" stroke="#d97757" stroke-width="1.2" opacity="0.65" marker-end="url(#agF)"/>
+            <line x1="103" y1="68" x2="96" y2="68" stroke="#d97757" stroke-width="1.2" opacity="0.65" marker-end="url(#agF)"/>
+            <line x1="48" y1="43" x2="48" y2="36" stroke="#d97757" stroke-width="1.2" opacity="0.65" marker-end="url(#agF)"/>
+            <!-- Converging trajectories from outside basin -->
+            <path d="M18,16 C30,10 46,18 58,26 C68,33 68,38 72,40" stroke="#5a5a56" stroke-width="0.9" fill="none" opacity="0.35" marker-end="url(#agI)"/>
+            <path d="M168,70 C162,62 158,53 153,46" stroke="#5a5a56" stroke-width="0.9" fill="none" opacity="0.35" marker-end="url(#agI)"/>
+            <!-- Panel label -->
+            <text x="100" y="84" text-anchor="middle" font-family="monospace" font-size="7" fill="#5a5a56" opacity="0.6">state space</text>
+            <!-- Divider -->
+            <line x1="193" y1="8" x2="193" y2="82" stroke="#e0dfd8" stroke-width="0.5" stroke-dasharray="3,3"/>
+            <!-- RIGHT PANEL: Behavioral time series -->
+            <line x1="207" y1="73" x2="370" y2="73" stroke="#e0dfd8" stroke-width="0.8"/>
+            <line x1="207" y1="73" x2="207" y2="8" stroke="#e0dfd8" stroke-width="0.8"/>
+            <text x="374" y="76" font-family="monospace" font-size="7" fill="#5a5a56" opacity="0.6">t</text>
+            <!-- Sustained oscillating behavior trace -->
+            <path d="M207,41 C220,22 234,22 247,41 C260,60 274,60 287,41 C300,22 314,22 327,41 C340,60 354,60 367,41" stroke="#d97757" stroke-width="1.5" fill="none" opacity="0.65"/>
+            <!-- Panel label -->
+            <text x="287" y="84" text-anchor="middle" font-family="monospace" font-size="7" fill="#5a5a56" opacity="0.6">sustained behavior</text>
+          </svg>
+        </div>
+        <h3>How minimal adaptive agents cognize in the dynamic state space</h3>
+        <p>
+          Before working on tissues, I asked the same question about minimal adaptive agents: given
+          a system with only a handful of neurons and a body, what is it actually computing? At
+          Sussex I built the simplest agent that could sustain itself in a continuous environment,
+          then subjected it to an exhaustive dynamical 'psychoanalysis' — mapping how internal states,
+          sensorimotor coupling, and environmental feedback jointly produce cognition-like behavior.
+          In follow-up work, I studied how evolved agents ground referential signals in shared
+          sensorimotor experience, and how physical spring networks achieve ultrastability through
+          local homeostatic rules. In each case: build the simplest possible system, then uncover the
+          computation it performs.
+        </p>
+        <div class="card-refs">
+          <a href="#pub-psychoanalysis">Manicka &amp; Harvey, 2008</a> &middot;
+          <a href="#pub-ultrastability">Manicka &amp; Di Paolo, 2009</a> &middot;
+          <a href="#pub-referential">Manicka, 2012</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ==================== PUBLICATIONS ==================== -->
+  <section id="publications">
+    <h2>Publications</h2>
+    <p class="lead" style="margin-bottom:8px;">
+      Full list on <a href="https://scholar.google.com/citations?user=4cc0wewAAAAJ&hl=en" target="_blank" rel="noopener">Google Scholar</a>.
+    </p>
+
+    <div class="pub-year">2025</div>
+
+    <div class="pub" id="pub-field">
+      <div class="title"><a href="https://www.cell.com/cell-reports-physical-science/fulltext/S2666-3864(25)00464-3" target="_blank" rel="noopener">Field-mediated bioelectric basis of morphogenetic prepatterning</a></div>
+      <div class="meta">S. Manicka, M. Levin &middot; <em>Cell Reports Physical Science</em></div>
+    </div>
+
+    <div class="pub-year">2023</div>
+
+    <div class="pub" id="pub-frogbrain">
+      <div class="title"><a href="https://www.cell.com/iscience/fulltext/S2589-0042(23)02475-6" target="_blank" rel="noopener">Information integration during bioelectric regulation of morphogenesis of the embryonic frog brain</a></div>
+      <div class="meta">S. Manicka, V. P. Pai, M. Levin &middot; <em>iScience</em>, 26(12)</div>
+    </div>
+
+    <div class="pub" id="pub-nonlinearity">
+      <div class="title"><a href="https://www.nature.com/articles/s41540-023-00273-w" target="_blank" rel="noopener">The nonlinearity of regulation in biological networks</a></div>
+      <div class="meta">S. Manicka, K. Johnson, M. Levin, D. Murrugarra &middot; <em>npj Systems Biology and Applications</em>, 9, 10</div>
+    </div>
+
+    <div class="pub-year">2022</div>
+
+    <div class="pub" id="pub-mindev">
+      <div class="title"><a href="https://www.mdpi.com/1099-4300/24/1/107" target="_blank" rel="noopener">Minimal developmental computation: a causal network approach to understand morphogenetic pattern formation</a></div>
+      <div class="meta">S. Manicka, M. Levin &middot; <em>Entropy</em>, 24(1), 107</div>
+    </div>
+
+    <div class="pub" id="pub-keff">
+      <div class="title"><a href="https://royalsocietypublishing.org/doi/10.1098/rsif.2021.0659" target="_blank" rel="noopener">Effective connectivity determines the critical dynamics of biochemical networks</a></div>
+      <div class="meta">S. Manicka, M. Marques-Pita, L. M. Rocha &middot; <em>Journal of the Royal Society Interface</em>, 19(186), 20210659</div>
+    </div>
+
+    <div class="pub" id="pub-lifelong">
+      <div class="title"><a href="https://www.nature.com/articles/s42256-022-00452-0" target="_blank" rel="noopener">Biological underpinnings for lifelong learning machines</a></div>
+      <div class="meta">D. Kudithipudi, ..., S. Manicka, ..., H. T. Siegelmann &middot; <em>Nature Machine Intelligence</em>, 4(3), 196&ndash;210</div>
+    </div>
+
+    <div class="pub-year">2021</div>
+
+    <div class="pub" id="pub-grnmemory">
+      <div class="title"><a href="https://www.cell.com/iscience/fulltext/S2589-0042(21)00099-7" target="_blank" rel="noopener">Gene regulatory networks exhibit several kinds of memory: quantification of memory in biological and random transcriptional networks</a></div>
+      <div class="meta">S. Biswas, S. Manicka, E. Hoel, M. Levin &middot; <em>iScience</em>, 24(3), 102131</div>
+    </div>
+
+    <div class="pub-year">2019</div>
+
+    <div class="pub" id="pub-coglens">
+      <div class="title"><a href="https://royalsocietypublishing.org/doi/10.1098/rstb.2018.0369" target="_blank" rel="noopener">The cognitive lens: a primer on conceptual tools for analysing information processing in developmental and regenerative morphogenesis</a></div>
+      <div class="meta">S. Manicka, M. Levin &middot; <em>Philosophical Transactions of the Royal Society B</em>, 374(1774), 20180369</div>
+    </div>
+
+    <div class="pub" id="pub-ben">
+      <div class="title"><a href="https://www.nature.com/articles/s41598-019-54859-8" target="_blank" rel="noopener">Modeling somatic computation with non-neural bioelectric networks</a></div>
+      <div class="meta">S. Manicka, M. Levin &middot; <em>Scientific Reports</em>, 9, 18612</div>
+    </div>
+
+    <div class="pub" id="pub-esn">
+      <div class="title"><a href="https://doi.org/10.1201/9781315167084-6" target="_blank" rel="noopener">Toward modeling regeneration via adaptable echo state networks</a></div>
+      <div class="meta">S. Manicka, J. Hammelman, H. T. Siegelmann, M. Levin &middot; <em>From Parallel to Emergent Computing</em>, 117&ndash;134</div>
+    </div>
+
+    <div class="pub-year">2017</div>
+
+    <div class="pub" id="pub-dissertation">
+      <div class="title"><a href="https://scholarworks.iu.edu/dspace/handle/2022/21446" target="_blank" rel="noopener">The role of canalization in the spreading of perturbations in Boolean networks</a></div>
+      <div class="meta">S. Manicka &middot; PhD Dissertation, Indiana University</div>
+    </div>
+
+    <div class="pub-year">2012</div>
+
+    <div class="pub" id="pub-referential">
+      <div class="title"><a href="https://doi.org/10.7551/978-0-262-31050-5-ch052" target="_blank" rel="noopener">Analysis of evolved agents performing referential communication</a></div>
+      <div class="meta">S. Manicka &middot; <em>ALIFE 2012</em></div>
+    </div>
+
+    <div class="pub-year">2009</div>
+
+    <div class="pub" id="pub-ultrastability">
+      <div class="title"><a href="https://doi.org/10.1007/978-3-642-21283-3_12" target="_blank" rel="noopener">Local ultrastability in a real system based on programmable springs</a></div>
+      <div class="meta">S. Manicka, E. A. Di Paolo &middot; <em>ECAL 2009</em>, 91&ndash;98</div>
+    </div>
+
+    <div class="pub-year">2008</div>
+
+    <div class="pub" id="pub-psychoanalysis">
+      <div class="title">'Psychoanalysis' of a minimal agent</div>
+      <div class="meta">S. Manicka, I. Harvey &middot; <em>ALIFE 2008</em>, 382&ndash;389</div>
+    </div>
+  </section>
+
+
+  <!-- ==================== SOFTWARE ==================== -->
+  <section id="software">
+    <h2>Software</h2>
+    <p class="lead" style="margin-bottom:12px;">
+      Open-source code accompanying research projects.
+    </p>
+
+    <div class="repo">
+      <div class="repo-name"><a href="https://github.com/santamanicka/ElectricMorphogenesis" target="_blank" rel="noopener">ElectricMorphogenesis</a></div>
+      <div class="repo-desc">Bioelectric field models of tissue-level voltage patterning</div>
+    </div>
+
+<!-- 
+    <div class="repo">
+      <div class="repo-name"><a href="https://github.com/santamanicka/CollectiveMorphogenesis" target="_blank" rel="noopener">CollectiveMorphogenesis</a></div>
+      <div class="repo-desc">Bioelectric + GRN + CaMKII integration for craniofacial morphogenesis</div>
+    </div>
+ -->
+
+    <div class="repo">
+      <div class="repo-name"><a href="https://github.com/santamanicka/NeuralPlatePatterning" target="_blank" rel="noopener">NeuralPlatePatterning</a></div>
+      <div class="repo-desc">Genetic-bioelectric model of embryonic frog brain patterning</div>
+    </div>
+
+    <div class="repo">
+      <div class="repo-name"><a href="https://github.com/santamanicka/BioElectricNetwork" target="_blank" rel="noopener">BioElectricNetwork</a></div>
+      <div class="repo-desc">Library for simulating, training, and evolving minimal bioelectric networks</div>
+    </div>
+
+    <div class="repo">
+      <div class="repo-name"><a href="https://github.com/santamanicka/MinimalDevelopmentalComputation" target="_blank" rel="noopener">MinimalDevelopmentalComputation</a></div>
+      <div class="repo-desc">Hierarchical regenerative networks with local intracellular controllers</div>
+    </div>
+
+    <div class="repo">
+      <div class="repo-name"><a href="https://github.com/santamanicka/Boolion" target="_blank" rel="noopener">Boolion</a></div>
+      <div class="repo-desc">Taylor series decomposition and continuous relaxation of Boolean networks</div>
+    </div>
+
+    <div class="repo">
+      <div class="repo-name"><a href="https://github.com/santamanicka/BooleanCanalization" target="_blank" rel="noopener">BooleanCanalization</a></div>
+      <div class="repo-desc">R library for effective connectivity and unified canalization</div>
+    </div>
+
+    <div class="repo">
+      <div class="repo-name"><a href="https://github.com/santamanicka/GeneRegulatoryNetworkMemory" target="_blank" rel="noopener">GeneRegulatoryNetworkMemory</a></div>
+      <div class="repo-desc">Memory analysis framework for gene regulatory networks</div>
+    </div>
+
+    <div class="repo">
+      <div class="repo-name"><a href="https://github.com/santamanicka/PlatonicCriticality" target="_blank" rel="noopener">PlatonicCriticality</a></div>
+      <div class="repo-desc">Do the integers themselves exhibit scale-free criticality?</div>
+    </div>
+  </section>
+
+
+  <!-- ==================== EDUCATION ==================== -->
+  <section id="education">
+    <h2>Education</h2>
+
+    <div class="edu">
+      <div class="degree">Ph.D. in Complex Systems</div>
+      <div class="where">Indiana University Bloomington, U.S.A. (2017)</div>
+    </div>
+    <div class="edu">
+      <div class="degree">M.Sc. in Evolutionary and Adaptive Systems</div>
+      <div class="where">University of Sussex, U.K. (2008)</div>
+    </div>
+    <div class="edu">
+      <div class="degree">B.E. in Computer Science and Engineering</div>
+      <div class="where">College of Engineering, Guindy, India (2003)</div>
+    </div>
+  </section>
+
+
+  <!-- ==================== CONTACT ==================== -->
+  <section id="contact">
+    <h2>Contact</h2>
+    <p>
+      <a href="mailto:santosh.manicka@tufts.edu">santosh.manicka@gmail.com</a><br>
+      <a href="https://scholar.google.com/citations?user=4cc0wewAAAAJ&hl=en" target="_blank" rel="noopener">Google Scholar</a>
+      &middot;
+      <a href="https://github.com/santamanicka" target="_blank" rel="noopener">GitHub</a>
+      &middot;
+      <a href="https://allencenter.tufts.edu/santosh-manicka-affiliate-research-scientist/" target="_blank" rel="noopener">Allen Discovery Center</a>
+    </p>
+  </section>
+
+</div>
+
+<footer>
+  <div class="wrap" style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+    <span>&copy; <script>document.write(new Date().getFullYear())</script> Santosh Manicka</span>
+  </div>
+</footer>
+
+</body>
+</html>
