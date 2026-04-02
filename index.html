@@ -152,6 +152,10 @@
 
     .about-split .text p { max-width: none; }
 
+    @media (min-width: 801px) {
+      .about-split.fig-left { grid-template-columns: 280px 1fr; }
+    }
+
     @media (max-width: 800px) {
       .about-split { grid-template-columns: 1fr; gap: 16px; }
       .about-split .figure-container { order: -1; }
@@ -445,7 +449,7 @@
     </div>
 
     <!-- Beat 2: Minimality (figure on left) -->
-    <div class="about-split" style="grid-template-columns: 280px 1fr;">
+    <div class="about-split fig-left">
       <div class="figure-container">
         <svg viewBox="0 0 260 160" xmlns="http://www.w3.org/2000/svg" style="background:white;border-radius:6px;">
           <!-- Left: complex opaque network -->
