@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://santamanicka.github.io/sitemap.xml
