@@ -1,1174 +1,1820 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Santosh Manicka</title>
-  <meta name="description" content="Santosh Manicka — computational biology, bioelectricity, morphogenesis, complex systems.">
-  <style>
-    :root {
-      --bg: #f5f4ed;
-      --fg: #141413;
-      --muted: #5a5a56;
-      --faint: rgba(20,20,19,.10);
-      --accent: #d97757;
-      --card: rgba(255,255,255,.50);
-      --max: 920px;
-      --pad: clamp(20px, 4vw, 40px);
-      --serif: Georgia, 'Times New Roman', Times, serif;
-      --sans: -apple-system, system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      --mono: 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Santosh Manicka</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@300;400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --accent: #ff9300;
+    --accent-rgb: 255, 147, 0;
+    --bg: #faf9f7;
+    --surface: #f3f1ee;
+    --text: #1a1916;
+    --muted: #6b6760;
+    --mono: 'JetBrains Mono', monospace;
+    --serif: 'EB Garamond', Georgia, serif;
+    --sans: 'DM Sans', system-ui, sans-serif;
+    --anim-speed: 1;
+  }
 
-    body {
-      font-family: var(--sans);
-      background: var(--bg);
-      color: var(--fg);
-      line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
-    }
+  html { scroll-behavior: smooth; font-size: 16px; }
 
-    a { color: var(--fg); }
-    a:hover { color: var(--accent); }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--serif);
+    font-size: 1.1rem;
+    line-height: 1.75;
+    overflow-x: hidden;
+  }
 
-    .wrap {
-      max-width: var(--max);
-      margin: 0 auto;
-      padding: 0 var(--pad);
-    }
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 2.5rem;
+    height: 56px;
+    background: rgba(250,249,247,0.88);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    font-family: var(--sans);
+    font-size: 0.82rem;
+    letter-spacing: 0.02em;
+  }
+  nav.scrolled {
+    border-color: rgba(0,0,0,0.08);
+    box-shadow: 0 1px 20px rgba(0,0,0,0.05);
+  }
+  .nav-name { font-weight: 500; color: var(--text); font-size: 0.9rem; opacity: 0.7; }
+  .nav-links { display: flex; gap: 0.25rem; position: relative; }
+  .nav-links a {
+    padding: 0.3rem 0.65rem;
+    border-radius: 4px;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+    position: relative; z-index: 1;
+  }
+  .nav-links a:hover { color: var(--text); }
+  .nav-links a.active { color: var(--accent); font-weight: 500; }
+  .nav-pill {
+    position: absolute; top: 0; height: 100%;
+    background: rgba(var(--accent-rgb), 0.08);
+    border-radius: 4px;
+    transition: left 0.3s cubic-bezier(.4,0,.2,1), width 0.3s cubic-bezier(.4,0,.2,1);
+    pointer-events: none;
+  }
 
-    /* ---- Header ---- */
-    .site-header {
-      padding: clamp(40px, 6vw, 80px) 0 clamp(30px, 4vw, 50px);
-      border-bottom: 1px solid var(--faint);
-    }
+  /* ── HERO ── */
+  #hero {
+    position: relative;
+    padding: 5rem 2.5rem 1rem;
+    max-width: 960px; margin: 0 auto;
+    overflow: hidden;
+  }
+  #hero-canvas {
+    position: fixed; inset: 0; z-index: 0;
+    pointer-events: none; opacity: 0.35;
+  }
+  .hero-content {
+    position: relative; z-index: 1;
+    display: flex; align-items: center; gap: 1.1rem;
+  }
+  .hero-text { display: flex; flex-direction: column; }
+  .hero-photo {
+    width: 56px; height: 56px; border-radius: 50%;
+    object-fit: cover; flex-shrink: 0;
+    border: 2px solid rgba(var(--accent-rgb), 0.2);
+    margin-bottom: 2rem;
+    opacity: 0; transform: scale(0.92);
+    animation: fadeUp 0.7s calc(0.1s * var(--anim-speed)) forwards;
+  }
+  .hero-name {
+    font-family: var(--serif); font-size: 1.6rem;
+    font-weight: 400; line-height: 1.15;
+    opacity: 0; transform: translateY(18px);
+    animation: fadeUp 0.7s calc(0.2s * var(--anim-speed)) forwards;
+  }
+  .hero-title {
+    font-family: var(--sans); font-size: 0.78rem; font-weight: 300;
+    color: var(--muted); margin-top: 0.2rem; letter-spacing: 0.03em;
+    opacity: 0; transform: translateY(14px);
+    animation: fadeUp 0.6s calc(0.35s * var(--anim-speed)) forwards;
+  }
+  .hero-cluster {
+    position: relative;
+    margin: 2rem auto 0;
+    width: 100%;
+    max-width: 720px;
+    height: 280px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    animation: fadeUp 0.7s calc(0.5s * var(--anim-speed)) forwards;
+  }
+  .hero-tagline {
+    font-size: 1.65rem; color: var(--text);
+    max-width: 380px; font-style: italic;
+    text-align: center; line-height: 1.35;
+    margin: 0; position: relative; z-index: 2;
+  }
+  .hero-tags-ring {
+    position: absolute; inset: 0;
+    pointer-events: none;
+  }
+  .hero-tags-ring .tag {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    pointer-events: auto;
+    opacity: 0;
+    animation: fadeIn 0.6s forwards;
+  }
+  /* removed old hero-tags block */
+  .tag {
+    font-family: var(--sans); font-size: 0.75rem; font-weight: 400;
+    padding: 0.22rem 0.7rem; border-radius: 100px;
+    border: 1px solid rgba(var(--accent-rgb), 0.25);
+    color: var(--accent); background: rgba(var(--accent-rgb), 0.04);
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .tag:hover { background: rgba(var(--accent-rgb), 0.1); border-color: rgba(var(--accent-rgb),0.5); }
 
-    .site-header h1 {
-      font-family: var(--serif);
-      font-size: clamp(32px, 5vw, 52px);
-      font-weight: 700;
-      letter-spacing: -0.025em;
-      line-height: 1.1;
-    }
+  .scroll-hint {
+    position: absolute; bottom: 2rem; left: 2.5rem;
+    font-family: var(--sans); font-size: 0.72rem; color: var(--muted);
+    display: flex; align-items: center; gap: 0.5rem;
+    opacity: 0; animation: fadeIn 1s 1.2s forwards;
+  }
+  .scroll-hint::before {
+    content: ''; display: block; width: 1px; height: 36px;
+    background: var(--muted); opacity: 0.4;
+    animation: scrollLine 2s 1.5s infinite;
+  }
+  @keyframes scrollLine {
+    0%, 100% { transform: scaleY(1); transform-origin: top; }
+    50% { transform: scaleY(0.3); transform-origin: top; }
+  }
 
-    .site-header .subtitle {
-      margin-top: 8px;
-      font-size: clamp(14px, 1.6vw, 17px);
-      color: var(--muted);
-      font-family: var(--mono);
-      letter-spacing: -0.01em;
-    }
+  /* ── MAIN LAYOUT ── */
+  main { max-width: 960px; margin: 0 auto; padding: 0 2.5rem 6rem; }
 
-    nav {
-      margin-top: 20px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
+  /* ── SECTION ── */
+  section { padding-top: 5rem; padding-bottom: 1rem; }
+  #about { padding-top: 1.5rem; }
+  .section-label {
+    font-family: var(--sans); font-size: 0.72rem; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--accent); font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+  h2 {
+    font-family: var(--serif); font-size: clamp(1.6rem, 3vw, 2rem);
+    font-weight: 400; margin-bottom: 1.5rem; line-height: 1.2;
+  }
+  h3 {
+    font-family: var(--serif); font-size: 1.2rem; font-weight: 400;
+    margin-bottom: 0.75rem; line-height: 1.3;
+  }
 
-    nav a {
-      padding: 6px 14px;
-      border: 1px solid var(--faint);
-      border-radius: 999px;
-      font-size: 13px;
-      font-family: var(--mono);
-      color: var(--muted);
-      text-decoration: none;
-      transition: border-color .15s;
-    }
+  /* ── REVEAL ── */
+  .reveal {
+    opacity: 0; transform: translateY(28px);
+    transition: opacity 0.65s ease, transform 0.65s ease;
+  }
+  .reveal.visible { opacity: 1; transform: none; }
+  .reveal-delay-1 { transition-delay: 0.08s; }
+  .reveal-delay-2 { transition-delay: 0.16s; }
+  .reveal-delay-3 { transition-delay: 0.24s; }
+  .reveal-delay-4 { transition-delay: 0.32s; }
 
-    nav a:hover {
-      border-color: var(--accent);
-      color: var(--fg);
-    }
+  /* ── ABOUT SPLIT ── */
+  .about-split {
+    display: grid; grid-template-columns: 1fr 320px; gap: 3rem;
+    align-items: center; margin: 2.5rem 0;
+  }
+  .about-split.about-split-rev { grid-template-columns: 320px 1fr; }
+  .about-fig { flex-shrink: 0; }
+  .about-fig-caption {
+    font-family: var(--mono); font-size: 0.68rem; color: var(--muted);
+    margin-top: 0.4rem;
+  }
+  @media (max-width: 700px) {
+    .about-split, .about-split.about-split-rev { grid-template-columns: 1fr; }
+    .about-split.about-split-rev .about-fig { order: -1; }
+  }
 
-    .header-inner {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 32px;
-    }
 
-    .header-text { flex: 1; min-width: 0; }
+  #about p {
+    max-width: 660px; margin-bottom: 1.1rem; color: var(--text);
+  }
+  #about em { color: var(--accent); font-style: italic; }
 
-    .headshot {
-      width: 150px;
-      height: 150px;
-      border-radius: 50%;
-      object-fit: cover;
-      object-position: center top;
-      flex-shrink: 0;
-      border: 2px solid var(--faint);
-    }
+  /* ── INTERPRETABILITY DIAGRAM ── */
+  .interp-diagram {
+    display: flex; gap: 2rem; align-items: center; flex-wrap: wrap;
+    margin: 2rem 0; padding: 1.5rem;
+    background: var(--surface); border-radius: 8px;
+    border: 1px solid rgba(0,0,0,0.06);
+  }
+  .interp-spectrum {
+    flex: 1; min-width: 200px;
+  }
+  .interp-bar {
+    height: 6px; border-radius: 3px;
+    background: linear-gradient(90deg, #c0392b 0%, #e67e22 40%, #2563a8 100%);
+    margin: 0.75rem 0;
+    position: relative; overflow: hidden;
+  }
+  .interp-bar::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.5) 50%, transparent 100%);
+    animation: shimmer 2.5s infinite;
+  }
+  @keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+  .interp-labels { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 0.72rem; color: var(--muted); }
+  .interp-minimality { flex: 1; min-width: 200px; }
+  .interp-box {
+    padding: 0.6rem 1rem; border-radius: 6px; margin: 0.3rem 0;
+    font-family: var(--mono); font-size: 0.78rem;
+    display: flex; align-items: center; gap: 0.5rem;
+    transition: transform 0.2s;
+  }
+  .interp-box:hover { transform: translateX(4px); }
+  .interp-box.detailed { background: rgba(var(--accent-rgb),0.08); border-left: 3px solid var(--accent); }
+  .interp-box.sifted  { background: rgba(37,99,168,0.05); border-left: 3px solid rgba(var(--accent-rgb),0.4); }
+  .interp-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .interp-dot.blue { background: var(--accent); }
+  .interp-dot.faint { background: rgba(var(--accent-rgb),0.4); }
 
-    @media (max-width: 520px) {
-      .header-inner { flex-direction: column-reverse; gap: 16px; }
-      .headshot { width: 80px; height: 80px; }
-    }
+  /* ── CAROUSEL (3D) ── */
+  .carousel-wrapper {
+    margin-top: 2rem; perspective: 1400px; perspective-origin: 50% 38%;
+    height: 360px; position: relative;
+    width: 100%;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .carousel-stage {
+    position: relative; width: 100%; height: 100%;
+    transform-style: preserve-3d; transform: rotateX(-12deg);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .carousel-ring {
+    position: relative; top: auto; left: auto; width: 0; height: 0;
+    transform-style: preserve-3d; will-change: transform;
+  }
+  .carousel-card {
+    position: absolute; width: 240px;
+    margin-left: -120px;
+    background: var(--surface); border: 1px solid rgba(0,0,0,0.07);
+    border-radius: 10px; padding: 0.75rem 0.85rem 0.7rem;
+    cursor: pointer; backface-visibility: visible;
+    transform-style: preserve-3d;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+    transition: border-color 0.2s;
+    will-change: transform, opacity;
+    display: flex; flex-direction: column;
+    -webkit-font-smoothing: antialiased;
+    transform-origin: 50% 50%;
+  }
+  .carousel-card:hover { border-color: rgba(var(--accent-rgb), 0.5); }
+  .carousel-card svg { width: 100%; height: auto; display: block; border-radius: 4px; flex-shrink: 0; }
+  .carousel-card .tape-item-label { margin-top: 0.5rem; }
+  .carousel-card .tape-item-title { margin-top: 0.2rem; }
+  .carousel-hint {
+    text-align: center; font-family: var(--sans); font-size: 0.75rem;
+    color: var(--muted); opacity: 0.6; margin-top: 0.4rem;
+  }
 
-    /* ---- Sections ---- */
-    section {
-      padding: clamp(28px, 4vw, 48px) 0;
-      border-bottom: 1px solid var(--faint);
-    }
+  /* ── RESEARCH TAPE ── */
+  .tape-outer {
+    position: relative; overflow: hidden;
+    margin: 2.5rem -2.5rem 0;
+    padding: 0 2.5rem;
+    cursor: default;
+  }
+  .tape-outer::before, .tape-outer::after {
+    content: ''; position: absolute; top: 0; bottom: 0; width: 80px; z-index: 2; pointer-events: none;
+  }
+  .tape-outer::before { left: 0; background: linear-gradient(to right, var(--bg), transparent); }
+  .tape-outer::after  { right: 0; background: linear-gradient(to left,  var(--bg), transparent); }
+  .tape-track {
+    display: flex; gap: 1.25rem;
+    animation: tapeScroll 36s linear infinite;
+    width: max-content;
+    padding: 1rem 0 1.2rem;
+  }
+  .tape-track.paused { animation-play-state: paused; }
+  @keyframes tapeScroll {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  .tape-item {
+    flex-shrink: 0; width: 260px;
+    background: var(--surface); border-radius: 10px;
+    border: 1px solid rgba(0,0,0,0.07);
+    padding: 0.75rem 0.75rem 0.6rem;
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+  }
+  .tape-item:hover, .tape-item.active {
+    border-color: rgba(var(--accent-rgb), 0.35);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.09);
+    transform: translateY(-3px);
+  }
+  .tape-item svg { width: 100%; height: auto; display: block; border-radius: 4px; }
+  .tape-item-label {
+    font-family: var(--sans); font-size: 0.7rem; font-weight: 500;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--accent); margin-top: 0.5rem;
+  }
+  .tape-item-title {
+    font-family: var(--serif); font-size: 0.9rem; line-height: 1.35;
+    color: var(--text); margin-top: 0.2rem;
+  }
 
-    section:last-of-type { border-bottom: none; }
+  /* detail panel */
+  .tape-detail {
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.45s cubic-bezier(.4,0,.2,1);
+  }
+  .tape-detail.open { max-height: 500px; }
+  .tape-detail-inner {
+    display: grid; grid-template-columns: 380px 1fr; gap: 2.5rem;
+    align-items: start;
+    padding: 2rem 0 1rem;
+    border-top: 1px solid rgba(0,0,0,0.07);
+    margin-top: 0.75rem;
+    opacity: 0; transform: translateY(8px);
+    transition: opacity 0.3s 0.1s, transform 0.3s 0.1s;
+  }
+  .tape-detail.open .tape-detail-inner { opacity: 1; transform: none; }
+  .tape-detail-fig svg { width: 100%; height: auto; display: block; background: white; border-radius: 8px; }
+  .tape-detail-fig-caption {
+    font-family: var(--mono); font-size: 0.68rem; color: var(--muted); margin-top: 0.35rem;
+  }
+  .tape-detail-subtitle {
+    font-family: var(--sans); font-size: 0.72rem; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--accent); font-weight: 500; margin-bottom: 0.4rem;
+  }
+  .tape-detail-text h3 { font-size: 1.15rem; font-weight: 400; margin-bottom: 0.75rem; line-height: 1.3; }
+  .tape-detail-text p  { font-size: 0.97rem; color: var(--muted); line-height: 1.7; }
+  .tape-detail-refs {
+    margin-top: 1rem; font-family: var(--sans); font-size: 0.76rem; color: var(--muted);
+    display: flex; flex-wrap: wrap; gap: 0.4rem;
+  }
+  .tape-detail-refs a {
+    color: var(--accent); text-decoration: none;
+    border-bottom: 1px solid rgba(var(--accent-rgb),0.2); padding-bottom: 1px;
+    transition: border-color 0.2s;
+  }
+  .tape-detail-refs a:hover { border-color: var(--accent); }
+  @media (max-width: 700px) {
+    .tape-detail-inner { grid-template-columns: 1fr; }
+  }
 
-    h2 {
-      font-family: var(--serif);
-      font-size: clamp(22px, 2.8vw, 30px);
-      font-weight: 600;
-      letter-spacing: -0.02em;
-      margin-bottom: 16px;
-    }
+  /* ── METRO MAP ── */
+  .metro-wrapper { margin-top: 2rem; }
+  .metro-svg-wrap {
+    background: var(--surface); border-radius: 12px;
+    border: 1px solid rgba(0,0,0,0.07); padding: 1.5rem;
+    overflow: visible;
+  }
+  .metro-svg-wrap svg { width: 100%; height: auto; display: block; overflow: visible; }
+  .m-station { cursor: pointer; }
+  .m-station-ring {
+    fill: var(--bg); stroke-width: 2.5;
+    transition: r 0.2s;
+  }
+  .m-station-thumb { pointer-events: none; }
+  .m-station-label {
+    font-family: var(--mono); font-size: 9px; fill: var(--muted);
+    pointer-events: none;
+  }
+  .m-station-title {
+    font-family: var(--serif); font-size: 11.5px; fill: var(--text);
+    pointer-events: none;
+  }
+  .m-station.active .m-station-ring { filter: drop-shadow(0 0 6px rgba(var(--accent-rgb),.5)); }
+  .m-bead { pointer-events: none; filter: drop-shadow(0 0 5px rgba(217,119,87,.8)); }
+  .m-hint {
+    font-family: var(--sans); font-size: 0.75rem; color: var(--muted);
+    text-align: center; margin-top: 0.6rem; opacity: 0.6;
+  }
 
-    h3 {
-      font-size: 16px;
-      font-weight: 600;
-      margin: 20px 0 6px;
-    }
 
-    p, li { max-width: 68ch; }
+  .research-grid { display: flex; flex-direction: column; gap: 3.5rem; margin-top: 2rem; }
+  .research-item {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start;
+    padding: 2rem; border-radius: 12px; background: var(--surface);
+    border: 1px solid rgba(0,0,0,0.06);
+    transition: box-shadow 0.3s, transform 0.3s;
+  }
+  .research-item:hover {
+    box-shadow: 0 8px 40px rgba(0,0,0,0.08);
+    transform: translateY(-2px);
+  }
+  .research-item:nth-child(even) { direction: rtl; }
+  .research-item:nth-child(even) > * { direction: ltr; }
+  .research-text { }
+  .research-subtitle {
+    font-family: var(--sans); font-size: 0.72rem; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--accent); margin-bottom: 0.5rem; font-weight: 500;
+  }
+  .research-text h3 { font-size: 1.1rem; margin-bottom: 0.75rem; }
+  .research-text p { font-size: 0.97rem; color: var(--muted); line-height: 1.7; }
+  .research-refs {
+    margin-top: 1rem; font-family: var(--sans); font-size: 0.76rem; color: var(--muted);
+    display: flex; flex-wrap: wrap; gap: 0.4rem;
+  }
+  .research-refs a {
+    color: var(--accent); text-decoration: none;
+    border-bottom: 1px solid rgba(var(--accent-rgb),0.2);
+    transition: border-color 0.2s;
+    padding-bottom: 1px;
+  }
+  .research-refs a:hover { border-color: var(--accent); }
 
-    .lead {
-      font-size: clamp(16px, 1.8vw, 19px);
-      color: var(--muted);
-      line-height: 1.55;
-      max-width: 62ch;
-    }
+  /* ── RESEARCH FIGURE ── */
+  .ascii-diagram {
+    background: white;
+    border-radius: 8px;
+    border: 1px solid rgba(0,0,0,0.07);
+    overflow: hidden;
+    padding: 0;
+  }
+  .ascii-diagram svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
 
-    .muted { color: var(--muted); }
+  /* ── PUBLICATIONS ── */
+  .pub-year-group { margin-bottom: 2.5rem; }
+  .pub-year {
+    font-family: var(--sans); font-size: 0.8rem; font-weight: 500;
+    color: var(--muted); letter-spacing: 0.05em;
+    padding-bottom: 0.5rem; border-bottom: 1px solid rgba(0,0,0,0.08);
+    margin-bottom: 1rem;
+  }
+  .pub-item {
+    padding: 0.9rem 0;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    transition: padding-left 0.25s;
+  }
+  .pub-item:hover { padding-left: 0.5rem; }
+  .pub-item a {
+    font-size: 1rem; color: var(--text); text-decoration: none;
+    font-family: var(--serif); line-height: 1.4;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .pub-item a:hover { color: var(--accent); border-color: var(--accent); }
+  .pub-meta { font-family: var(--sans); font-size: 0.77rem; color: var(--muted); margin-top: 0.3rem; }
+  .pub-journal { font-style: italic; }
 
-    /* ---- About split layout ---- */
-    .about-split {
-      display: grid;
-      grid-template-columns: 1fr 280px;
-      gap: 32px;
-      align-items: center;
-      margin-bottom: 28px;
-    }
+  /* ── SOFTWARE ── */
+  .software-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1rem; margin-top: 1rem;
+  }
+  .software-card {
+    padding: 1.2rem 1.4rem; border-radius: 10px;
+    background: var(--surface); border: 1px solid rgba(0,0,0,0.07);
+    transition: box-shadow 0.25s, transform 0.25s, border-color 0.25s;
+    cursor: default;
+  }
+  .software-card:hover {
+    box-shadow: 0 6px 30px rgba(0,0,0,0.08);
+    transform: translateY(-3px);
+    border-color: rgba(var(--accent-rgb),0.2);
+  }
+  .software-card a {
+    font-family: var(--mono); font-size: 0.82rem; font-weight: 400;
+    color: var(--accent); text-decoration: none;
+    display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.4rem;
+  }
+  .software-card a::before {
+    content: ''; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent); flex-shrink: 0;
+    transition: transform 0.2s;
+  }
+  .software-card:hover a::before { transform: scale(1.5); }
+  .software-card p { font-family: var(--sans); font-size: 0.8rem; color: var(--muted); line-height: 1.5; }
 
-    .about-split .text p { max-width: none; }
+  /* ── EDUCATION ── */
+  .edu-list { display: flex; flex-direction: column; gap: 1.5rem; margin-top: 1rem; }
+  .edu-item {
+    display: flex; gap: 1.5rem; align-items: flex-start;
+    padding: 1.2rem 1.4rem; border-radius: 8px;
+    background: var(--surface); border: 1px solid rgba(0,0,0,0.06);
+    transition: border-color 0.25s;
+  }
+  .edu-item:hover { border-color: rgba(var(--accent-rgb),0.25); }
+  .edu-degree { font-family: var(--serif); font-size: 1.05rem; margin-bottom: 0.2rem; }
+  .edu-school { font-family: var(--sans); font-size: 0.82rem; color: var(--muted); }
+  .edu-year {
+    font-family: var(--mono); font-size: 0.75rem; color: var(--accent);
+    background: rgba(var(--accent-rgb),0.08); padding: 0.2rem 0.5rem;
+    border-radius: 4px; white-space: nowrap; flex-shrink: 0;
+  }
 
-    @media (min-width: 801px) {
-      .about-split.fig-left { grid-template-columns: 280px 1fr; }
-    }
+  /* ── CONTACT ── */
+  #contact { padding-bottom: 4rem; }
+  .contact-links { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1rem; }
+  .contact-links a {
+    font-family: var(--sans); font-size: 0.87rem;
+    color: var(--text); text-decoration: none;
+    padding: 0.5rem 1.1rem; border-radius: 6px;
+    border: 1px solid rgba(0,0,0,0.12);
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+  }
+  .contact-links a:hover {
+    border-color: var(--accent); color: var(--accent);
+    background: rgba(var(--accent-rgb),0.04);
+  }
 
-    @media (max-width: 800px) {
-      .about-split { grid-template-columns: 1fr; gap: 16px; }
-      .about-split .figure-container { order: -1; }
-    }
+  /* ── FOOTER ── */
+  footer {
+    text-align: center; padding: 2rem;
+    font-family: var(--sans); font-size: 0.75rem; color: var(--muted);
+    border-top: 1px solid rgba(0,0,0,0.07);
+  }
 
-    .figure-container {
-      background: var(--card);
-      border: 1px solid var(--faint);
-      border-radius: 12px;
-      padding: 16px;
-      text-align: center;
-    }
+  /* ── DIVIDER ── */
+  .section-divider {
+    height: 1px; background: rgba(0,0,0,0.07); margin: 0;
+  }
 
-    .figure-container svg {
-      width: 100%;
-      height: auto;
-      display: block;
-      margin-bottom: 8px;
-    }
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes fadeIn {
+    to { opacity: 1; }
+  }
 
-    .figure-caption {
-      font-family: var(--mono);
-      font-size: 11px;
-      color: var(--muted);
-      letter-spacing: 0.03em;
-    }
-
-    /* ---- Grid ---- */
-    .grid-2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      margin-top: 16px;
-    }
-
-    @media (max-width: 700px) {
-      .grid-2 { grid-template-columns: 1fr; }
-    }
-
-    .card {
-      border: 1px solid var(--faint);
-      border-radius: 14px;
-      padding: 20px;
-      background: var(--card);
-    }
-
-    .card h3 {
-      margin: 0 0 6px;
-      font-family: var(--serif);
-      font-size: 17px;
-    }
-
-    .card p {
-      font-size: 14px;
-      color: var(--muted);
-      line-height: 1.5;
-    }
-
-    .card-fig {
-      margin: -6px -6px 14px;
-    }
-
-    .card-fig svg {
-      width: 100%;
-      height: auto;
-      display: block;
-      border-radius: 8px;
-    }
-
-    /* ---- Pills ---- */
-    .pills {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 14px;
-    }
-
-    .pill {
-      padding: 5px 12px;
-      border: 1px solid var(--faint);
-      border-radius: 999px;
-      font-family: var(--mono);
-      font-size: 12px;
-      color: var(--muted);
-    }
-
-    /* ---- Publications ---- */
-    .pub-year {
-      font-family: var(--mono);
-      font-size: 13px;
-      color: var(--accent);
-      margin-top: 22px;
-      margin-bottom: 4px;
-      letter-spacing: 0.02em;
-    }
-
-    .pub-year:first-child { margin-top: 0; }
-
-    .pub {
-      padding: 10px 0;
-      border-bottom: 1px solid var(--faint);
-    }
-
-    .pub:last-child { border-bottom: none; }
-
-    .pub .title {
-      font-weight: 600;
-      font-size: 15px;
-      letter-spacing: -0.01em;
-      line-height: 1.4;
-    }
-
-    .pub .title a { text-decoration: none; }
-    .pub .title a:hover { text-decoration: underline; }
-
-    .pub .meta {
-      font-size: 13.5px;
-      color: var(--muted);
-      margin-top: 2px;
-      line-height: 1.45;
-    }
-
-    /* ---- Software ---- */
-    .repo {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      gap: 12px;
-      padding: 12px 0;
-      border-bottom: 1px solid var(--faint);
-    }
-
-    .repo:last-child { border-bottom: none; }
-
-    .repo-name {
-      font-family: var(--mono);
-      font-size: 14px;
-      font-weight: 600;
-    }
-
-    .repo-name a { text-decoration: none; }
-    .repo-name a:hover { text-decoration: underline; }
-
-    .repo-desc {
-      font-size: 13.5px;
-      color: var(--muted);
-      text-align: right;
-      flex-shrink: 1;
-    }
-
-    @media (max-width: 600px) {
-      .repo { flex-direction: column; gap: 2px; }
-      .repo-desc { text-align: left; }
-    }
-
-    /* ---- Education ---- */
-    .edu {
-      padding: 8px 0;
-    }
-
-    .edu .degree {
-      font-weight: 600;
-      font-size: 15px;
-    }
-
-    .edu .where {
-      font-size: 14px;
-      color: var(--muted);
-    }
-
-    /* ---- Footer ---- */
-    footer {
-      padding: 24px 0 40px;
-      font-size: 13px;
-      color: var(--muted);
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    footer a { color: var(--muted); }
-    footer a:hover { color: var(--accent); }
-
-    /* ---- Inline refs in cards ---- */
-    .card-refs {
-      margin-top: 10px;
-      padding-top: 8px;
-      border-top: 1px solid var(--faint);
-      font-size: 12.5px;
-      line-height: 1.5;
-      color: var(--muted);
-    }
-
-    .card-refs a {
-      color: var(--muted);
-      text-decoration: underline;
-      text-decoration-color: var(--faint);
-      text-underline-offset: 2px;
-    }
-
-    .card-refs a:hover {
-      color: var(--accent);
-      text-decoration-color: var(--accent);
-    }
-  </style>
+  /* ── MOBILE ── */
+  @media (max-width: 700px) {
+    nav { padding: 0 1rem; }
+    #hero, main { padding-left: 1.25rem; padding-right: 1.25rem; }
+    .research-item { grid-template-columns: 1fr; }
+    .research-item:nth-child(even) { direction: ltr; }
+    .nav-links { display: none; }
+  }
+</style>
 </head>
-
 <body>
-<div class="wrap">
 
-  <!-- ==================== HEADER ==================== -->
-  <header class="site-header">
-    <div class="header-inner">
-      <div class="header-text">
-        <h1>Santosh Manicka</h1>
-        <div class="subtitle">Affiliate Research Scientist<br>Allen Discovery Center, Tufts University</div>
-        <nav>
-          <a href="#about">About</a>
-          <a href="#research">Research</a>
-          <a href="#publications">Publications</a>
-          <a href="#software">Software</a>
-          <a href="#education">Education</a>
-          <a href="#contact">Contact</a>
-        </nav>
-      </div>
-      <img src="Headshot.jpg" alt="Santosh Manicka" class="headshot">
+<!-- hero canvas background -->
+<canvas id="hero-canvas"></canvas>
+
+<!-- NAV -->
+<nav id="main-nav">
+  <span class="nav-name">Santosh Manicka</span>
+  <div class="nav-links" id="nav-links">
+    <div class="nav-pill" id="nav-pill"></div>
+    <a href="#about">About</a>
+    <a href="#research">Research</a>
+    <a href="#publications">Publications</a>
+    <a href="#software">Software</a>
+    <a href="#education">Education</a>
+    <a href="#contact">Contact</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div id="hero">
+  <div class="hero-content">
+    <img class="hero-photo" src="https://santamanicka.github.io/Headshot.jpg" alt="Santosh Manicka" onerror="this.style.display='none'">
+    <div class="hero-text">
+      <h1 class="hero-name">Santosh Manicka</h1>
+      <p class="hero-title">Affiliate Research Scientist · Allen Discovery Center, Tufts University</p>
     </div>
-  </header>
+  </div>
+  <div class="hero-cluster">
+    <p class="hero-tagline">Understanding what biological systems compute and how</p>
+    <div class="hero-tags-ring" id="hero-tags-ring">
+      <span class="tag">Interpretability</span>
+      <span class="tag">Theoretical biology</span>
+      <span class="tag">Bioelectricity</span>
+      <span class="tag">Boolean networks</span>
+      <span class="tag">Information theory</span>
+      <span class="tag">Basal cognition</span>
+      <span class="tag">Complex systems</span>
+      <span class="tag">Morphogenesis</span>
+    </div>
+  </div>
+</div>
 
+<main>
 
-  <!-- ==================== ABOUT ==================== -->
-  <section id="about">
-    <h2>About</h2>
-    <p class="lead" style="margin-bottom:24px;">
-      Understanding what biological systems compute and how.
-    </p>
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-label reveal">About</div>
 
-    <!-- Beat 1: The problem -->
-    <div class="about-split">
-      <div class="text">
-        <p>
-          Non-neural biological systems routinely solve problems that look cognitive: a developing embryo
-          coordinates millions of cells into a body plan, a gene regulatory network forms and recalls
-          associative memories, an embryonic collective communicates to mount a rescue response under
-          duress. We know a great deal about the molecular parts. What we lack is an understanding of
-          <em>what these systems are actually computing</em> — what is represented, how information flows
-          across space and time, where the decision boundaries lie, and how the outcome stays robust.
-        </p>
-      </div>
-      <div class="figure-container">
-        <svg viewBox="0 0 290 160" xmlns="http://www.w3.org/2000/svg" style="background:white;border-radius:6px;">
-          <defs>
-            <marker id="qArr" markerWidth="6" markerHeight="4" refX="5" refY="2" orient="auto">
-              <polygon points="0 0,6 2,0 4" fill="#d97757" opacity="0.5"/>
-            </marker>
-          </defs>
-          <!-- Cell lattice: 5x4 with voltage gradient (left=polarized, right=depolarized) -->
-          <g fill="#f0efe8" stroke="#c8c7c0" stroke-width="1">
-            <circle cx="20" cy="22" r="11"/><circle cx="52" cy="22" r="11"/><circle cx="84" cy="22" r="11"/><circle cx="116" cy="22" r="11"/><circle cx="148" cy="22" r="11"/>
-            <circle cx="20" cy="56" r="11"/><circle cx="52" cy="56" r="11"/><circle cx="84" cy="56" r="11"/><circle cx="116" cy="56" r="11"/><circle cx="148" cy="56" r="11"/>
-            <circle cx="20" cy="90" r="11"/><circle cx="52" cy="90" r="11"/><circle cx="84" cy="90" r="11"/><circle cx="116" cy="90" r="11"/><circle cx="148" cy="90" r="11"/>
-            <circle cx="20" cy="124" r="11"/><circle cx="52" cy="124" r="11"/><circle cx="84" cy="124" r="11"/><circle cx="116" cy="124" r="11"/><circle cx="148" cy="124" r="11"/>
+  <div class="about-split reveal reveal-delay-1">
+    <div class="about-text">
+      <p>Non-neural biological systems routinely solve problems that look cognitive: a developing embryo
+      coordinates millions of cells into a body plan, a gene regulatory network forms and recalls
+      associative memories, an embryonic collective communicates to mount a rescue response under duress.
+      We know a great deal about the molecular parts. What we lack is an understanding of
+      <em>what these systems are actually computing</em> — what is represented, how information flows
+      across space and time, where the decision boundaries lie, and how the outcome stays robust.</p>
+    </div>
+    <div class="about-fig">
+      <svg viewBox="0 0 290 160" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;background:white;border-radius:6px;">
+        <defs><marker id="qArr" markerWidth="6" markerHeight="4" refX="5" refY="2" orient="auto"><polygon points="0 0,6 2,0 4" fill="#d97757" opacity="0.5"/></marker></defs>
+        <g fill="#f0efe8" stroke="#c8c7c0" stroke-width="1">
+          <circle cx="20" cy="22" r="11"/><circle cx="52" cy="22" r="11"/><circle cx="84" cy="22" r="11"/><circle cx="116" cy="22" r="11"/><circle cx="148" cy="22" r="11"/>
+          <circle cx="20" cy="56" r="11"/><circle cx="52" cy="56" r="11"/><circle cx="84" cy="56" r="11"/><circle cx="116" cy="56" r="11"/><circle cx="148" cy="56" r="11"/>
+          <circle cx="20" cy="90" r="11"/><circle cx="52" cy="90" r="11"/><circle cx="84" cy="90" r="11"/><circle cx="116" cy="90" r="11"/><circle cx="148" cy="90" r="11"/>
+          <circle cx="20" cy="124" r="11"/><circle cx="52" cy="124" r="11"/><circle cx="84" cy="124" r="11"/><circle cx="116" cy="124" r="11"/><circle cx="148" cy="124" r="11"/>
+        </g>
+        <g fill="#d97757" stroke="none">
+          <circle cx="84" cy="22" r="11" opacity="0.15"/><circle cx="84" cy="56" r="11" opacity="0.2"/><circle cx="84" cy="90" r="11" opacity="0.18"/><circle cx="84" cy="124" r="11" opacity="0.12"/>
+          <circle cx="116" cy="22" r="11" opacity="0.5"/><circle cx="116" cy="56" r="11" opacity="0.6"/><circle cx="116" cy="90" r="11" opacity="0.55"/><circle cx="116" cy="124" r="11" opacity="0.45"/>
+          <circle cx="148" cy="22" r="11" opacity="0.8"/><circle cx="148" cy="56" r="11" opacity="0.85"/><circle cx="148" cy="90" r="11" opacity="0.78"/><circle cx="148" cy="124" r="11" opacity="0.82"/>
+        </g>
+        <path d="M68,4 C80,24 58,38 70,56 C82,74 58,88 70,106 C82,124 58,138 68,156" stroke="#d97757" stroke-width="1.3" stroke-dasharray="5,3" fill="none" opacity="0.35"/>
+        <path d="M34,54 C48,38 66,28 80,24" stroke="#d97757" stroke-width="1" stroke-dasharray="3,2" fill="none" opacity="0.3" marker-end="url(#qArr)"/>
+        <path d="M120,56 C132,68 138,80 144,86" stroke="#d97757" stroke-width="1" stroke-dasharray="3,2" fill="none" opacity="0.3" marker-end="url(#qArr)"/>
+        <g font-family="monospace" font-size="10">
+          <circle cx="172" cy="28" r="1.5" fill="#d97757" opacity="0.4"/><text x="178" y="31" fill="#d97757" opacity="0.55">representations?</text>
+          <circle cx="172" cy="58" r="1.5" fill="#d97757" opacity="0.4"/><text x="178" y="61" fill="#d97757" opacity="0.55">information flow?</text>
+          <circle cx="172" cy="92" r="1.5" fill="#d97757" opacity="0.4"/><text x="178" y="95" fill="#d97757" opacity="0.55">boundaries?</text>
+          <circle cx="172" cy="122" r="1.5" fill="#d97757" opacity="0.4"/><text x="178" y="125" fill="#d97757" opacity="0.55">robustness?</text>
+        </g>
+      </svg>
+      <div class="about-fig-caption">The interpretability gap</div>
+    </div>
+  </div>
+
+  <div class="about-split about-split-rev reveal reveal-delay-1">
+    <div class="about-fig">
+      <svg viewBox="0 0 260 160" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;background:white;border-radius:6px;">
+        <g transform="translate(65,72)">
+          <g stroke="#5a5a56" stroke-width="0.7" opacity="0.2">
+            <line x1="-28" y1="-38" x2="22" y2="-12"/><line x1="-28" y1="-38" x2="-32" y2="18"/>
+            <line x1="-28" y1="-38" x2="8" y2="28"/><line x1="22" y1="-12" x2="-32" y2="18"/>
+            <line x1="22" y1="-12" x2="28" y2="32"/><line x1="22" y1="-12" x2="-8" y2="-32"/>
+            <line x1="-32" y1="18" x2="28" y2="32"/><line x1="-32" y1="18" x2="8" y2="28"/>
+            <line x1="8" y1="28" x2="28" y2="32"/><line x1="-8" y1="-32" x2="8" y2="28"/>
+            <line x1="28" y1="32" x2="-8" y2="-32"/><line x1="-28" y1="-38" x2="28" y2="32"/>
           </g>
-          <!-- Voltage gradient overlay -->
-          <g fill="#d97757" stroke="none">
-            <circle cx="84" cy="22" r="11" opacity="0.15"/><circle cx="84" cy="56" r="11" opacity="0.2"/><circle cx="84" cy="90" r="11" opacity="0.18"/><circle cx="84" cy="124" r="11" opacity="0.12"/>
-            <circle cx="116" cy="22" r="11" opacity="0.5"/><circle cx="116" cy="56" r="11" opacity="0.6"/><circle cx="116" cy="90" r="11" opacity="0.55"/><circle cx="116" cy="124" r="11" opacity="0.45"/>
-            <circle cx="148" cy="22" r="11" opacity="0.8"/><circle cx="148" cy="56" r="11" opacity="0.85"/><circle cx="148" cy="90" r="11" opacity="0.78"/><circle cx="148" cy="124" r="11" opacity="0.82"/>
+          <g fill="#5a5a56" opacity="0.35">
+            <circle cx="-28" cy="-38" r="5"/><circle cx="22" cy="-12" r="5"/><circle cx="-32" cy="18" r="5"/>
+            <circle cx="8" cy="28" r="5"/><circle cx="28" cy="32" r="5"/><circle cx="-8" cy="-32" r="5"/>
           </g>
-          <!-- Hidden decision boundary (dashed, wavy) -->
-          <path d="M68,4 C80,24 58,38 70,56 C82,74 58,88 70,106 C82,124 58,138 68,156"
-                stroke="#d97757" stroke-width="1.3" stroke-dasharray="5,3" fill="none" opacity="0.35"/>
-          <!-- Hidden information flow (dashed arrows) -->
-          <path d="M34,54 C48,38 66,28 80,24" stroke="#d97757" stroke-width="1" stroke-dasharray="3,2" fill="none" opacity="0.3" marker-end="url(#qArr)"/>
-          <path d="M120,56 C132,68 138,80 144,86" stroke="#d97757" stroke-width="1" stroke-dasharray="3,2" fill="none" opacity="0.3" marker-end="url(#qArr)"/>
-          <!-- The four interpretability questions -->
-          <g font-family="monospace" font-size="10">
-            <circle cx="172" cy="28" r="1.5" fill="#d97757" opacity="0.4"/>
-            <text x="178" y="31" fill="#d97757" opacity="0.55">representations?</text>
-            <circle cx="172" cy="58" r="1.5" fill="#d97757" opacity="0.4"/>
-            <text x="178" y="61" fill="#d97757" opacity="0.55">information flow?</text>
-            <circle cx="172" cy="92" r="1.5" fill="#d97757" opacity="0.4"/>
-            <text x="178" y="95" fill="#d97757" opacity="0.55">boundaries?</text>
-            <circle cx="172" cy="122" r="1.5" fill="#d97757" opacity="0.4"/>
-            <text x="178" y="125" fill="#d97757" opacity="0.55">robustness?</text>
+        </g>
+        <line x1="115" y1="72" x2="142" y2="72" stroke="#d97757" stroke-width="1.5" stroke-dasharray="4,2"/>
+        <polygon points="142,69 150,72 142,75" fill="#d97757"/>
+        <g transform="translate(195,72)">
+          <g stroke="#d97757" stroke-width="1.5" opacity="0.5">
+            <line x1="0" y1="-32" x2="-28" y2="20"/><line x1="0" y1="-32" x2="28" y2="20"/><line x1="-28" y1="20" x2="28" y2="20"/>
           </g>
-        </svg>
-        <div class="figure-caption">The interpretability gap</div>
+          <g fill="#d97757">
+            <circle cx="0" cy="-32" r="7"/><circle cx="-28" cy="20" r="7"/><circle cx="28" cy="20" r="7"/>
+          </g>
+        </g>
+        <text x="65" y="142" text-anchor="middle" font-family="monospace" font-size="9.5" fill="#5a5a56" opacity="0.6">opaque</text>
+        <text x="195" y="142" text-anchor="middle" font-family="monospace" font-size="9.5" fill="#d97757">interpretable</text>
+      </svg>
+      <div class="about-fig-caption">Minimality as interpretability strategy</div>
+    </div>
+    <div class="about-text">
+      <p>That is the problem I work on. My approach has two steps. First, I build deliberately minimal
+      models — stripped to the fewest components that still produce the behavior of interest. Minimality
+      is not an aesthetic choice; it is a strategy for understanding. A model with two essential variables
+      can be fully understood; a model with two hundred cannot.</p>
+    </div>
+  </div>
+
+  <div class="about-split reveal reveal-delay-1">
+    <div class="about-text">
+      <p>Second, I develop and apply analytical methods — spatiotemporal sensitivity fields, causal network
+      decompositions, information-theoretic measures — that extract the computational and cognitive
+      structure hidden in these models. In a 2019 framework paper (<em>The Cognitive Lens</em>), I
+      laid out this program: treat biological patterning as information processing, then use integration
+      methods to read out what the system represents, when it shifts from being externally driven to
+      self-maintaining, and which cells integrate information from which others. The goal is not just
+      to make models interpretable, but to discover whether cognition-like processes — decision-making,
+      memory, communication — are genuinely at work in non-neural biology.</p>
+    </div>
+    <div class="about-fig">
+      <svg viewBox="0 0 260 160" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;background:white;border-radius:6px;">
+        <defs><marker id="sArr" markerWidth="6" markerHeight="4" refX="5" refY="2" orient="auto"><polygon points="0 0,6 2,0 4" fill="#d97757"/></marker></defs>
+        <g transform="translate(42,65)">
+          <rect x="-30" y="-30" width="60" height="60" rx="6" fill="none" stroke="#e0dfd8" stroke-width="1"/>
+          <g stroke="#5a5a56" stroke-width="0.7" opacity="0.3">
+            <line x1="-18" y1="-18" x2="8" y2="-6"/><line x1="-18" y1="-18" x2="-14" y2="14"/>
+            <line x1="-18" y1="-18" x2="18" y2="16"/><line x1="8" y1="-6" x2="-14" y2="14"/>
+            <line x1="8" y1="-6" x2="18" y2="16"/><line x1="8" y1="-6" x2="16" y2="-18"/>
+            <line x1="-14" y1="14" x2="18" y2="16"/><line x1="-14" y1="14" x2="-4" y2="22"/>
+            <line x1="18" y1="16" x2="-4" y2="22"/><line x1="16" y1="-18" x2="18" y2="16"/>
+            <line x1="16" y1="-18" x2="-18" y2="-18"/><line x1="-4" y1="22" x2="8" y2="-6"/>
+          </g>
+          <g fill="#5a5a56" opacity="0.45">
+            <circle cx="-18" cy="-18" r="3"/><circle cx="8" cy="-6" r="3"/><circle cx="-14" cy="14" r="3"/>
+            <circle cx="18" cy="16" r="3"/><circle cx="-4" cy="22" r="3"/><circle cx="16" cy="-18" r="3"/>
+          </g>
+        </g>
+        <line x1="78" y1="65" x2="96" y2="65" stroke="#d97757" stroke-width="1.2"/>
+        <polygon points="96,62.5 103,65 96,67.5" fill="#d97757"/>
+        <g transform="translate(130,65)">
+          <rect x="-24" y="-24" width="48" height="48" rx="4" fill="none" stroke="#d97757" stroke-width="1.2"/>
+          <rect x="-20" y="-20" width="11" height="11" fill="#d97757" opacity="0.8" rx="1"/>
+          <rect x="-6" y="-20" width="11" height="11" fill="#d97757" opacity="0.15" rx="1"/>
+          <rect x="9" y="-20" width="11" height="11" fill="#d97757" opacity="0.45" rx="1"/>
+          <rect x="-20" y="-6" width="11" height="11" fill="#d97757" opacity="0.25" rx="1"/>
+          <rect x="-6" y="-6" width="11" height="11" fill="#d97757" opacity="0.9" rx="1"/>
+          <rect x="9" y="-6" width="11" height="11" fill="#d97757" opacity="0.1" rx="1"/>
+          <rect x="-20" y="9" width="11" height="11" fill="#d97757" opacity="0.35" rx="1"/>
+          <rect x="-6" y="9" width="11" height="11" fill="#d97757" opacity="0.55" rx="1"/>
+          <rect x="9" y="9" width="11" height="11" fill="#d97757" opacity="0.7" rx="1"/>
+        </g>
+        <line x1="160" y1="65" x2="178" y2="65" stroke="#d97757" stroke-width="1.2"/>
+        <polygon points="178,62.5 185,65 178,67.5" fill="#d97757"/>
+        <g transform="translate(218,65)">
+          <rect x="-30" y="-30" width="60" height="60" rx="6" fill="none" stroke="#e0dfd8" stroke-width="1"/>
+          <line x1="-10" y1="-10" x2="8" y2="-10" stroke="#d97757" stroke-width="1.8" marker-end="url(#sArr)"/>
+          <line x1="10" y1="-5" x2="2" y2="10" stroke="#d97757" stroke-width="1.8" marker-end="url(#sArr)"/>
+          <circle cx="-14" cy="-10" r="5" fill="#d97757"/>
+          <circle cx="14" cy="-10" r="5" fill="#d97757" opacity="0.75"/>
+          <circle cx="0" cy="16" r="5" fill="#d97757" opacity="0.5"/>
+        </g>
+        <text x="42" y="118" text-anchor="middle" font-family="monospace" font-size="9" fill="#5a5a56">Detailed</text>
+        <text x="130" y="118" text-anchor="middle" font-family="monospace" font-size="9" fill="#5a5a56">J, H</text>
+        <text x="218" y="118" text-anchor="middle" font-family="monospace" font-size="9" fill="#d97757">Sifted</text>
+      </svg>
+      <div class="about-fig-caption">The Cognitive Lens framework</div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- RESEARCH -->
+<section id="research">
+  <div class="section-label reveal">Research</div>
+  <h2 class="reveal reveal-delay-1">Each project builds a minimal model of a biological phenomenon,<br>then uses the cognitive lens to ask: <em>what is this system computing?</em></h2>
+
+  <!-- Tape -->
+  <div class="tape-outer reveal reveal-delay-2" id="layout-tape" style="display:none;">
+    <div class="tape-track" id="tape-track">
+      <!-- items injected by JS -->
+    </div>
+  </div>
+
+  <!-- Metro map -->
+  <div class="metro-wrapper reveal reveal-delay-2" id="layout-metro" style="display:none;">
+    <div class="metro-svg-wrap">
+      <svg id="metro-svg" viewBox="0 0 900 260" xmlns="http://www.w3.org/2000/svg"></svg>
+    </div>
+    <p class="m-hint">hover a station to explore · bead traces connections</p>
+  </div>
+
+  <!-- Carousel (3D) -->
+  <div class="carousel-wrapper reveal reveal-delay-2" id="layout-carousel">
+    <div class="carousel-stage">
+      <div class="carousel-ring" id="carousel-ring"></div>
+    </div>
+  </div>
+
+  <!-- Detail panel (shared) -->
+  <div class="tape-detail" id="tape-detail" aria-live="polite">
+    <div class="tape-detail-inner" id="tape-detail-inner"></div>
+  </div>
+</section>
+</section>
+
+<div class="section-divider" style="margin-top:3rem;"></div>
+
+<!-- PUBLICATIONS -->
+<section id="publications">
+  <div class="section-label reveal">Publications</div>
+  <h2 class="reveal reveal-delay-1">Selected Publications</h2>
+  <p class="reveal reveal-delay-2" style="font-family:var(--sans);font-size:0.85rem;color:var(--muted);margin-bottom:2rem;">
+    Full list on <a href="https://scholar.google.com/citations?user=4cc0wewAAAAJ&hl=en" style="color:var(--accent);">Google Scholar</a>.
+  </p>
+
+  <div class="pub-year-group reveal">
+    <div class="pub-year">2025</div>
+    <div class="pub-item" id="pub-field">
+      <a href="https://www.cell.com/cell-reports-physical-science/fulltext/S2666-3864(25)00464-3" target="_blank">
+        Field-mediated bioelectric basis of morphogenetic prepatterning</a>
+      <div class="pub-meta">S. Manicka, M. Levin · <span class="pub-journal">Cell Reports Physical Science</span></div>
+    </div>
+  </div>
+
+  <div class="pub-year-group reveal">
+    <div class="pub-year">2023</div>
+    <div class="pub-item" id="pub-frogbrain">
+      <a href="https://www.cell.com/iscience/fulltext/S2589-0042(23)02475-6" target="_blank">
+        Information integration during bioelectric regulation of morphogenesis of the embryonic frog brain</a>
+      <div class="pub-meta">S. Manicka, V. P. Pai, M. Levin · <span class="pub-journal">iScience, 26(12)</span></div>
+    </div>
+    <div class="pub-item" id="pub-nonlinearity">
+      <a href="https://www.nature.com/articles/s41540-023-00273-w" target="_blank">
+        The nonlinearity of regulation in biological networks</a>
+      <div class="pub-meta">S. Manicka, K. Johnson, M. Levin, D. Murrugarra · <span class="pub-journal">npj Systems Biology and Applications, 9, 10</span></div>
+    </div>
+  </div>
+
+  <div class="pub-year-group reveal">
+    <div class="pub-year">2022</div>
+    <div class="pub-item" id="pub-mindev">
+      <a href="https://www.mdpi.com/1099-4300/24/1/107" target="_blank">
+        Minimal developmental computation: a causal network approach to understand morphogenetic pattern formation</a>
+      <div class="pub-meta">S. Manicka, M. Levin · <span class="pub-journal">Entropy, 24(1), 107</span></div>
+    </div>
+    <div class="pub-item" id="pub-keff">
+      <a href="https://royalsocietypublishing.org/doi/10.1098/rsif.2021.0659" target="_blank">
+        Effective connectivity determines the critical dynamics of biochemical networks</a>
+      <div class="pub-meta">S. Manicka, M. Marques-Pita, L. M. Rocha · <span class="pub-journal">Journal of the Royal Society Interface, 19(186)</span></div>
+    </div>
+    <div class="pub-item">
+      <a href="https://www.nature.com/articles/s42256-022-00452-0" target="_blank">
+        Biological underpinnings for lifelong learning machines</a>
+      <div class="pub-meta">D. Kudithipudi, …, S. Manicka, …, H. T. Siegelmann · <span class="pub-journal">Nature Machine Intelligence, 4(3), 196–210</span></div>
+    </div>
+  </div>
+
+  <div class="pub-year-group reveal">
+    <div class="pub-year">2021</div>
+    <div class="pub-item" id="pub-grnmemory">
+      <a href="https://www.cell.com/iscience/fulltext/S2589-0042(21)00099-7" target="_blank">
+        Gene regulatory networks exhibit several kinds of memory</a>
+      <div class="pub-meta">S. Biswas, S. Manicka, E. Hoel, M. Levin · <span class="pub-journal">iScience, 24(3), 102131</span></div>
+    </div>
+  </div>
+
+  <div class="pub-year-group reveal">
+    <div class="pub-year">2019</div>
+    <div class="pub-item" id="pub-coglens">
+      <a href="https://royalsocietypublishing.org/doi/10.1098/rstb.2018.0369" target="_blank">
+        The cognitive lens: a primer on conceptual tools for analysing information processing in developmental and regenerative morphogenesis</a>
+      <div class="pub-meta">S. Manicka, M. Levin · <span class="pub-journal">Philosophical Transactions of the Royal Society B, 374(1774)</span></div>
+    </div>
+    <div class="pub-item" id="pub-ben">
+      <a href="https://www.nature.com/articles/s41598-019-54859-8" target="_blank">
+        Modeling somatic computation with non-neural bioelectric networks</a>
+      <div class="pub-meta">S. Manicka, M. Levin · <span class="pub-journal">Scientific Reports, 9, 18612</span></div>
+    </div>
+  </div>
+
+  <div class="pub-year-group reveal">
+    <div class="pub-year">2008 – 2017</div>
+    <div class="pub-item" id="pub-dissertation">
+      <a href="https://scholarworks.iu.edu/dspace/handle/2022/21446" target="_blank">
+        The role of canalization in the spreading of perturbations in Boolean networks</a>
+      <div class="pub-meta">S. Manicka · <span class="pub-journal">PhD Dissertation, Indiana University (2017)</span></div>
+    </div>
+    <div class="pub-item" id="pub-referential">
+      <a href="https://doi.org/10.7551/978-0-262-31050-5-ch052" target="_blank">
+        Analysis of evolved agents performing referential communication</a>
+      <div class="pub-meta">S. Manicka · <span class="pub-journal">ALIFE 2012</span></div>
+    </div>
+    <div class="pub-item">
+      <a href="https://doi.org/10.1007/978-3-642-21283-3_12" target="_blank">
+        Local ultrastability in a real system based on programmable springs</a>
+      <div class="pub-meta">S. Manicka, E. A. Di Paolo · <span class="pub-journal">ECAL 2009</span></div>
+    </div>
+    <div class="pub-item" id="pub-psychoanalysis">
+      <span style="font-family:var(--serif);">'Psychoanalysis' of a minimal agent</span>
+      <div class="pub-meta">S. Manicka, I. Harvey · <span class="pub-journal">ALIFE 2008</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- SOFTWARE -->
+<section id="software">
+  <div class="section-label reveal">Software</div>
+  <h2 class="reveal reveal-delay-1">Open-source research code</h2>
+  <div class="software-grid">
+    <div class="software-card reveal">
+      <a href="https://github.com/santamanicka/ElectricMorphogenesis" target="_blank">ElectricMorphogenesis</a>
+      <p>Bioelectric field models of tissue-level voltage patterning</p>
+    </div>
+    <div class="software-card reveal reveal-delay-1">
+      <a href="https://github.com/santamanicka/NeuralPlatePatterning" target="_blank">NeuralPlatePatterning</a>
+      <p>Genetic-bioelectric model of embryonic frog brain patterning</p>
+    </div>
+    <div class="software-card reveal reveal-delay-2">
+      <a href="https://github.com/santamanicka/BioElectricNetwork" target="_blank">BioElectricNetwork</a>
+      <p>Library for simulating, training, and evolving minimal bioelectric networks</p>
+    </div>
+    <div class="software-card reveal reveal-delay-3">
+      <a href="https://github.com/santamanicka/MinimalDevelopmentalComputation" target="_blank">MinimalDevelopmentalComputation</a>
+      <p>Hierarchical regenerative networks with local intracellular controllers</p>
+    </div>
+    <div class="software-card reveal">
+      <a href="https://github.com/santamanicka/Boolion" target="_blank">Boolion</a>
+      <p>Taylor series decomposition and continuous relaxation of Boolean networks</p>
+    </div>
+    <div class="software-card reveal reveal-delay-1">
+      <a href="https://github.com/santamanicka/BooleanCanalization" target="_blank">BooleanCanalization</a>
+      <p>R library for effective connectivity and unified canalization</p>
+    </div>
+    <div class="software-card reveal reveal-delay-2">
+      <a href="https://github.com/santamanicka/GeneRegulatoryNetworkMemory" target="_blank">GeneRegulatoryNetworkMemory</a>
+      <p>Memory analysis framework for gene regulatory networks</p>
+    </div>
+    <div class="software-card reveal reveal-delay-3">
+      <a href="https://github.com/santamanicka/PlatonicCriticality" target="_blank">PlatonicCriticality</a>
+      <p>Do the integers themselves exhibit scale-free criticality?</p>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- EDUCATION -->
+<section id="education">
+  <div class="section-label reveal">Education</div>
+  <div class="edu-list">
+    <div class="edu-item reveal">
+      <span class="edu-year">2017</span>
+      <div>
+        <div class="edu-degree">Ph.D. in Complex Systems</div>
+        <div class="edu-school">Indiana University Bloomington, U.S.A.</div>
       </div>
     </div>
-
-    <!-- Beat 2: Minimality (figure on left) -->
-    <div class="about-split fig-left">
-      <div class="figure-container">
-        <svg viewBox="0 0 260 160" xmlns="http://www.w3.org/2000/svg" style="background:white;border-radius:6px;">
-          <!-- Left: complex opaque network -->
-          <g transform="translate(65,72)">
-            <g stroke="#5a5a56" stroke-width="0.7" opacity="0.2">
-              <line x1="-28" y1="-38" x2="22" y2="-12"/><line x1="-28" y1="-38" x2="-32" y2="18"/>
-              <line x1="-28" y1="-38" x2="8" y2="28"/><line x1="22" y1="-12" x2="-32" y2="18"/>
-              <line x1="22" y1="-12" x2="28" y2="32"/><line x1="22" y1="-12" x2="-8" y2="-32"/>
-              <line x1="-32" y1="18" x2="28" y2="32"/><line x1="-32" y1="18" x2="8" y2="28"/>
-              <line x1="8" y1="28" x2="28" y2="32"/><line x1="-8" y1="-32" x2="8" y2="28"/>
-              <line x1="28" y1="32" x2="-8" y2="-32"/><line x1="-28" y1="-38" x2="28" y2="32"/>
-            </g>
-            <g fill="#5a5a56" opacity="0.35">
-              <circle cx="-28" cy="-38" r="5"/><circle cx="22" cy="-12" r="5"/><circle cx="-32" cy="18" r="5"/>
-              <circle cx="8" cy="28" r="5"/><circle cx="28" cy="32" r="5"/><circle cx="-8" cy="-32" r="5"/>
-            </g>
-          </g>
-          <!-- Arrow -->
-          <line x1="115" y1="72" x2="142" y2="72" stroke="#d97757" stroke-width="1.5" stroke-dasharray="4,2"/>
-          <polygon points="142,69 150,72 142,75" fill="#d97757"/>
-          <!-- Right: minimal interpretable network -->
-          <g transform="translate(195,72)">
-            <g stroke="#d97757" stroke-width="1.5" opacity="0.5">
-              <line x1="0" y1="-32" x2="-28" y2="20"/><line x1="0" y1="-32" x2="28" y2="20"/><line x1="-28" y1="20" x2="28" y2="20"/>
-            </g>
-            <g fill="#d97757">
-              <circle cx="0" cy="-32" r="7"/><circle cx="-28" cy="20" r="7"/><circle cx="28" cy="20" r="7"/>
-            </g>
-          </g>
-          <!-- Labels -->
-          <text x="65" y="142" text-anchor="middle" font-family="monospace" font-size="9.5" fill="#5a5a56" opacity="0.6">opaque</text>
-          <text x="195" y="142" text-anchor="middle" font-family="monospace" font-size="9.5" fill="#d97757">interpretable</text>
-        </svg>
-        <div class="figure-caption">Minimality as interpretability strategy</div>
-      </div>
-      <div class="text">
-        <p>
-          That is the problem I work on. My approach has two steps. First, I build deliberately minimal
-          models — stripped to the fewest components that still produce the behavior of interest. Minimality
-          is not an aesthetic choice; it is a strategy for understanding. A model with two essential variables
-          can be fully understood; a model with two hundred cannot.
-        </p>
+    <div class="edu-item reveal reveal-delay-1">
+      <span class="edu-year">2008</span>
+      <div>
+        <div class="edu-degree">M.Sc. in Evolutionary and Adaptive Systems</div>
+        <div class="edu-school">University of Sussex, U.K.</div>
       </div>
     </div>
-
-    <!-- Beat 3: The Cognitive Lens -->
-    <div class="about-split">
-      <div class="text">
-        <p>
-          Second, I develop and apply analytical methods — spatiotemporal sensitivity fields, causal network
-          decompositions, information-theoretic measures — that extract the computational and cognitive
-          structure hidden in these models. In a 2019 framework paper (<em>The Cognitive Lens</em>), I
-          laid out this program: treat biological patterning as information processing, then use integration
-          methods to read out what the system represents, when it shifts from being externally driven to
-          self-maintaining, and which cells integrate information from which others. The goal is not just
-          to make models interpretable, but to discover whether cognition-like processes — decision-making,
-          memory, communication — are genuinely at work in non-neural biology.
-        </p>
-      </div>
-      <div class="figure-container">
-        <svg viewBox="0 0 260 160" xmlns="http://www.w3.org/2000/svg" style="background:white;border-radius:6px;">
-          <defs>
-            <marker id="sArr" markerWidth="6" markerHeight="4" refX="5" refY="2" orient="auto">
-              <polygon points="0 0,6 2,0 4" fill="#d97757"/>
-            </marker>
-          </defs>
-          <!-- Stage 1: Detailed (dense tangled network) -->
-          <g transform="translate(42,65)">
-            <rect x="-30" y="-30" width="60" height="60" rx="6" fill="none" stroke="#e0dfd8" stroke-width="1"/>
-            <g stroke="#5a5a56" stroke-width="0.7" opacity="0.3">
-              <line x1="-18" y1="-18" x2="8" y2="-6"/><line x1="-18" y1="-18" x2="-14" y2="14"/>
-              <line x1="-18" y1="-18" x2="18" y2="16"/><line x1="8" y1="-6" x2="-14" y2="14"/>
-              <line x1="8" y1="-6" x2="18" y2="16"/><line x1="8" y1="-6" x2="16" y2="-18"/>
-              <line x1="-14" y1="14" x2="18" y2="16"/><line x1="-14" y1="14" x2="-4" y2="22"/>
-              <line x1="18" y1="16" x2="-4" y2="22"/><line x1="16" y1="-18" x2="18" y2="16"/>
-              <line x1="16" y1="-18" x2="-18" y2="-18"/><line x1="-4" y1="22" x2="8" y2="-6"/>
-            </g>
-            <g fill="#5a5a56" opacity="0.45">
-              <circle cx="-18" cy="-18" r="3"/><circle cx="8" cy="-6" r="3"/><circle cx="-14" cy="14" r="3"/>
-              <circle cx="18" cy="16" r="3"/><circle cx="-4" cy="22" r="3"/><circle cx="16" cy="-18" r="3"/>
-            </g>
-          </g>
-          <!-- Arrow 1 -->
-          <line x1="78" y1="65" x2="96" y2="65" stroke="#d97757" stroke-width="1.2"/>
-          <polygon points="96,62.5 103,65 96,67.5" fill="#d97757"/>
-          <!-- Stage 2: J, H (Jacobian heatmap) -->
-          <g transform="translate(130,65)">
-            <rect x="-24" y="-24" width="48" height="48" rx="4" fill="none" stroke="#d97757" stroke-width="1.2"/>
-            <rect x="-20" y="-20" width="11" height="11" fill="#d97757" opacity="0.8" rx="1"/>
-            <rect x="-6" y="-20" width="11" height="11" fill="#d97757" opacity="0.15" rx="1"/>
-            <rect x="9" y="-20" width="11" height="11" fill="#d97757" opacity="0.45" rx="1"/>
-            <rect x="-20" y="-6" width="11" height="11" fill="#d97757" opacity="0.25" rx="1"/>
-            <rect x="-6" y="-6" width="11" height="11" fill="#d97757" opacity="0.9" rx="1"/>
-            <rect x="9" y="-6" width="11" height="11" fill="#d97757" opacity="0.1" rx="1"/>
-            <rect x="-20" y="9" width="11" height="11" fill="#d97757" opacity="0.35" rx="1"/>
-            <rect x="-6" y="9" width="11" height="11" fill="#d97757" opacity="0.55" rx="1"/>
-            <rect x="9" y="9" width="11" height="11" fill="#d97757" opacity="0.7" rx="1"/>
-          </g>
-          <!-- Arrow 2 -->
-          <line x1="160" y1="65" x2="178" y2="65" stroke="#d97757" stroke-width="1.2"/>
-          <polygon points="178,62.5 185,65 178,67.5" fill="#d97757"/>
-          <!-- Stage 3: Sifted (clean directed causal graph) -->
-          <g transform="translate(218,65)">
-            <rect x="-30" y="-30" width="60" height="60" rx="6" fill="none" stroke="#e0dfd8" stroke-width="1"/>
-            <line x1="-10" y1="-10" x2="8" y2="-10" stroke="#d97757" stroke-width="1.8" marker-end="url(#sArr)"/>
-            <line x1="10" y1="-5" x2="2" y2="10" stroke="#d97757" stroke-width="1.8" marker-end="url(#sArr)"/>
-            <circle cx="-14" cy="-10" r="5" fill="#d97757"/>
-            <circle cx="14" cy="-10" r="5" fill="#d97757" opacity="0.75"/>
-            <circle cx="0" cy="16" r="5" fill="#d97757" opacity="0.5"/>
-          </g>
-          <!-- Labels -->
-          <text x="42" y="118" text-anchor="middle" font-family="monospace" font-size="9" fill="#5a5a56">Detailed</text>
-          <text x="130" y="118" text-anchor="middle" font-family="monospace" font-size="9" fill="#5a5a56">J, H</text>
-          <text x="218" y="118" text-anchor="middle" font-family="monospace" font-size="9" fill="#d97757">Sifted</text>
-        </svg>
-        <div class="figure-caption">The Cognitive Lens framework</div>
+    <div class="edu-item reveal reveal-delay-2">
+      <span class="edu-year">2003</span>
+      <div>
+        <div class="edu-degree">B.E. in Computer Science and Engineering</div>
+        <div class="edu-school">College of Engineering, Guindy, India</div>
       </div>
     </div>
+  </div>
+</section>
 
-    <p>
-      Before Tufts, I studied adaptive agents at Sussex and Boolean network dynamics at Indiana. Across
-      all three settings, the question has been the same: what and how do collectives of simple components
-      compute — and can we ground these complex phenomena in fundamental physical principles?
-    </p>
+<div class="section-divider"></div>
 
-    <div class="pills">
-      <span class="pill">Interpretability</span>
-      <span class="pill">Theoretical biology</span>
-      <span class="pill">Complex systems</span>
-      <span class="pill">Bioelectricity</span>
-      <span class="pill">Morphogenesis</span>
-      <span class="pill">Boolean networks</span>
-      <span class="pill">Information theory</span>
-      <span class="pill">Dynamical systems</span>
-      <span class="pill">Basal cognition</span>
-    </div>
-  </section>
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-label reveal">Contact</div>
+  <div class="contact-links reveal reveal-delay-1">
+    <a href="/cdn-cgi/l/email-protection#4330222d372c302b6d2e222d2a20282203242e222a2f6d202c2e"><span class="__cf_email__" data-cfemail="95e6f4fbe1fae6fdbbf8f4fbfcf6fef4d5f2f8f4fcf9bbf6faf8">[email&#160;protected]</span></a>
+    <a href="https://scholar.google.com/citations?user=4cc0wewAAAAJ&hl=en" target="_blank">Google Scholar</a>
+    <a href="https://github.com/santamanicka" target="_blank">GitHub</a>
+    <a href="https://allencenter.tufts.edu/santosh-manicka-affiliate-research-scientist/" target="_blank">Allen Discovery Center</a>
+  </div>
+</section>
 
+</main>
 
-  <!-- ==================== RESEARCH ==================== -->
-  <section id="research">
-    <h2>Research</h2>
-    <p class="lead">
-      Each project builds a minimal model of a biological phenomenon, then uses the cognitive
-      lens to ask: what is this system computing?
-    </p>
+<footer>© Santosh Manicka</footer>
 
-    <div class="grid-2">
-      <div class="card">
-        <div class="card-fig">
-          <svg viewBox="0 0 380 90" xmlns="http://www.w3.org/2000/svg" style="background:white;">
-            <!-- Row of cells -->
+<!-- TWEAKS (React) -->
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script type="text/babel" src="tweaks-panel.jsx"></script>
+<script type="text/babel">
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "accentColor": "#ff9300",
+  "animSpeed": "bold",
+  "bgEffect": "bioelectric",
+  "scrollFade": true,
+  "researchLayout": "carousel"
+}/*EDITMODE-END*/;
+
+function TweaksApp() {
+  const [tweaks, setTweak] = useTweaks(TWEAK_DEFAULTS);
+
+  React.useEffect(() => {
+    const root = document.documentElement;
+    root.style.setProperty('--accent', tweaks.accentColor);
+    const r = parseInt(tweaks.accentColor.slice(1,3),16);
+    const g = parseInt(tweaks.accentColor.slice(3,5),16);
+    const b = parseInt(tweaks.accentColor.slice(5,7),16);
+    root.style.setProperty('--accent-rgb', `${r}, ${g}, ${b}`);
+  }, [tweaks.accentColor]);
+
+  React.useEffect(() => {
+    const speeds = { subtle: 1.6, moderate: 1, bold: 0.6 };
+    document.documentElement.style.setProperty('--anim-speed', speeds[tweaks.animSpeed]);
+  }, [tweaks.animSpeed]);
+
+  React.useEffect(() => {
+    window.__bgEffect = tweaks.bgEffect;
+  }, [tweaks.bgEffect]);
+
+  React.useEffect(() => {
+    const tape = document.getElementById('layout-tape');
+    const metro = document.getElementById('layout-metro');
+    const carousel = document.getElementById('layout-carousel');
+    if (!tape || !metro || !carousel) return;
+    tape.style.display = 'none';
+    metro.style.display = 'none';
+    carousel.style.display = 'none';
+    if (window.__metroStop) window.__metroStop();
+    if (window.__carouselStop) window.__carouselStop();
+    if (tweaks.researchLayout === 'metro') {
+      metro.style.display = 'block';
+      if (window.__metroInit) window.__metroInit();
+    } else if (tweaks.researchLayout === 'carousel') {
+      carousel.style.display = 'block';
+      if (window.__carouselInit) window.__carouselInit();
+    } else {
+      tape.style.display = '';
+    }
+  }, [tweaks.researchLayout]);
+
+  return React.createElement(TweaksPanel, null,
+    React.createElement(TweakSection, { title: "Accent color" },
+      React.createElement(TweakColor, { label: "Color", value: tweaks.accentColor, onChange: v => setTweak('accentColor', v) })
+    ),
+    React.createElement(TweakSection, { title: "Research layout" },
+      React.createElement(TweakRadio, {
+        label: "Layout",
+        value: tweaks.researchLayout,
+        options: ["tape","metro","carousel"],
+        onChange: v => setTweak('researchLayout', v)
+      })
+    ),
+    React.createElement(TweakSection, { title: "Animation energy" },
+      React.createElement(TweakRadio, {
+        label: "Speed",
+        value: tweaks.animSpeed,
+        options: ["subtle","moderate","bold"],
+        onChange: v => setTweak('animSpeed', v)
+      })
+    ),
+    React.createElement(TweakSection, { title: "Background" },
+      React.createElement(TweakSelect, {
+        label: "Effect",
+        value: tweaks.bgEffect,
+        options: ["bioelectric","field lines","none"],
+        onChange: v => setTweak('bgEffect', v)
+      })
+    ),
+    React.createElement(TweakSection, { title: "Scroll animations" },
+      React.createElement(TweakToggle, { label: "Fade-in on scroll", value: tweaks.scrollFade, onChange: v => setTweak('scrollFade', v) })
+    )
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('tweaks-root')).render(React.createElement(TweaksApp));
+</script>
+<div id="tweaks-root"></div>
+
+<script>
+// ── HERO TAG RING LAYOUT ──
+(function() {
+  const ring = document.getElementById('hero-tags-ring');
+  if (!ring) return;
+  const tags = ring.querySelectorAll('.tag');
+  const N = tags.length;
+
+  function layout() {
+    const w = ring.clientWidth, h = ring.clientHeight;
+    const cx = w / 2, cy = h / 2;
+    const rx = Math.min(w * 0.46, 320);
+    const ry = h * 0.42;
+    // Start at top, go clockwise
+    for (let i = 0; i < N; i++) {
+      const angle = -Math.PI / 2 + (i / N) * Math.PI * 2;
+      const x = cx + Math.cos(angle) * rx;
+      const y = cy + Math.sin(angle) * ry;
+      tags[i].style.left = x + 'px';
+      tags[i].style.top = y + 'px';
+      tags[i].style.animationDelay = (0.6 + i * 0.06) + 's';
+    }
+  }
+  layout();
+  window.addEventListener('resize', layout);
+})();
+
+// ── BIOELECTRIC CANVAS BACKGROUND ──
+(function() {
+  const canvas = document.getElementById('hero-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [], lines = [], t = 0;
+  const MODES = { bioelectric: drawBioelectric, 'field lines': drawFieldLines, none: () => {} };
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+    initParticles();
+  }
+
+  function initParticles() {
+    particles = [];
+    const count = Math.floor(W * H / 14000);
+    for (let i = 0; i < count; i++) {
+      particles.push({
+        x: Math.random() * W, y: Math.random() * H,
+        vx: (Math.random() - 0.5) * 0.3,
+        vy: (Math.random() - 0.5) * 0.3,
+        r: 1 + Math.random() * 2,
+        phase: Math.random() * Math.PI * 2
+      });
+    }
+  }
+
+  function getAccent() {
+    return getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#2563a8';
+  }
+
+  function hexToRgb(hex) {
+    const r = parseInt(hex.slice(1,3),16);
+    const g = parseInt(hex.slice(3,5),16);
+    const b = parseInt(hex.slice(5,7),16);
+    return `${r},${g},${b}`;
+  }
+
+  function drawBioelectric() {
+    ctx.clearRect(0, 0, W, H);
+    const accent = getAccent();
+    const rgb = hexToRgb(accent);
+
+    // draw connections
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < 160) {
+          const alpha = (1 - dist/160) * 0.15;
+          ctx.strokeStyle = `rgba(${rgb},${alpha})`;
+          ctx.lineWidth = 0.5;
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.stroke();
+        }
+      }
+    }
+
+    // draw nodes
+    particles.forEach(p => {
+      const pulse = 0.5 + 0.5 * Math.sin(t * 0.02 + p.phase);
+      const alpha = 0.2 + 0.3 * pulse;
+      ctx.fillStyle = `rgba(${rgb},${alpha})`;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r * (0.8 + 0.4 * pulse), 0, Math.PI * 2);
+      ctx.fill();
+    });
+  }
+
+  function drawFieldLines() {
+    ctx.clearRect(0, 0, W, H);
+    const accent = getAccent();
+    const rgb = hexToRgb(accent);
+    const numLines = 12;
+    for (let i = 0; i < numLines; i++) {
+      const y0 = (i / numLines) * H;
+      const wave = 30 * Math.sin(t * 0.008 + i * 0.7);
+      ctx.strokeStyle = `rgba(${rgb},0.08)`;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      for (let x = 0; x < W; x += 4) {
+        const y = y0 + wave * Math.sin(x / 120 + t * 0.01);
+        x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+    }
+  }
+
+  function tick() {
+    t++;
+    particles.forEach(p => {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0 || p.x > W) p.vx *= -1;
+      if (p.y < 0 || p.y > H) p.vy *= -1;
+    });
+    const mode = window.__bgEffect || 'bioelectric';
+    const fn = MODES[mode] || MODES.bioelectric;
+    fn();
+    requestAnimationFrame(tick);
+  }
+
+  window.addEventListener('resize', resize);
+  resize();
+  tick();
+})();
+
+// ── NAV SCROLL BEHAVIOR ──
+(function() {
+  const nav = document.getElementById('main-nav');
+  const links = document.querySelectorAll('.nav-links a');
+  const pill = document.getElementById('nav-pill');
+  const sections = ['about','research','publications','software','education','contact']
+    .map(id => document.getElementById(id));
+
+  function setActive(link) {
+    links.forEach(l => l.classList.remove('active'));
+    link.classList.add('active');
+    const rect = link.getBoundingClientRect();
+    const navRect = link.closest('.nav-links').getBoundingClientRect();
+    pill.style.left = (rect.left - navRect.left) + 'px';
+    pill.style.width = rect.width + 'px';
+    pill.style.top = '0';
+    pill.style.height = rect.height + 'px';
+  }
+
+  // init pill on first link
+  setTimeout(() => { if (links[0]) setActive(links[0]); }, 100);
+
+  links.forEach(link => {
+    link.addEventListener('click', () => setActive(link));
+  });
+
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 40);
+
+    // active section
+    let current = sections[0];
+    sections.forEach(s => {
+      if (s && s.getBoundingClientRect().top < 120) current = s;
+    });
+    if (current) {
+      const id = current.id;
+      const link = document.querySelector(`.nav-links a[href="#${id}"]`);
+      if (link) setActive(link);
+    }
+  }, { passive: true });
+})();
+
+// ── RESEARCH TAPE ──
+(function() {
+  const ACCENT = '#d97757'; // original site accent
+
+  const items = [
+    {
+      subtitle: 'field-mediated long-range coordination',
+      title: 'How electric fields might coordinate collective cell decisions',
+      text: `Cells in a tissue are coupled by gap junctions and bathed in a self-generated electric field. A stigmergic loop — where each cell modifies the shared medium it also reads — allows a lattice of identical cells to spontaneously break symmetry and produce voltage pre-patterns. The field acts as a single low-dimensional control parameter, catalyzing long-range causal interactions among cells that have no direct knowledge of one another.`,
+      refs: [['Manicka & Levin, 2025','#pub-field'],['Manicka & Levin, 2019','#pub-coglens'],['Manicka, Pai & Levin, 2023','#pub-frogbrain']],
+      svgId: 'svg-field',
+      svg: `<svg viewBox="0 0 380 90" xmlns="http://www.w3.org/2000/svg" style="background:white;">
             <g fill="#f0efe8" stroke="#c8c7c0" stroke-width="1">
               <circle cx="22" cy="55" r="10"/><circle cx="62" cy="55" r="10"/><circle cx="102" cy="55" r="10"/><circle cx="142" cy="55" r="10"/><circle cx="190" cy="55" r="10"/><circle cx="238" cy="55" r="10"/><circle cx="278" cy="55" r="10"/><circle cx="318" cy="55" r="10"/><circle cx="358" cy="55" r="10"/>
             </g>
-            <!-- Bilateral pattern cells -->
             <g fill="#d97757" stroke="none">
               <circle cx="102" cy="55" r="10" opacity="0.8"/><circle cx="278" cy="55" r="10" opacity="0.8"/><circle cx="190" cy="55" r="10" opacity="0.5"/>
             </g>
-            <!-- Field gradient bar -->
             <rect x="18" y="22" width="344" height="5" rx="2.5" fill="#d97757" opacity="0.12"/>
-            <!-- Stigmergic arrows: cell → field → cell -->
             <line x1="102" y1="43" x2="102" y2="30" stroke="#d97757" stroke-width="0.8" opacity="0.45"/>
             <polygon points="100,31 102,25 104,31" fill="#d97757" opacity="0.45"/>
             <line x1="278" y1="43" x2="278" y2="30" stroke="#d97757" stroke-width="0.8" opacity="0.45"/>
             <polygon points="276,31 278,25 280,31" fill="#d97757" opacity="0.45"/>
-            <!-- Long-range causal arc -->
             <path d="M107,42 Q190,4 273,42" stroke="#d97757" stroke-width="1.2" stroke-dasharray="4,2" fill="none" opacity="0.4"/>
             <text x="190" y="84" text-anchor="middle" font-family="monospace" font-size="8" fill="#5a5a56" opacity="0.6">field-mediated long-range coordination</text>
-          </svg>
-        </div>
-        <h3>How electric fields might coordinate collective cell decisions</h3>
-        <p>
-          Cells in a tissue are coupled by gap junctions and bathed in a self-generated electric field.
-          I showed that when ion channel conductances are modulated by this field — a stigmergic loop
-          where each cell modifies the shared medium it also reads — a lattice of identical cells can
-          spontaneously break symmetry and produce face-like voltage pre-patterns. Jacobian and Hessian
-          time-series analysis reveals that the field acts as a single low-dimensional control parameter,
-          catalyzing long-range causal interactions among cells that have no direct knowledge of one
-          another. The field is the medium through which the tissue computes a global plan from purely
-          local rules.
-        </p>
-        <div class="card-refs">
-          <a href="#pub-field">Manicka &amp; Levin, 2025</a> &middot;
-          <a href="#pub-coglens">Manicka &amp; Levin, 2019</a> &middot;
-          <a href="#pub-frogbrain">Manicka, Pai &amp; Levin, 2023</a>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-fig">
-          <svg viewBox="0 0 380 90" xmlns="http://www.w3.org/2000/svg" style="background:white;">
-            <defs>
-              <marker id="scArr" markerWidth="6" markerHeight="4" refX="5" refY="2" orient="auto">
-                <polygon points="0 0,6 2,0 4" fill="#d97757"/>
-              </marker>
-            </defs>
-            <!-- Input A: transient pulse -->
-            <g transform="translate(30,20)">
-              <path d="M0,18 L0,18 L8,18 L8,0 L20,0 L20,18 L28,18" stroke="#5a5a56" stroke-width="1.2" fill="none" opacity="0.4"/>
-              <text x="14" y="23" text-anchor="middle" font-family="monospace" font-size="8" fill="#5a5a56" opacity="0.65">A</text>
-            </g>
-            <!-- Input B: transient pulse -->
-            <g transform="translate(30,48)">
-              <path d="M0,18 L0,18 L8,18 L8,0 L20,0 L20,18 L28,18" stroke="#5a5a56" stroke-width="1.2" fill="none" opacity="0.4"/>
-              <text x="14" y="26" text-anchor="middle" font-family="monospace" font-size="8" fill="#5a5a56" opacity="0.65">B</text>
-            </g>
-            <!-- Arrows into network -->
-            <line x1="62" y1="34" x2="100" y2="38" stroke="#5a5a56" stroke-width="0.8" opacity="0.35" marker-end="url(#scArr)"/>
-            <line x1="62" y1="62" x2="100" y2="52" stroke="#5a5a56" stroke-width="0.8" opacity="0.35" marker-end="url(#scArr)"/>
-            <!-- 2x2 bioelectric lattice -->
-            <g fill="#f0efe8" stroke="#c8c7c0" stroke-width="1">
-              <circle cx="115" cy="32" r="10"/><circle cx="145" cy="32" r="10"/>
-              <circle cx="115" cy="58" r="10"/><circle cx="145" cy="58" r="10"/>
-            </g>
-            <!-- Gap junction connections -->
-            <line x1="126" y1="32" x2="134" y2="32" stroke="#c8c7c0" stroke-width="1.5"/>
-            <line x1="126" y1="58" x2="134" y2="58" stroke="#c8c7c0" stroke-width="1.5"/>
-            <line x1="115" y1="43" x2="115" y2="47" stroke="#c8c7c0" stroke-width="1.5"/>
-            <line x1="145" y1="43" x2="145" y2="47" stroke="#c8c7c0" stroke-width="1.5"/>
-            <!-- Voltage highlights on active cells -->
-            <circle cx="115" cy="32" r="10" fill="#d97757" opacity="0.5" stroke="none"/>
-            <circle cx="145" cy="58" r="10" fill="#d97757" opacity="0.35" stroke="none"/>
-            <!-- Arrow out -->
-            <line x1="158" y1="45" x2="195" y2="45" stroke="#d97757" stroke-width="1" opacity="0.5" marker-end="url(#scArr)"/>
-            <!-- Output: computed result -->
-            <g transform="translate(220,30)">
-              <rect x="-16" y="-2" width="72" height="32" rx="4" fill="none" stroke="#d97757" stroke-width="1" opacity="0.5"/>
-              <text x="20" y="17" text-anchor="middle" font-family="monospace" font-size="10" fill="#d97757" opacity="0.8">A AND B</text>
-            </g>
-            <!-- Output persists after input removed -->
+          </svg>`
+    },
+    {
+      subtitle: 'non-neural computation',
+      title: 'How bioelectric tissues might compute without a brain',
+      text: `A small bioelectric network can implement AND, OR, and NOT logic gates through learned ion channel conductance parameters. The inputs are transient: set externally, then removed. Yet the output persists. The network dynamically fixes the input state after each stimulus — a form of memory that emerges from learned ion-channel dynamics, not from any dedicated memory structure.`,
+      refs: [['Manicka & Levin, 2019','#pub-ben']],
+      svg: `<svg viewBox="0 0 380 90" xmlns="http://www.w3.org/2000/svg" style="background:white;">
+            <defs><marker id="scArr2" markerWidth="6" markerHeight="4" refX="5" refY="2" orient="auto"><polygon points="0 0,6 2,0 4" fill="#d97757"/></marker></defs>
+            <g transform="translate(30,20)"><path d="M0,18 L0,18 L8,18 L8,0 L20,0 L20,18 L28,18" stroke="#5a5a56" stroke-width="1.2" fill="none" opacity="0.4"/><text x="14" y="23" text-anchor="middle" font-family="monospace" font-size="8" fill="#5a5a56" opacity="0.65">A</text></g>
+            <g transform="translate(30,48)"><path d="M0,18 L0,18 L8,18 L8,0 L20,0 L20,18 L28,18" stroke="#5a5a56" stroke-width="1.2" fill="none" opacity="0.4"/><text x="14" y="26" text-anchor="middle" font-family="monospace" font-size="8" fill="#5a5a56" opacity="0.65">B</text></g>
+            <line x1="62" y1="34" x2="100" y2="38" stroke="#5a5a56" stroke-width="0.8" opacity="0.35" marker-end="url(#scArr2)"/>
+            <line x1="62" y1="62" x2="100" y2="52" stroke="#5a5a56" stroke-width="0.8" opacity="0.35" marker-end="url(#scArr2)"/>
+            <g fill="#f0efe8" stroke="#c8c7c0" stroke-width="1"><circle cx="115" cy="32" r="10"/><circle cx="145" cy="32" r="10"/><circle cx="115" cy="58" r="10"/><circle cx="145" cy="58" r="10"/></g>
+            <line x1="126" y1="32" x2="134" y2="32" stroke="#c8c7c0" stroke-width="1.5"/><line x1="126" y1="58" x2="134" y2="58" stroke="#c8c7c0" stroke-width="1.5"/><line x1="115" y1="43" x2="115" y2="47" stroke="#c8c7c0" stroke-width="1.5"/><line x1="145" y1="43" x2="145" y2="47" stroke="#c8c7c0" stroke-width="1.5"/>
+            <circle cx="115" cy="32" r="10" fill="#d97757" opacity="0.5" stroke="none"/><circle cx="145" cy="58" r="10" fill="#d97757" opacity="0.35" stroke="none"/>
+            <line x1="158" y1="45" x2="195" y2="45" stroke="#d97757" stroke-width="1" opacity="0.5" marker-end="url(#scArr2)"/>
+            <g transform="translate(220,30)"><rect x="-16" y="-2" width="72" height="32" rx="4" fill="none" stroke="#d97757" stroke-width="1" opacity="0.5"/><text x="20" y="17" text-anchor="middle" font-family="monospace" font-size="10" fill="#d97757" opacity="0.8">A AND B</text></g>
             <text x="240" y="68" text-anchor="middle" font-family="monospace" font-size="7.5" fill="#d97757" opacity="0.65">persists</text>
-            <!-- Small persistence trace: flat high line showing memory retained -->
             <line x1="305" y1="32" x2="355" y2="32" stroke="#d97757" stroke-width="1.2" opacity="0.5"/>
             <line x1="305" y1="55" x2="305" y2="32" stroke="#5a5a56" stroke-width="0.8" stroke-dasharray="2,2" opacity="0.45"/>
             <text x="330" y="22" text-anchor="middle" font-family="monospace" font-size="7" fill="#d97757" opacity="0.6">emergent</text>
             <text x="330" y="30" text-anchor="middle" font-family="monospace" font-size="7" fill="#d97757" opacity="0.6">memory</text>
             <text x="305" y="65" text-anchor="middle" font-family="monospace" font-size="7" fill="#5a5a56" opacity="0.55">input off</text>
-          </svg>
-        </div>
-        <h3>How bioelectric tissues might compute without a brain</h3>
-        <p>
-          Non-neural cells can compute. I showed that a small bioelectric network — cells coupled by
-          gap junctions — can implement AND, OR, and NOT logic gates through learned ion channel
-          conductance parameters acting as weights and biases. The inputs are transient: set externally
-          at discrete moments, then removed. Yet the output persists. The network dynamically fixes the
-          input state after each stimulus — a form of memory that emerges from the learned ion-channel
-          dynamics, not from any dedicated memory structure. Computation and memory co-emerge from the
-          same biophysics. But this memory is implicit and fragile. What makes biological memory
-          robust — durable enough to anchor a cell fate across a lifetime?
-        </p>
-        <div class="card-refs">
-          <a href="#pub-ben">Manicka &amp; Levin, 2019</a>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-fig">
-          <svg viewBox="0 0 380 90" xmlns="http://www.w3.org/2000/svg" style="background:white;">
-            <!-- LEFT HALF: CaMKII persistence trace -->
-            <!-- Time axis -->
+          </svg>`
+    },
+    {
+      subtitle: 'collective memory & rescue',
+      title: 'How inter-embryonic communication might create collective memories',
+      text: `A voltage pattern may last seconds; a cell fate lasts a lifetime. The cascade from membrane voltage through calcium influx to CaMKII activation creates a bistable switch. When embryos are stressed, CaMKII-derived signals produce a diffusive stress field. A single embryo's signal is too weak — but when multiple stressed embryos share a medium, their fields sum and cross a collective threshold, triggering group rescue.`,
+      refs: [['Manicka & Levin, 2025','#pub-field']],
+      svg: `<svg viewBox="0 0 380 90" xmlns="http://www.w3.org/2000/svg" style="background:white;">
             <line x1="12" y1="70" x2="175" y2="70" stroke="#e0dfd8" stroke-width="0.5"/>
-            <!-- Vmem: brief pulse then gone -->
             <path d="M12,68 C18,68 22,22 30,20 L55,20 C62,20 68,50 78,62 C85,68 95,69 175,69" stroke="#5a5a56" stroke-width="1" fill="none" opacity="0.25"/>
-            <!-- CaMKII: rises and locks -->
             <path d="M12,68 C30,68 55,55 75,38 C95,22 110,16 130,15 L175,15" stroke="#d97757" stroke-width="1.8" fill="none" opacity="0.75"/>
-            <!-- Labels -->
             <text x="50" y="17" font-family="monospace" font-size="7" fill="#5a5a56" opacity="0.6">Vmem</text>
             <text x="155" y="12" font-family="monospace" font-size="7" fill="#d97757" opacity="0.75" text-anchor="end">CaMKII</text>
             <text x="22" y="82" font-family="monospace" font-size="7" fill="#5a5a56" opacity="0.6">signal</text>
             <text x="145" y="82" font-family="monospace" font-size="7" fill="#d97757" opacity="0.65" text-anchor="end">memory</text>
-            <!-- Divider -->
             <line x1="190" y1="8" x2="190" y2="82" stroke="#e0dfd8" stroke-width="0.5" stroke-dasharray="3,3"/>
-            <!-- RIGHT HALF: Collective rescue -->
-            <!-- Three stressed embryos -->
-            <g transform="translate(228,28)">
-              <ellipse cx="0" cy="0" rx="12" ry="8" fill="#f0efe8" stroke="#c8c7c0" stroke-width="0.8"/>
-              <circle cx="-4" cy="-1" r="2" fill="#d97757" opacity="0.6"/>
-              <circle cx="4" cy="-1" r="2" fill="#d97757" opacity="0.6"/>
-            </g>
-            <g transform="translate(260,60)">
-              <ellipse cx="0" cy="0" rx="12" ry="8" fill="#f0efe8" stroke="#c8c7c0" stroke-width="0.8"/>
-              <circle cx="-4" cy="-1" r="2" fill="#d97757" opacity="0.6"/>
-              <circle cx="4" cy="-1" r="2" fill="#d97757" opacity="0.6"/>
-            </g>
-            <g transform="translate(228,60)">
-              <ellipse cx="0" cy="0" rx="12" ry="8" fill="#f0efe8" stroke="#c8c7c0" stroke-width="0.8"/>
-              <circle cx="-4" cy="-1" r="2" fill="#d97757" opacity="0.6"/>
-              <circle cx="4" cy="-1" r="2" fill="#d97757" opacity="0.6"/>
-            </g>
-            <!-- Stress signals radiating out (small waves) -->
+            <g transform="translate(228,28)"><ellipse cx="0" cy="0" rx="12" ry="8" fill="#f0efe8" stroke="#c8c7c0" stroke-width="0.8"/><circle cx="-4" cy="-1" r="2" fill="#d97757" opacity="0.6"/><circle cx="4" cy="-1" r="2" fill="#d97757" opacity="0.6"/></g>
+            <g transform="translate(260,60)"><ellipse cx="0" cy="0" rx="12" ry="8" fill="#f0efe8" stroke="#c8c7c0" stroke-width="0.8"/><circle cx="-4" cy="-1" r="2" fill="#d97757" opacity="0.6"/><circle cx="4" cy="-1" r="2" fill="#d97757" opacity="0.6"/></g>
+            <g transform="translate(228,60)"><ellipse cx="0" cy="0" rx="12" ry="8" fill="#f0efe8" stroke="#c8c7c0" stroke-width="0.8"/><circle cx="-4" cy="-1" r="2" fill="#d97757" opacity="0.6"/><circle cx="4" cy="-1" r="2" fill="#d97757" opacity="0.6"/></g>
             <path d="M241,30 C248,34 248,38 255,42" stroke="#d97757" stroke-width="0.7" fill="none" opacity="0.3"/>
             <path d="M241,58 C248,52 248,48 255,44" stroke="#d97757" stroke-width="0.7" fill="none" opacity="0.3"/>
             <path d="M228,50 C232,46 236,44 240,42" stroke="#d97757" stroke-width="0.7" fill="none" opacity="0.3"/>
-            <!-- Convergence point -->
             <circle cx="258" cy="42" r="3" fill="#d97757" opacity="0.4"/>
-            <!-- Arrow to threshold -->
             <line x1="264" y1="42" x2="290" y2="42" stroke="#d97757" stroke-width="1" opacity="0.5"/>
-            <!-- Threshold line -->
             <line x1="295" y1="18" x2="295" y2="68" stroke="#d97757" stroke-width="1.2" stroke-dasharray="4,2" opacity="0.5"/>
             <text x="295" y="78" text-anchor="middle" font-family="monospace" font-size="7" fill="#d97757" opacity="0.65">threshold</text>
-            <!-- Arrow past threshold -->
             <line x1="300" y1="42" x2="325" y2="42" stroke="#d97757" stroke-width="1.2" opacity="0.6"/>
             <polygon points="325,40 332,42 325,44" fill="#d97757" opacity="0.6"/>
-            <!-- RESCUE label -->
             <text x="352" y="46" text-anchor="middle" font-family="monospace" font-size="8" fill="#d97757" opacity="0.75" font-weight="bold">RESCUE</text>
-          </svg>
-        </div>
-        <h3>How inter-embryonic communication might create collective memories</h3>
-        <p>
-          A voltage pattern may last seconds; a cell fate lasts a lifetime. I model the cascade from
-          membrane voltage through calcium influx to CaMKII activation, where competitive
-          self-reinforcement creates a bistable switch: cells that saw high calcium lock ON, cells that
-          didn't lock OFF, and the pattern persists after the original signal is gone. This persistent
-          memory then enables something unexpected: when embryos are stressed, CaMKII-derived signals
-          produce a diffusive stress field. A single embryo's signal is too weak to trigger repair — the
-          self-cure paradox. But when multiple stressed embryos share a medium, their fields sum and cross
-          a collective threshold, triggering group rescue. Memory makes computation durable; collective
-          communication makes it powerful.
-        </p>
-        <div class="card-refs">
-          <a href="#pub-field">Manicka &amp; Levin, 2025</a> &middot;
-          <em style="opacity:0.6">collective rescue: ongoing</em>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-fig">
-          <svg viewBox="0 0 380 90" xmlns="http://www.w3.org/2000/svg" style="background:white;">
-            <!-- LEFT PANEL: Attention (effective connectivity) -->
-            <!-- Buffered inputs (faint) -->
-            <g stroke="#5a5a56" stroke-width="0.7" opacity="0.12">
-              <line x1="12" y1="8"  x2="85" y2="42"/><line x1="12" y1="19" x2="85" y2="43"/>
-              <line x1="12" y1="30" x2="85" y2="44"/><line x1="12" y1="63" x2="85" y2="48"/>
-              <line x1="12" y1="74" x2="85" y2="49"/><line x1="12" y1="85" x2="85" y2="50"/>
-            </g>
-            <!-- Active (effective) inputs -->
-            <g stroke="#d97757" stroke-width="1.8" opacity="0.6">
-              <line x1="12" y1="41" x2="85" y2="45"/><line x1="12" y1="52" x2="85" y2="47"/>
-            </g>
-            <!-- Input dots -->
-            <g fill="#5a5a56" opacity="0.15">
-              <circle cx="12" cy="8"  r="3"/><circle cx="12" cy="19" r="3"/><circle cx="12" cy="30" r="3"/>
-              <circle cx="12" cy="63" r="3"/><circle cx="12" cy="74" r="3"/><circle cx="12" cy="85" r="3"/>
-            </g>
-            <g fill="#d97757" opacity="0.6">
-              <circle cx="12" cy="41" r="3.5"/><circle cx="12" cy="52" r="3.5"/>
-            </g>
-            <!-- Gene node -->
+          </svg>`
+    },
+    {
+      subtitle: 'gene network attention',
+      title: 'How gene networks might use attention to compute and remember',
+      text: `A gene with eight regulators may in practice be controlled by two — the rest are buffered by the logic of the regulatory function. I developed measures that expose this hidden simplicity: effective connectivity (K_eff) counts the inputs that truly matter; unified canalization (K_u) exploits permutation symmetry among interchangeable ones. Across 70+ published biological networks, these measures explain why living systems sit near dynamical criticality even when their wiring predicts chaos.`,
+      refs: [['Manicka, Marques-Pita & Rocha, 2022','#pub-keff'],['Manicka et al., 2023','#pub-nonlinearity'],['Biswas, Manicka et al., 2021','#pub-grnmemory']],
+      svg: `<svg viewBox="0 0 380 90" xmlns="http://www.w3.org/2000/svg" style="background:white;">
+            <g stroke="#5a5a56" stroke-width="0.7" opacity="0.12"><line x1="12" y1="8" x2="85" y2="42"/><line x1="12" y1="19" x2="85" y2="43"/><line x1="12" y1="30" x2="85" y2="44"/><line x1="12" y1="63" x2="85" y2="48"/><line x1="12" y1="74" x2="85" y2="49"/><line x1="12" y1="85" x2="85" y2="50"/></g>
+            <g stroke="#d97757" stroke-width="1.8" opacity="0.6"><line x1="12" y1="41" x2="85" y2="45"/><line x1="12" y1="52" x2="85" y2="47"/></g>
+            <g fill="#5a5a56" opacity="0.15"><circle cx="12" cy="8" r="3"/><circle cx="12" cy="19" r="3"/><circle cx="12" cy="30" r="3"/><circle cx="12" cy="63" r="3"/><circle cx="12" cy="74" r="3"/><circle cx="12" cy="85" r="3"/></g>
+            <g fill="#d97757" opacity="0.6"><circle cx="12" cy="41" r="3.5"/><circle cx="12" cy="52" r="3.5"/></g>
             <circle cx="97" cy="46" r="12" fill="#d97757" opacity="0.8" stroke="#bf5a3a" stroke-width="1"/>
-            <!-- Arrow + K_eff label -->
             <line x1="111" y1="46" x2="131" y2="46" stroke="#d97757" stroke-width="1" opacity="0.4"/>
             <polygon points="131,43.5 138,46 131,48.5" fill="#d97757" opacity="0.4"/>
-            <text x="150" y="43" font-family="monospace" font-size="9" fill="#d97757" opacity="0.8">K<tspan font-size="6" dy="3">eff</tspan><tspan dy="-3">=2</tspan></text>
-            <!-- Panel label -->
+            <text x="150" y="43" font-family="monospace" font-size="9" fill="#d97757" opacity="0.8">Keff=2</text>
             <text x="90" y="84" text-anchor="middle" font-family="monospace" font-size="7" fill="#5a5a56" opacity="0.6">attention</text>
-            <!-- Divider -->
             <line x1="190" y1="8" x2="190" y2="82" stroke="#e0dfd8" stroke-width="0.5" stroke-dasharray="3,3"/>
-            <!-- RIGHT PANEL: Memory (input retention in bio vs random GRNs) -->
             <line x1="205" y1="73" x2="370" y2="73" stroke="#e0dfd8" stroke-width="0.8"/>
             <line x1="205" y1="73" x2="205" y2="10" stroke="#e0dfd8" stroke-width="0.8"/>
-            <!-- Brief input pulse -->
             <path d="M207,72 L207,30 L219,30 L219,72" stroke="#5a5a56" stroke-width="1" fill="none" opacity="0.4"/>
             <text x="213" y="24" text-anchor="middle" font-family="monospace" font-size="7" fill="#5a5a56" opacity="0.55">input</text>
-            <!-- Biological GRN: slow decay (retains memory) -->
-            <path d="M219,30 C240,30 265,38 295,48 C320,54 345,58 368,61"
-                  stroke="#d97757" stroke-width="1.5" fill="none" opacity="0.65"/>
-            <!-- Random network: fast decay (forgets quickly) -->
-            <path d="M219,30 C230,30 243,48 258,62 C265,68 272,72 280,73 L368,73"
-                  stroke="#5a5a56" stroke-width="1.2" fill="none" stroke-dasharray="4,3" opacity="0.4"/>
-            <!-- Trace labels -->
+            <path d="M219,30 C240,30 265,38 295,48 C320,54 345,58 368,61" stroke="#d97757" stroke-width="1.5" fill="none" opacity="0.65"/>
+            <path d="M219,30 C230,30 243,48 258,62 C265,68 272,72 280,73 L368,73" stroke="#5a5a56" stroke-width="1.2" fill="none" stroke-dasharray="4,3" opacity="0.4"/>
             <text x="355" y="55" text-anchor="end" font-family="monospace" font-size="7" fill="#d97757" opacity="0.7">bio</text>
             <text x="285" y="68" text-anchor="middle" font-family="monospace" font-size="7" fill="#5a5a56" opacity="0.55">rnd</text>
-            <!-- Panel label -->
             <text x="287" y="84" text-anchor="middle" font-family="monospace" font-size="7" fill="#5a5a56" opacity="0.6">memory</text>
-          </svg>
-        </div>
-        <h3>How gene networks might use attention to compute and remember</h3>
-        <p>
-          A gene with eight regulators may in practice be controlled by two — the rest are
-          buffered by the logic of the regulatory function. I developed measures that expose this
-          hidden simplicity: effective connectivity (K<sub>eff</sub>) counts the inputs that truly
-          matter; unified canalization (K<sub>u</sub>) exploits permutation symmetry among
-          interchangeable ones. Across 70+ published biological networks, these measures explain why
-          living systems sit near dynamical criticality even when their wiring predicts chaos.
-          The same sparsity that makes a gene selective also shapes what it remembers: biological
-          GRNs carry more memory of certain kinds than random networks of equal size, and that
-          memory structure is carved by canalization. Attention and memory are two faces of the
-          same computational architecture.
-        </p>
-        <div class="card-refs">
-          <a href="#pub-keff">Manicka, Marques-Pita &amp; Rocha, 2022</a> &middot;
-          <a href="#pub-nonlinearity">Manicka, Johnson, Levin &amp; Murrugarra, 2023</a> &middot;
-          <a href="#pub-grnmemory">Biswas, Manicka, Hoel &amp; Levin, 2021</a> &middot;
-          <a href="#pub-dissertation">Manicka, 2017 (dissertation)</a>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-fig">
-          <svg viewBox="0 0 380 90" xmlns="http://www.w3.org/2000/svg" style="background:white;">
-            <defs>
-              <marker id="cgArr" markerWidth="6" markerHeight="4" refX="5" refY="2" orient="auto">
-                <polygon points="0 0,6 2,0 4" fill="#d97757"/>
-              </marker>
-            </defs>
-            <!-- LEFT: Ring of cells colored by causal module membership -->
-            <!-- Fine-grained ring connections (faint: complex cell-level wiring) -->
-            <g stroke="#c8c7c0" stroke-width="1.2" opacity="0.25">
-              <line x1="111" y1="44" x2="103" y2="25"/><line x1="103" y1="25" x2="85"  y2="18"/>
-              <line x1="85"  y1="18" x2="67"  y2="25"/><line x1="67"  y1="25" x2="59"  y2="44"/>
-              <line x1="59"  y1="44" x2="67"  y2="63"/><line x1="67"  y1="63" x2="85"  y2="70"/>
-              <line x1="85"  y1="70" x2="103" y2="63"/><line x1="103" y1="63" x2="111" y2="44"/>
-            </g>
-            <!-- M1: top-right (terracotta) -->
-            <circle cx="111" cy="44" r="7" fill="#d97757" opacity="0.75" stroke="#bf5a3a" stroke-width="0.8"/>
-            <circle cx="103" cy="25" r="7" fill="#d97757" opacity="0.75" stroke="#bf5a3a" stroke-width="0.8"/>
-            <circle cx="85"  cy="18" r="7" fill="#d97757" opacity="0.75" stroke="#bf5a3a" stroke-width="0.8"/>
-            <!-- M2: left (medium gray) -->
-            <circle cx="67" cy="25" r="7" fill="#7a7a70" opacity="0.55" stroke="#5a5a56" stroke-width="0.8"/>
-            <circle cx="59" cy="44" r="7" fill="#7a7a70" opacity="0.55" stroke="#5a5a56" stroke-width="0.8"/>
-            <circle cx="67" cy="63" r="7" fill="#7a7a70" opacity="0.55" stroke="#5a5a56" stroke-width="0.8"/>
-            <!-- M3: bottom-right (light) -->
-            <circle cx="85"  cy="70" r="7" fill="#f0efe8" stroke="#c8c7c0" stroke-width="1"/>
-            <circle cx="103" cy="63" r="7" fill="#f0efe8" stroke="#c8c7c0" stroke-width="1"/>
-            <!-- Module labels -->
-            <text x="110" y="14" font-family="monospace" font-size="9" fill="#d97757" opacity="0.8">M<tspan font-size="5" dy="2">1</tspan></text>
-            <text x="48"  y="47" text-anchor="end" font-family="monospace" font-size="9" fill="#7a7a70" opacity="0.7">M<tspan font-size="5" dy="2">2</tspan></text>
-            <text x="100" y="85" font-family="monospace" font-size="9" fill="#5a5a56" opacity="0.55">M<tspan font-size="5" dy="2">3</tspan></text>
-            <!-- Divider -->
+          </svg>`
+    },
+    {
+      subtitle: 'multicellular patterning',
+      title: 'How multicellular patterning networks might leverage coarse-grained causation',
+      text: `A ring of twelve cells, each containing an identical local gene network, can learn to maintain and regenerate a spatial pattern — if you let the inner network tune the outer network's weights. I use machine learning to discover two-level architectures, then causal-network analysis to interpret what the learned system actually does: breaking symmetry, establishing long-range influence, and partitioning into modular control domains.`,
+      refs: [['Manicka & Levin, 2022','#pub-mindev'],['Manicka et al., 2019','#pub-esn']],
+      svg: `<svg viewBox="0 0 380 90" xmlns="http://www.w3.org/2000/svg" style="background:white;">
+            <defs><marker id="cgArr2" markerWidth="6" markerHeight="4" refX="5" refY="2" orient="auto"><polygon points="0 0,6 2,0 4" fill="#d97757"/></marker></defs>
+            <g stroke="#c8c7c0" stroke-width="1.2" opacity="0.25"><line x1="111" y1="44" x2="103" y2="25"/><line x1="103" y1="25" x2="85" y2="18"/><line x1="85" y1="18" x2="67" y2="25"/><line x1="67" y1="25" x2="59" y2="44"/><line x1="59" y1="44" x2="67" y2="63"/><line x1="67" y1="63" x2="85" y2="70"/><line x1="85" y1="70" x2="103" y2="63"/><line x1="103" y1="63" x2="111" y2="44"/></g>
+            <circle cx="111" cy="44" r="7" fill="#d97757" opacity="0.75" stroke="#bf5a3a" stroke-width="0.8"/><circle cx="103" cy="25" r="7" fill="#d97757" opacity="0.75" stroke="#bf5a3a" stroke-width="0.8"/><circle cx="85" cy="18" r="7" fill="#d97757" opacity="0.75" stroke="#bf5a3a" stroke-width="0.8"/>
+            <circle cx="67" cy="25" r="7" fill="#7a7a70" opacity="0.55" stroke="#5a5a56" stroke-width="0.8"/><circle cx="59" cy="44" r="7" fill="#7a7a70" opacity="0.55" stroke="#5a5a56" stroke-width="0.8"/><circle cx="67" cy="63" r="7" fill="#7a7a70" opacity="0.55" stroke="#5a5a56" stroke-width="0.8"/>
+            <circle cx="85" cy="70" r="7" fill="#f0efe8" stroke="#c8c7c0" stroke-width="1"/><circle cx="103" cy="63" r="7" fill="#f0efe8" stroke="#c8c7c0" stroke-width="1"/>
+            <text x="110" y="14" font-family="monospace" font-size="9" fill="#d97757" opacity="0.8">M1</text>
+            <text x="48" y="47" text-anchor="end" font-family="monospace" font-size="9" fill="#7a7a70" opacity="0.7">M2</text>
+            <text x="100" y="85" font-family="monospace" font-size="9" fill="#5a5a56" opacity="0.55">M3</text>
             <line x1="140" y1="8" x2="140" y2="82" stroke="#e0dfd8" stroke-width="0.5" stroke-dasharray="3,3"/>
-            <!-- RIGHT: Coarse-grained causal module graph -->
-            <!-- M1 node -->
             <circle cx="240" cy="27" r="15" fill="#d97757" opacity="0.7" stroke="#bf5a3a" stroke-width="1"/>
-            <text x="240" y="31" text-anchor="middle" font-family="monospace" font-size="9" fill="white" opacity="0.95">M<tspan font-size="5.5" dy="2">1</tspan></text>
-            <!-- M2 node -->
+            <text x="240" y="31" text-anchor="middle" font-family="monospace" font-size="9" fill="white" opacity="0.95">M1</text>
             <circle cx="215" cy="63" r="15" fill="#7a7a70" opacity="0.5" stroke="#5a5a56" stroke-width="1"/>
-            <text x="215" y="67" text-anchor="middle" font-family="monospace" font-size="9" fill="white" opacity="0.9">M<tspan font-size="5.5" dy="2">2</tspan></text>
-            <!-- M3 node -->
+            <text x="215" y="67" text-anchor="middle" font-family="monospace" font-size="9" fill="white" opacity="0.9">M2</text>
             <circle cx="318" cy="55" r="15" fill="#f0efe8" stroke="#c8c7c0" stroke-width="1.2"/>
-            <text x="318" y="59" text-anchor="middle" font-family="monospace" font-size="9" fill="#5a5a56" opacity="0.7">M<tspan font-size="5.5" dy="2">3</tspan></text>
-            <!-- Causal arrows between modules -->
-            <line x1="231" y1="39" x2="224" y2="51" stroke="#d97757" stroke-width="1.5" opacity="0.65" marker-end="url(#cgArr)"/>
-            <line x1="254" y1="32" x2="306" y2="50" stroke="#d97757" stroke-width="1.5" opacity="0.65" marker-end="url(#cgArr)"/>
-            <line x1="230" y1="62" x2="305" y2="57" stroke="#d97757" stroke-width="1"   opacity="0.35" marker-end="url(#cgArr)"/>
-            <!-- Panel label -->
+            <text x="318" y="59" text-anchor="middle" font-family="monospace" font-size="9" fill="#5a5a56" opacity="0.7">M3</text>
+            <line x1="231" y1="39" x2="224" y2="51" stroke="#d97757" stroke-width="1.5" opacity="0.65" marker-end="url(#cgArr2)"/>
+            <line x1="254" y1="32" x2="306" y2="50" stroke="#d97757" stroke-width="1.5" opacity="0.65" marker-end="url(#cgArr2)"/>
+            <line x1="230" y1="62" x2="305" y2="57" stroke="#d97757" stroke-width="1" opacity="0.35" marker-end="url(#cgArr2)"/>
             <text x="265" y="84" text-anchor="middle" font-family="monospace" font-size="7" fill="#5a5a56" opacity="0.6">causal modules</text>
-          </svg>
-        </div>
-        <h3>How multicellular patterning networks might leverage coarse-grained causation</h3>
-        <p>
-          A ring of twelve cells, each containing an identical local gene network, can learn to maintain
-          and regenerate a spatial pattern — if you let the inner network tune the outer network's
-          weights. I use machine learning to discover these two-level architectures, then causal-network
-          analysis to interpret what the learned system is actually doing: breaking symmetry, establishing
-          long-range influence, and partitioning into modular control domains. The point is not just that
-          the system works, but that it is small enough to fully explain — a proof of sufficiency where
-          every mechanism earns its place.
-        </p>
-        <div class="card-refs">
-          <a href="#pub-mindev">Manicka &amp; Levin, 2022</a> &middot;
-          <a href="#pub-esn">Manicka, Hammelman, Siegelmann &amp; Levin, 2019</a> &middot;
-          <a href="#pub-lifelong">Kudithipudi, ..., Manicka, ..., Siegelmann, 2022</a>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-fig">
-          <svg viewBox="0 0 380 90" xmlns="http://www.w3.org/2000/svg" style="background:white;">
+          </svg>`
+    },
+    {
+      subtitle: 'minimal adaptive agents',
+      title: 'How minimal adaptive agents cognize in dynamic state space',
+      text: `Before working on tissues, I asked the same question about minimal adaptive agents: given a system with only a handful of neurons and a body, what is it actually computing? I built the simplest agent that could sustain itself in a continuous environment, then subjected it to an exhaustive dynamical 'psychoanalysis' — mapping how internal states, sensorimotor coupling, and environmental feedback jointly produce cognition-like behavior.`,
+      refs: [['Manicka & Harvey, 2008','#pub-psychoanalysis'],['Manicka & Di Paolo, 2009','#pub-ultrastability']],
+      svg: `<svg viewBox="0 0 380 90" xmlns="http://www.w3.org/2000/svg" style="background:white;">
             <defs>
-              <marker id="agF" markerWidth="5" markerHeight="4" refX="4" refY="2" orient="auto">
-                <polygon points="0 0,5 2,0 4" fill="#d97757"/>
-              </marker>
-              <marker id="agI" markerWidth="5" markerHeight="4" refX="4" refY="2" orient="auto">
-                <polygon points="0 0,5 2,0 4" fill="#5a5a56"/>
-              </marker>
+              <marker id="agF2" markerWidth="5" markerHeight="4" refX="4" refY="2" orient="auto"><polygon points="0 0,5 2,0 4" fill="#d97757"/></marker>
+              <marker id="agI2" markerWidth="5" markerHeight="4" refX="4" refY="2" orient="auto"><polygon points="0 0,5 2,0 4" fill="#5a5a56"/></marker>
             </defs>
-            <!-- LEFT PANEL: Phase portrait (state space) -->
             <line x1="25" y1="73" x2="178" y2="73" stroke="#e0dfd8" stroke-width="0.8"/>
             <line x1="25" y1="73" x2="25" y2="8" stroke="#e0dfd8" stroke-width="0.8"/>
-            <!-- Limit cycle attractor -->
             <ellipse cx="100" cy="40" rx="52" ry="28" fill="none" stroke="#d97757" stroke-width="1.5" opacity="0.7"/>
-            <!-- Flow direction arrows tangent to cycle at four cardinal points -->
-            <line x1="97" y1="12" x2="104" y2="12" stroke="#d97757" stroke-width="1.2" opacity="0.65" marker-end="url(#agF)"/>
-            <line x1="152" y1="37" x2="152" y2="44" stroke="#d97757" stroke-width="1.2" opacity="0.65" marker-end="url(#agF)"/>
-            <line x1="103" y1="68" x2="96" y2="68" stroke="#d97757" stroke-width="1.2" opacity="0.65" marker-end="url(#agF)"/>
-            <line x1="48" y1="43" x2="48" y2="36" stroke="#d97757" stroke-width="1.2" opacity="0.65" marker-end="url(#agF)"/>
-            <!-- Converging trajectories from outside basin -->
-            <path d="M18,16 C30,10 46,18 58,26 C68,33 68,38 72,40" stroke="#5a5a56" stroke-width="0.9" fill="none" opacity="0.35" marker-end="url(#agI)"/>
-            <path d="M168,70 C162,62 158,53 153,46" stroke="#5a5a56" stroke-width="0.9" fill="none" opacity="0.35" marker-end="url(#agI)"/>
-            <!-- Panel label -->
+            <line x1="97" y1="12" x2="104" y2="12" stroke="#d97757" stroke-width="1.2" opacity="0.65" marker-end="url(#agF2)"/>
+            <line x1="152" y1="37" x2="152" y2="44" stroke="#d97757" stroke-width="1.2" opacity="0.65" marker-end="url(#agF2)"/>
+            <line x1="103" y1="68" x2="96" y2="68" stroke="#d97757" stroke-width="1.2" opacity="0.65" marker-end="url(#agF2)"/>
+            <line x1="48" y1="43" x2="48" y2="36" stroke="#d97757" stroke-width="1.2" opacity="0.65" marker-end="url(#agF2)"/>
+            <path d="M18,16 C30,10 46,18 58,26 C68,33 68,38 72,40" stroke="#5a5a56" stroke-width="0.9" fill="none" opacity="0.35" marker-end="url(#agI2)"/>
+            <path d="M168,70 C162,62 158,53 153,46" stroke="#5a5a56" stroke-width="0.9" fill="none" opacity="0.35" marker-end="url(#agI2)"/>
             <text x="100" y="84" text-anchor="middle" font-family="monospace" font-size="7" fill="#5a5a56" opacity="0.6">state space</text>
-            <!-- Divider -->
             <line x1="193" y1="8" x2="193" y2="82" stroke="#e0dfd8" stroke-width="0.5" stroke-dasharray="3,3"/>
-            <!-- RIGHT PANEL: Correlated env + internal state traces -->
             <line x1="207" y1="73" x2="370" y2="73" stroke="#e0dfd8" stroke-width="0.8"/>
-            <line x1="207" y1="73" x2="207" y2="8"  stroke="#e0dfd8" stroke-width="0.8"/>
-            <!-- Environmental signal (gray dashed) -->
-            <path d="M207,42 C218,26 236,26 247,42 C258,58 276,58 287,42 C298,26 316,26 327,42 C338,58 356,58 367,42"
-                  stroke="#5a5a56" stroke-width="1.2" fill="none" stroke-dasharray="4,3" opacity="0.45"/>
-            <!-- Internal state (terracotta solid, slightly lagged — tracks environment) -->
-            <path d="M207,50 C220,26 238,24 252,42 C264,60 280,60 292,42 C304,26 320,24 336,42 C348,60 362,58 367,50"
-                  stroke="#d97757" stroke-width="1.5" fill="none" opacity="0.65"/>
-            <!-- Trace labels near first peak -->
+            <line x1="207" y1="73" x2="207" y2="8" stroke="#e0dfd8" stroke-width="0.8"/>
+            <path d="M207,42 C218,26 236,26 247,42 C258,58 276,58 287,42 C298,26 316,26 327,42 C338,58 356,58 367,42" stroke="#5a5a56" stroke-width="1.2" fill="none" stroke-dasharray="4,3" opacity="0.45"/>
+            <path d="M207,50 C220,26 238,24 252,42 C264,60 280,60 292,42 C304,26 320,24 336,42 C348,60 362,58 367,50" stroke="#d97757" stroke-width="1.5" fill="none" opacity="0.65"/>
             <text x="229" y="21" text-anchor="middle" font-family="monospace" font-size="7" fill="#5a5a56" opacity="0.6">env</text>
             <text x="250" y="13" text-anchor="middle" font-family="monospace" font-size="7" fill="#d97757" opacity="0.7">state</text>
-            <!-- Panel label -->
             <text x="287" y="84" text-anchor="middle" font-family="monospace" font-size="7" fill="#5a5a56" opacity="0.6">state encodes world</text>
-          </svg>
-        </div>
-        <h3>How minimal adaptive agents cognize in the dynamic state space</h3>
-        <p>
-          Before working on tissues, I asked the same question about minimal adaptive agents: given
-          a system with only a handful of neurons and a body, what is it actually computing? At
-          Sussex I built the simplest agent that could sustain itself in a continuous environment,
-          then subjected it to an exhaustive dynamical 'psychoanalysis' — mapping how internal states,
-          sensorimotor coupling, and environmental feedback jointly produce cognition-like behavior.
-          In follow-up work, I studied how evolved agents ground referential signals in shared
-          sensorimotor experience, and how physical spring networks achieve ultrastability through
-          local homeostatic rules. In each case: build the simplest possible system, then uncover the
-          computation it performs.
-        </p>
-        <div class="card-refs">
-          <a href="#pub-psychoanalysis">Manicka &amp; Harvey, 2008</a> &middot;
-          <a href="#pub-ultrastability">Manicka &amp; Di Paolo, 2009</a> &middot;
-          <a href="#pub-referential">Manicka, 2012</a>
-        </div>
+          </svg>`
+    }
+  ];
+
+  const track = document.getElementById('tape-track');
+  const detail = document.getElementById('tape-detail');
+  const detailInner = document.getElementById('tape-detail-inner');
+  let activeIdx = null;
+  let detailHover = false;
+  let closeTimer = null;
+
+  detail.addEventListener('mouseenter', () => { detailHover = true; if (closeTimer) { clearTimeout(closeTimer); closeTimer = null; } });
+  detail.addEventListener('mouseleave', () => { detailHover = false; detail.classList.remove('open'); });
+
+  window.__scheduleCloseDetail = function() {
+    if (closeTimer) clearTimeout(closeTimer);
+    closeTimer = setTimeout(() => {
+      if (!detailHover) detail.classList.remove('open');
+    }, 150);
+  };
+  window.__cancelCloseDetail = function() {
+    if (closeTimer) { clearTimeout(closeTimer); closeTimer = null; }
+  };
+
+  function buildItems(dupSet) {
+    return items.map((item, i) => {
+      const div = document.createElement('div');
+      div.className = 'tape-item';
+      div.dataset.idx = dupSet ? i + items.length : i;
+      div.innerHTML = `
+        ${item.svg}
+        <div class="tape-item-label">${item.subtitle}</div>
+        <div class="tape-item-title">${item.title}</div>
+      `;
+      return div;
+    });
+  }
+
+  // Build original + duplicate set for seamless loop
+  buildItems(false).forEach(el => track.appendChild(el));
+  buildItems(true).forEach(el => track.appendChild(el));
+
+  function showDetail(idx) {
+    const item = items[idx % items.length];
+    const refs = item.refs.map(([label, href]) =>
+      `<a href="${href}">${label}</a>`).join(' · ');
+    detailInner.innerHTML = `
+      <div class="tape-detail-fig">
+        ${item.svg}
+        <div class="tape-detail-fig-caption">${item.subtitle}</div>
       </div>
-    </div>
-  </section>
+      <div class="tape-detail-text">
+        <div class="tape-detail-subtitle">${item.subtitle}</div>
+        <h3>${item.title}</h3>
+        <p>${item.text}</p>
+        <div class="tape-detail-refs">${refs}</div>
+      </div>
+    `;
+    if (closeTimer) { clearTimeout(closeTimer); closeTimer = null; }
+    detail.classList.add('open');
+  }
+  window.__showTapeDetail = showDetail;
 
+  function hideDetail() {
+    detail.classList.remove('open');
+    document.querySelectorAll('.tape-item.active').forEach(el => el.classList.remove('active'));
+    activeIdx = null;
+  }
 
-  <!-- ==================== PUBLICATIONS ==================== -->
-  <section id="publications">
-    <h2>Publications</h2>
-    <p class="lead" style="margin-bottom:8px;">
-      Full list on <a href="https://scholar.google.com/citations?user=4cc0wewAAAAJ&hl=en" target="_blank" rel="noopener">Google Scholar</a>.
-    </p>
+  track.addEventListener('mouseenter', () => track.classList.add('paused'));
+  track.addEventListener('mouseleave', () => {
+    track.classList.remove('paused');
+    hideDetail();
+  });
 
-    <div class="pub-year">2025</div>
+  track.addEventListener('mouseover', e => {
+    const item = e.target.closest('.tape-item');
+    if (!item) return;
+    const idx = parseInt(item.dataset.idx);
+    if (idx === activeIdx) return;
+    activeIdx = idx;
+    document.querySelectorAll('.tape-item.active').forEach(el => el.classList.remove('active'));
+    item.classList.add('active');
+    // Also highlight the duplicate
+    document.querySelectorAll(`.tape-item[data-idx="${(idx + items.length) % (items.length * 2)}"]`)
+      .forEach(el => el.classList.add('active'));
+    showDetail(idx);
+  });
+})();
 
-    <div class="pub" id="pub-field">
-      <div class="title"><a href="https://www.cell.com/cell-reports-physical-science/fulltext/S2666-3864(25)00464-3" target="_blank" rel="noopener">Field-mediated bioelectric basis of morphogenetic prepatterning</a></div>
-      <div class="meta">S. Manicka, M. Levin &middot; <em>Cell Reports Physical Science</em></div>
-    </div>
+(function() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
 
-    <div class="pub-year">2023</div>
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+})();
 
-    <div class="pub" id="pub-frogbrain">
-      <div class="title"><a href="https://www.cell.com/iscience/fulltext/S2589-0042(23)02475-6" target="_blank" rel="noopener">Information integration during bioelectric regulation of morphogenesis of the embryonic frog brain</a></div>
-      <div class="meta">S. Manicka, V. P. Pai, M. Levin &middot; <em>iScience</em>, 26(12)</div>
-    </div>
+// ── 3D CAROUSEL ──
+(function() {
+  const RADIUS = 320;       // ring radius in px (smaller = denser)
+  const BASE_SPEED = 0.0015;
+  const MAX_BOOST = 0.012;  // additional rad/frame at edge
+  let speed = BASE_SPEED;
+  const TILT = -12;         // x-axis tilt (deg) — set in CSS .carousel-stage
 
-    <div class="pub" id="pub-nonlinearity">
-      <div class="title"><a href="https://www.nature.com/articles/s41540-023-00273-w" target="_blank" rel="noopener">The nonlinearity of regulation in biological networks</a></div>
-      <div class="meta">S. Manicka, K. Johnson, M. Levin, D. Murrugarra &middot; <em>npj Systems Biology and Applications</em>, 9, 10</div>
-    </div>
+  // Reuse data from the tape
+  const items = [
+    { subtitle:'field-mediated long-range coordination', title:'How electric fields might coordinate collective cell decisions' },
+    { subtitle:'non-neural computation',                  title:'How bioelectric tissues might compute without a brain' },
+    { subtitle:'collective memory & rescue',               title:'How inter-embryonic communication might create collective memories' },
+    { subtitle:'gene network attention',                   title:'How gene networks might use attention to compute and remember' },
+    { subtitle:'multicellular patterning',                 title:'How multicellular patterning networks might leverage coarse-grained causation' },
+    { subtitle:'minimal adaptive agents',                  title:'How minimal adaptive agents cognize in dynamic state space' }
+  ];
 
-    <div class="pub-year">2022</div>
+  let ring, cards = [], angle = 0, paused = false, animId = null, built = false;
 
-    <div class="pub" id="pub-mindev">
-      <div class="title"><a href="https://www.mdpi.com/1099-4300/24/1/107" target="_blank" rel="noopener">Minimal developmental computation: a causal network approach to understand morphogenetic pattern formation</a></div>
-      <div class="meta">S. Manicka, M. Levin &middot; <em>Entropy</em>, 24(1), 107</div>
-    </div>
+  function buildCards() {
+    ring = document.getElementById('carousel-ring');
+    if (!ring) return;
+    ring.innerHTML = '';
+    cards = [];
 
-    <div class="pub" id="pub-keff">
-      <div class="title"><a href="https://royalsocietypublishing.org/doi/10.1098/rsif.2021.0659" target="_blank" rel="noopener">Effective connectivity determines the critical dynamics of biochemical networks</a></div>
-      <div class="meta">S. Manicka, M. Marques-Pita, L. M. Rocha &middot; <em>Journal of the Royal Society Interface</em>, 19(186), 20210659</div>
-    </div>
+    // Pull SVGs from the tape items already built
+    const tapeItems = document.querySelectorAll('#tape-track .tape-item');
+    const svgs = [];
+    for (let i = 0; i < items.length && i < tapeItems.length; i++) {
+      const svg = tapeItems[i].querySelector('svg');
+      svgs.push(svg ? svg.outerHTML : '');
+    }
 
-    <div class="pub" id="pub-lifelong">
-      <div class="title"><a href="https://www.nature.com/articles/s42256-022-00452-0" target="_blank" rel="noopener">Biological underpinnings for lifelong learning machines</a></div>
-      <div class="meta">D. Kudithipudi, ..., S. Manicka, ..., H. T. Siegelmann &middot; <em>Nature Machine Intelligence</em>, 4(3), 196&ndash;210</div>
-    </div>
+    items.forEach((item, i) => {
+      const card = document.createElement('div');
+      card.className = 'carousel-card';
+      card.dataset.idx = i;
+      card.innerHTML = `${svgs[i] || ''}
+        <div class="tape-item-label">${item.subtitle}</div>
+        <div class="tape-item-title">${item.title}</div>`;
+      card.addEventListener('mouseenter', () => onHover(i));
+      card.addEventListener('mouseleave', onLeave);
+      ring.appendChild(card);
+      cards.push(card);
+    });
+    built = true;
+  }
 
-    <div class="pub-year">2021</div>
+  function onHover(i) {
+    paused = true;
+    if (window.__cancelCloseDetail) window.__cancelCloseDetail();
+    if (window.__showTapeDetail) window.__showTapeDetail(i);
+  }
+  function onLeave() {
+    paused = false;
+    if (window.__scheduleCloseDetail) window.__scheduleCloseDetail();
+  }
 
-    <div class="pub" id="pub-grnmemory">
-      <div class="title"><a href="https://www.cell.com/iscience/fulltext/S2589-0042(21)00099-7" target="_blank" rel="noopener">Gene regulatory networks exhibit several kinds of memory: quantification of memory in biological and random transcriptional networks</a></div>
-      <div class="meta">S. Biswas, S. Manicka, E. Hoel, M. Levin &middot; <em>iScience</em>, 24(3), 102131</div>
-    </div>
+  function frame() {
+    if (!paused) angle += speed;
+    const n = cards.length;
+    for (let i = 0; i < n; i++) {
+      const cardAngle = angle + (i / n) * Math.PI * 2;
+      const x = Math.sin(cardAngle) * RADIUS;
+      const z = Math.cos(cardAngle) * RADIUS;
+      const yRot = (cardAngle * 180 / Math.PI);
+      const h = cards[i].offsetHeight || 240;
+      cards[i].style.transform = `translate3d(${x}px, ${-h/2}px, ${z}px) rotateY(${yRot}deg)`;
+      // Front (z = +R) → 1; back (z = -R) → 0.18
+      const t = (z + RADIUS) / (2 * RADIUS);
+      const opacity = 0.22 + t * 0.78;
+      cards[i].style.opacity = opacity.toFixed(3);
+      cards[i].style.zIndex = Math.round(z + RADIUS);
+    }
+    animId = requestAnimationFrame(frame);
+  }
 
-    <div class="pub-year">2019</div>
+  window.__carouselInit = function() {
+    if (!built) buildCards();
+    if (animId) cancelAnimationFrame(animId);
+    paused = false;
+    const wrap = document.getElementById('layout-carousel');
+    if (wrap && !wrap.__mouseBound) {
+      wrap.addEventListener('mousemove', e => {
+        const rect = wrap.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width; // 0..1
+        const offset = (x - 0.5) * 2; // -1..1
+        // Dead zone in middle 30%
+        const dead = 0.15;
+        let signed = 0;
+        if (offset > dead) signed = (offset - dead) / (1 - dead);
+        else if (offset < -dead) signed = (offset + dead) / (1 - dead);
+        speed = BASE_SPEED + signed * MAX_BOOST;
+      });
+      wrap.addEventListener('mouseleave', () => { speed = BASE_SPEED; });
+      wrap.__mouseBound = true;
+    }
+    frame();
+  };
+  window.__carouselStop = function() {
+    if (animId) { cancelAnimationFrame(animId); animId = null; }
+  };
 
-    <div class="pub" id="pub-coglens">
-      <div class="title"><a href="https://royalsocietypublishing.org/doi/10.1098/rstb.2018.0369" target="_blank" rel="noopener">The cognitive lens: a primer on conceptual tools for analysing information processing in developmental and regenerative morphogenesis</a></div>
-      <div class="meta">S. Manicka, M. Levin &middot; <em>Philosophical Transactions of the Royal Society B</em>, 374(1774), 20180369</div>
-    </div>
+  // Auto-init if the carousel is the default-visible layout
+  document.addEventListener('DOMContentLoaded', () => {
+    const wrap = document.getElementById('layout-carousel');
+    if (wrap && wrap.style.display !== 'none' && getComputedStyle(wrap).display !== 'none') {
+      window.__carouselInit();
+    }
+  });
+})();
 
-    <div class="pub" id="pub-ben">
-      <div class="title"><a href="https://www.nature.com/articles/s41598-019-54859-8" target="_blank" rel="noopener">Modeling somatic computation with non-neural bioelectric networks</a></div>
-      <div class="meta">S. Manicka, M. Levin &middot; <em>Scientific Reports</em>, 9, 18612</div>
-    </div>
+// ── METRO MAP ──
+(function() {
+  const NS = 'http://www.w3.org/2000/svg';
+  const LINE_A = '#d97757';
+  const LINE_B = '#2563a8';
+  const TRANSFER = '#888';
+  const CROSS = '#bbb';
+  const BEAD_COLOR = '#d97757';
 
-    <div class="pub" id="pub-esn">
-      <div class="title"><a href="https://doi.org/10.1201/9781315167084-6" target="_blank" rel="noopener">Toward modeling regeneration via adaptable echo state networks</a></div>
-      <div class="meta">S. Manicka, J. Hammelman, H. T. Siegelmann, M. Levin &middot; <em>From Parallel to Emergent Computing</em>, 117&ndash;134</div>
-    </div>
+  const stations = [
+    { id:0, x:100, y:75,  line:'A', subtitle:'field-mediated coordination',  title:'How electric fields might coordinate collective cell decisions' },
+    { id:1, x:380, y:75,  line:'A', subtitle:'non-neural computation',         title:'How bioelectric tissues might compute without a brain' },
+    { id:2, x:660, y:75,  line:'A', subtitle:'collective memory & rescue',      title:'How inter-embryonic communication might create collective memories' },
+    { id:3, x:660, y:185, line:'B', subtitle:'gene network attention',           title:'How gene networks might use attention to compute and remember' },
+    { id:4, x:380, y:185, line:'B', subtitle:'multicellular patterning',         title:'How multicellular patterning networks might leverage coarse-grained causation' },
+    { id:5, x:100, y:185, line:'B', subtitle:'minimal adaptive agents',           title:'How minimal adaptive agents cognize in dynamic state space' },
+  ];
 
-    <div class="pub-year">2017</div>
+  const texts = [
+    'Cells in a tissue are coupled by gap junctions and bathed in a self-generated electric field. A stigmergic loop — where each cell modifies the shared medium it also reads — allows a lattice of identical cells to spontaneously break symmetry and produce voltage pre-patterns. The field acts as a single low-dimensional control parameter, catalyzing long-range causal interactions among cells that have no direct knowledge of one another.',
+    'A small bioelectric network can implement AND, OR, and NOT logic gates through learned ion channel conductance parameters. The inputs are transient: set externally, then removed. Yet the output persists. The network dynamically fixes the input state after each stimulus — a form of memory that emerges from learned ion-channel dynamics, not from any dedicated memory structure.',
+    'A voltage pattern may last seconds; a cell fate lasts a lifetime. The cascade from membrane voltage through calcium influx to CaMKII activation creates a bistable switch. When embryos are stressed, CaMKII-derived signals produce a diffusive stress field. Multiple stressed embryos sharing a medium sum their fields to cross a collective threshold, triggering group rescue.',
+    'A gene with eight regulators may in practice be controlled by two — the rest are buffered by the logic of the regulatory function. Effective connectivity (K_eff) and unified canalization (K_u) expose this hidden simplicity. Across 70+ published biological networks, these measures explain why living systems sit near dynamical criticality even when their wiring predicts chaos.',
+    'A ring of twelve cells can learn to maintain and regenerate a spatial pattern if you let the inner network tune the outer network\'s weights. I use machine learning to discover two-level architectures, then causal-network analysis to interpret what the learned system actually does: breaking symmetry, establishing long-range influence, and partitioning into modular control domains.',
+    'Before working on tissues, I asked the same question about minimal adaptive agents: given a system with only a handful of neurons and a body, what is it actually computing? I built the simplest agent that could sustain itself in a continuous environment, then subjected it to an exhaustive dynamical \'psychoanalysis\' — mapping how internal states, sensorimotor coupling, and environmental feedback jointly produce cognition-like behavior.'
+  ];
 
-    <div class="pub" id="pub-dissertation">
-      <div class="title"><a href="https://scholarworks.iu.edu/dspace/handle/2022/21446" target="_blank" rel="noopener">The role of canalization in the spreading of perturbations in Boolean networks</a></div>
-      <div class="meta">S. Manicka &middot; PhD Dissertation, Indiana University</div>
-    </div>
+  const refs = [
+    [['Manicka & Levin, 2025','#pub-field'],['Manicka & Levin, 2019','#pub-coglens']],
+    [['Manicka & Levin, 2019','#pub-ben']],
+    [['Manicka & Levin, 2025','#pub-field']],
+    [['Manicka, Marques-Pita & Rocha, 2022','#pub-keff'],['Manicka et al., 2023','#pub-nonlinearity']],
+    [['Manicka & Levin, 2022','#pub-mindev']],
+    [['Manicka & Harvey, 2008','#pub-psychoanalysis'],['Manicka & Di Paolo, 2009','#pub-ultrastability']]
+  ];
 
-    <div class="pub-year">2012</div>
+  // Loop path: 0→1→2→3→4→5→0
+  const loopSegs = [[0,1],[1,2],[2,3],[3,4],[4,5],[5,0]];
+  const R = 20; // station radius
+  const SPEED = 0.00055;
 
-    <div class="pub" id="pub-referential">
-      <div class="title"><a href="https://doi.org/10.7551/978-0-262-31050-5-ch052" target="_blank" rel="noopener">Analysis of evolved agents performing referential communication</a></div>
-      <div class="meta">S. Manicka &middot; <em>ALIFE 2012</em></div>
-    </div>
+  let svg, beadEl, beadGlow, stationEls = [], animId = null;
+  let t = 0, paused = false, activeStation = -1, nearStation = -1;
 
-    <div class="pub-year">2009</div>
+  function mk(tag, attrs) {
+    const el = document.createElementNS(NS, tag);
+    Object.entries(attrs).forEach(([k,v]) => el.setAttribute(k,v));
+    return el;
+  }
 
-    <div class="pub" id="pub-ultrastability">
-      <div class="title"><a href="https://doi.org/10.1007/978-3-642-21283-3_12" target="_blank" rel="noopener">Local ultrastability in a real system based on programmable springs</a></div>
-      <div class="meta">S. Manicka, E. A. Di Paolo &middot; <em>ECAL 2009</em>, 91&ndash;98</div>
-    </div>
+  function beadPos(t) {
+    const n = loopSegs.length, segT = t * n;
+    const seg = Math.floor(segT) % n, frac = segT - Math.floor(segT);
+    const a = stations[loopSegs[seg][0]], b = stations[loopSegs[seg][1]];
+    return { x: a.x+(b.x-a.x)*frac, y: a.y+(b.y-a.y)*frac, seg, frac };
+  }
 
-    <div class="pub-year">2008</div>
+  function buildSVG() {
+    svg = document.getElementById('metro-svg');
+    if (!svg) return;
+    svg.innerHTML = '';
 
-    <div class="pub" id="pub-psychoanalysis">
-      <div class="title">'Psychoanalysis' of a minimal agent</div>
-      <div class="meta">S. Manicka, I. Harvey &middot; <em>ALIFE 2008</em>, 382&ndash;389</div>
-    </div>
-  </section>
+    // Line A (top)
+    svg.appendChild(mk('path', { d:`M${stations[0].x},${stations[0].y} L${stations[1].x},${stations[1].y} L${stations[2].x},${stations[2].y}`, stroke:LINE_A, 'stroke-width':'4', fill:'none', 'stroke-linecap':'round', opacity:'0.5' }));
+    // Line B (bottom)
+    svg.appendChild(mk('path', { d:`M${stations[3].x},${stations[3].y} L${stations[4].x},${stations[4].y} L${stations[5].x},${stations[5].y}`, stroke:LINE_B, 'stroke-width':'4', fill:'none', 'stroke-linecap':'round', opacity:'0.5' }));
+    // Transfer right
+    svg.appendChild(mk('line', { x1:660, y1:75, x2:660, y2:185, stroke:TRANSFER, 'stroke-width':'2.5', 'stroke-dasharray':'5,4', opacity:'0.5' }));
+    // Transfer left
+    svg.appendChild(mk('line', { x1:100, y1:75, x2:100, y2:185, stroke:TRANSFER, 'stroke-width':'2.5', 'stroke-dasharray':'5,4', opacity:'0.5' }));
+    // Cross-link S1↔S4 (shared: network computation theme)
+    svg.appendChild(mk('line', { x1:380, y1:75, x2:380, y2:185, stroke:CROSS, 'stroke-width':'1.5', 'stroke-dasharray':'3,5', opacity:'0.35' }));
+    const crossLbl = mk('text', { x:392, y:133, 'font-family':'monospace', 'font-size':'8', fill:'#aaa', opacity:'0.7' });
+    crossLbl.textContent = 'network ↔ computation';
+    svg.appendChild(crossLbl);
 
+    // Line labels
+    const lA = mk('text', { x:100, y:42, 'font-family':'monospace', 'font-size':'8', fill:LINE_A, opacity:'0.7', 'font-weight':'500' });
+    lA.textContent = 'line A — bioelectricity';
+    svg.appendChild(lA);
+    const lB = mk('text', { x:100, y:230, 'font-family':'monospace', 'font-size':'8', fill:LINE_B, opacity:'0.7', 'font-weight':'500' });
+    lB.textContent = 'line B — network theory';
+    svg.appendChild(lB);
 
-  <!-- ==================== SOFTWARE ==================== -->
-  <section id="software">
-    <h2>Software</h2>
-    <p class="lead" style="margin-bottom:12px;">
-      Open-source code accompanying research projects.
-    </p>
+    stationEls = stations.map((s, i) => {
+      const g = mk('g', { class:'m-station', style:'cursor:pointer' });
+      g.dataset.idx = i;
 
-    <div class="repo">
-      <div class="repo-name"><a href="https://github.com/santamanicka/ElectricMorphogenesis" target="_blank" rel="noopener">ElectricMorphogenesis</a></div>
-      <div class="repo-desc">Bioelectric field models of tissue-level voltage patterning</div>
-    </div>
+      // Glow ring
+      const glow = mk('circle', { cx:s.x, cy:s.y, r:R+6, fill:'none', stroke:s.line==='A'?LINE_A:LINE_B, 'stroke-width':'2', opacity:'0' });
+      // White fill
+      const ring = mk('circle', { cx:s.x, cy:s.y, r:R, fill:'white', stroke:s.line==='A'?LINE_A:LINE_B, 'stroke-width':'2.5' });
+      // Number
+      const num = mk('text', { x:s.x, y:s.y+4, 'text-anchor':'middle', 'font-family':'monospace', 'font-size':'12', fill:s.line==='A'?LINE_A:LINE_B, 'font-weight':'600' });
+      num.textContent = i+1;
 
-<!-- 
-    <div class="repo">
-      <div class="repo-name"><a href="https://github.com/santamanicka/CollectiveMorphogenesis" target="_blank" rel="noopener">CollectiveMorphogenesis</a></div>
-      <div class="repo-desc">Bioelectric + GRN + CaMKII integration for craniofacial morphogenesis</div>
-    </div>
- -->
+      // Label (above for top stations, below for bottom)
+      const isTop = s.y < 130;
+      const lblY = isTop ? s.y - R - 8 : s.y + R + 16;
+      const lbl = mk('text', { x:s.x, y:lblY, 'text-anchor':'middle', 'font-family':'monospace', 'font-size':'7.5', fill:'#888' });
+      lbl.textContent = s.subtitle;
 
-    <div class="repo">
-      <div class="repo-name"><a href="https://github.com/santamanicka/NeuralPlatePatterning" target="_blank" rel="noopener">NeuralPlatePatterning</a></div>
-      <div class="repo-desc">Genetic-bioelectric model of embryonic frog brain patterning</div>
-    </div>
+      g.appendChild(glow); g.appendChild(ring); g.appendChild(num); g.appendChild(lbl);
+      g.addEventListener('mouseenter', () => hoverStation(i));
+      g.addEventListener('mouseleave', () => leaveStation());
+      svg.appendChild(g);
+      return { g, ring, glow };
+    });
 
-    <div class="repo">
-      <div class="repo-name"><a href="https://github.com/santamanicka/BioElectricNetwork" target="_blank" rel="noopener">BioElectricNetwork</a></div>
-      <div class="repo-desc">Library for simulating, training, and evolving minimal bioelectric networks</div>
-    </div>
+    // Bead glow
+    beadGlow = mk('circle', { r:'10', fill:BEAD_COLOR, opacity:'0.25', 'pointer-events':'none' });
+    svg.appendChild(beadGlow);
+    beadEl = mk('circle', { r:'5', fill:BEAD_COLOR, 'pointer-events':'none', style:'filter:drop-shadow(0 0 4px rgba(217,119,87,.9))' });
+    svg.appendChild(beadEl);
+  }
 
-    <div class="repo">
-      <div class="repo-name"><a href="https://github.com/santamanicka/MinimalDevelopmentalComputation" target="_blank" rel="noopener">MinimalDevelopmentalComputation</a></div>
-      <div class="repo-desc">Hierarchical regenerative networks with local intracellular controllers</div>
-    </div>
+  function setBeadXY(x, y) {
+    beadEl.setAttribute('cx', x); beadEl.setAttribute('cy', y);
+    beadGlow.setAttribute('cx', x); beadGlow.setAttribute('cy', y);
+  }
 
-    <div class="repo">
-      <div class="repo-name"><a href="https://github.com/santamanicka/Boolion" target="_blank" rel="noopener">Boolion</a></div>
-      <div class="repo-desc">Taylor series decomposition and continuous relaxation of Boolean networks</div>
-    </div>
+  function hlStation(i, on) {
+    if (!stationEls[i]) return;
+    const { ring, glow } = stationEls[i];
+    ring.setAttribute('r', on ? R+3 : R);
+    glow.setAttribute('opacity', on ? '0.6' : '0');
+  }
 
-    <div class="repo">
-      <div class="repo-name"><a href="https://github.com/santamanicka/BooleanCanalization" target="_blank" rel="noopener">BooleanCanalization</a></div>
-      <div class="repo-desc">R library for effective connectivity and unified canalization</div>
-    </div>
+  function hoverStation(i) {
+    paused = true;
+    if (activeStation >= 0 && activeStation !== i) hlStation(activeStation, false);
+    activeStation = i;
+    hlStation(i, true);
+    // show detail
+    const detail = document.getElementById('tape-detail');
+    const inner = document.getElementById('tape-detail-inner');
+    const s = stations[i];
+    const refHtml = refs[i].map(([l,h]) => `<a href="${h}">${l}</a>`).join(' · ');
+    inner.innerHTML = `<div class="tape-detail-text" style="grid-column:1/-1">
+      <div class="tape-detail-subtitle">${s.subtitle}</div>
+      <h3>${s.title}</h3>
+      <p>${texts[i]}</p>
+      <div class="tape-detail-refs">${refHtml}</div>
+    </div>`;
+    detail.classList.add('open');
+  }
 
-    <div class="repo">
-      <div class="repo-name"><a href="https://github.com/santamanicka/GeneRegulatoryNetworkMemory" target="_blank" rel="noopener">GeneRegulatoryNetworkMemory</a></div>
-      <div class="repo-desc">Memory analysis framework for gene regulatory networks</div>
-    </div>
+  function leaveStation() {
+    paused = false;
+    if (activeStation >= 0) { hlStation(activeStation, false); activeStation = -1; }
+    document.getElementById('tape-detail').classList.remove('open');
+  }
 
-    <div class="repo">
-      <div class="repo-name"><a href="https://github.com/santamanicka/PlatonicCriticality" target="_blank" rel="noopener">PlatonicCriticality</a></div>
-      <div class="repo-desc">Do the integers themselves exhibit scale-free criticality?</div>
-    </div>
-  </section>
+  function animate() {
+    if (!paused) t = (t + SPEED) % 1;
+    const { x, y, seg, frac } = beadPos(t);
+    setBeadXY(x, y);
+    // Proximity highlight
+    let near = -1;
+    if (frac < 0.15) near = loopSegs[seg][0];
+    else if (frac > 0.85) near = loopSegs[seg][1];
+    if (near !== nearStation) {
+      if (nearStation >= 0 && activeStation !== nearStation) hlStation(nearStation, false);
+      nearStation = near;
+      if (near >= 0 && activeStation !== near) hlStation(near, true);
+    }
+    animId = requestAnimationFrame(animate);
+  }
 
+  window.__metroInit = function() {
+    if (animId) { cancelAnimationFrame(animId); animId = null; }
+    buildSVG();
+    t = 0; paused = false; activeStation = -1; nearStation = -1;
+    animate();
+  };
+  window.__metroStop = function() {
+    if (animId) { cancelAnimationFrame(animId); animId = null; }
+  };
+})();
 
-  <!-- ==================== EDUCATION ==================== -->
-  <section id="education">
-    <h2>Education</h2>
-
-    <div class="edu">
-      <div class="degree">Ph.D. in Complex Systems</div>
-      <div class="where">Indiana University Bloomington, U.S.A. (2017)</div>
-    </div>
-    <div class="edu">
-      <div class="degree">M.Sc. in Evolutionary and Adaptive Systems</div>
-      <div class="where">University of Sussex, U.K. (2008)</div>
-    </div>
-    <div class="edu">
-      <div class="degree">B.E. in Computer Science and Engineering</div>
-      <div class="where">College of Engineering, Guindy, India (2003)</div>
-    </div>
-  </section>
-
-
-  <!-- ==================== CONTACT ==================== -->
-  <section id="contact">
-    <h2>Contact</h2>
-    <p>
-      <a href="mailto:santosh.manicka@tufts.edu">santosh.manicka@gmail.com</a><br>
-      <a href="https://scholar.google.com/citations?user=4cc0wewAAAAJ&hl=en" target="_blank" rel="noopener">Google Scholar</a>
-      &middot;
-      <a href="https://github.com/santamanicka" target="_blank" rel="noopener">GitHub</a>
-      &middot;
-      <a href="https://allencenter.tufts.edu/santosh-manicka-affiliate-research-scientist/" target="_blank" rel="noopener">Allen Discovery Center</a>
-    </p>
-  </section>
-
-</div>
-
-<footer>
-  <div class="wrap" style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;">
-    <span>&copy; <script>document.write(new Date().getFullYear())</script> Santosh Manicka</span>
-  </div>
-</footer>
-
+</script>
 </body>
 </html>
