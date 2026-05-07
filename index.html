@@ -566,13 +566,52 @@
     to { opacity: 1; }
   }
 
+  /* ── HAMBURGER (hidden on desktop) ── */
+  .nav-hamburger {
+    display: none;
+    background: none; border: none; cursor: pointer;
+    padding: 0.4rem; color: var(--text);
+    flex-direction: column; gap: 5px;
+  }
+  .nav-hamburger span {
+    display: block; width: 22px; height: 2px;
+    background: currentColor; border-radius: 2px;
+    transition: transform 0.25s, opacity 0.2s;
+  }
+  .nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .nav-hamburger.open span:nth-child(2) { opacity: 0; }
+  .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
   /* ── MOBILE ── */
   @media (max-width: 700px) {
     nav { padding: 0 1rem; }
+    .nav-hamburger { display: flex; }
+    .nav-links {
+      display: none;
+      position: absolute; top: 56px; left: 0; right: 0;
+      flex-direction: column; gap: 0;
+      background: rgba(250,249,247,0.97);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+      padding: 0.5rem 1rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+    }
+    .nav-links.open { display: flex; }
+    .nav-links a { padding: 0.65rem 0.5rem; border-radius: 0; border-bottom: 1px solid rgba(0,0,0,0.05); }
+    .nav-links a:last-child { border-bottom: none; }
+    .nav-pill { display: none; }
+
     #hero, main { padding-left: 1.25rem; padding-right: 1.25rem; }
+
+    .hero-content { flex-direction: column; align-items: center; text-align: center; }
+    .hero-photo { width: 100px; height: 100px; margin-bottom: 0.5rem; }
+    .hero-name { font-size: 2rem; }
+    .hero-title { font-size: 1rem; }
+    .hero-cluster { height: auto; min-height: 180px; }
+    .hero-tagline { font-size: 1.3rem; max-width: 100%; }
+
     .research-item { grid-template-columns: 1fr; }
     .research-item:nth-child(even) { direction: ltr; }
-    .nav-links { display: none; }
   }
 </style>
 </head>
@@ -584,6 +623,9 @@
 <!-- NAV -->
 <nav id="main-nav">
   <span class="nav-name">Santosh Manicka</span>
+  <button class="nav-hamburger" id="nav-hamburger" aria-label="Toggle navigation" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
   <div class="nav-links" id="nav-links">
     <div class="nav-pill" id="nav-pill"></div>
     <a href="#about">About</a>
@@ -1255,6 +1297,25 @@ ReactDOM.createRoot(document.getElementById('tweaks-root')).render(React.createE
       if (link) setActive(link);
     }
   }, { passive: true });
+})();
+
+// ── MOBILE NAV TOGGLE ──
+(function() {
+  const btn = document.getElementById('nav-hamburger');
+  const menu = document.getElementById('nav-links');
+  if (!btn || !menu) return;
+  btn.addEventListener('click', () => {
+    const open = menu.classList.toggle('open');
+    btn.classList.toggle('open', open);
+    btn.setAttribute('aria-expanded', open);
+  });
+  menu.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      menu.classList.remove('open');
+      btn.classList.remove('open');
+      btn.setAttribute('aria-expanded', 'false');
+    });
+  });
 })();
 
 // ── RESEARCH TAPE ──
