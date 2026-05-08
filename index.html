@@ -611,12 +611,95 @@
     .hero-photo { width: 100px; height: 100px; margin-bottom: 0.5rem; }
     .hero-name { font-size: 2rem; }
     .hero-title { font-size: 1rem; }
-    .hero-cluster { height: auto; min-height: 180px; }
-    .hero-tagline { font-size: 1.3rem; max-width: 100%; }
+    /* Hero cluster – let it grow instead of fixed height */
+    .hero-cluster {
+      height: auto; min-height: 0;
+      flex-direction: column; gap: 0.75rem;
+      margin-top: 1rem; padding-bottom: 0.75rem;
+    }
+    .hero-tagline { font-size: 1.2rem; max-width: 100%; }
+
+    /* Hero tags – flow layout instead of absolute ring */
+    .hero-tags-ring {
+      position: static !important; inset: auto !important;
+      display: flex !important; flex-wrap: wrap !important;
+      justify-content: center !important;
+      gap: 0.4rem; width: 100%; pointer-events: auto;
+    }
+    .hero-tags-ring .tag {
+      position: static !important; transform: none !important;
+      opacity: 1 !important; animation: none !important;
+    }
+
+    /* Research heading – drop forced line-break */
+    #research h2 br { display: none; }
+    #research h2 { font-size: 1.35rem; }
+
+    /* 3D carousel – strip perspective, hand off to flat JS layout */
+    .carousel-wrapper { perspective: none; perspective-origin: unset; height: auto; min-height: 0; }
+    .carousel-stage { transform: none !important; }
+    #constellation-canvas { display: none; }
+
+    /* Tape detail – single column */
+    .tape-detail-inner { grid-template-columns: 1fr; gap: 1rem; }
+
+    /* Publications */
+    .pub-item:hover { padding-left: 0; }
+    .pub-item a { font-size: 0.93rem; }
+
+    /* Software */
+    .software-grid { grid-template-columns: 1fr; }
+
+    /* Education */
+    .edu-item { gap: 1rem; padding: 1rem; }
+
+    /* Contact */
+    .contact-links { flex-direction: column; }
+    .contact-links a { text-align: center; }
 
     .research-item { grid-template-columns: 1fr; }
     .research-item:nth-child(even) { direction: ltr; }
   }
+
+  /* ── MOBILE FLAT CAROUSEL (built by JS on small screens) ── */
+  .cm-track {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    padding: 0.5rem 1.25rem 0.75rem;
+  }
+  .cm-track::-webkit-scrollbar { display: none; }
+  .cm-card {
+    flex: 0 0 calc(100vw - 4.5rem);
+    max-width: 300px;
+    scroll-snap-align: center;
+    background: var(--surface);
+    border: 1px solid rgba(0,0,0,0.07);
+    border-radius: 10px;
+    padding: 0.75rem 0.75rem 0.6rem;
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    margin: 0 0.375rem;
+    display: flex; flex-direction: column;
+  }
+  .cm-card svg { width: 100%; height: auto; display: block; border-radius: 4px; flex-shrink: 0; }
+  .cm-card.active {
+    border-color: rgba(var(--accent-rgb), 0.45);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.09);
+  }
+  .cm-dots {
+    display: flex; justify-content: center; align-items: center;
+    gap: 0.45rem; margin: 0.65rem 0 0.3rem;
+  }
+  .cm-dot {
+    width: 6px; height: 6px; border-radius: 3px;
+    background: rgba(0,0,0,0.14);
+    transition: background 0.25s, width 0.25s;
+    cursor: pointer; flex-shrink: 0;
+  }
+  .cm-dot.active { background: var(--accent); width: 18px; }
 </style>
 </head>
 <body>
@@ -1134,6 +1217,9 @@ ReactDOM.createRoot(document.getElementById('tweaks-root')).render(React.createE
   const tags = ring.querySelectorAll('.tag');
   const N = tags.length;
 
+  // On mobile, CSS flex-wrap handles layout – skip JS absolute positioning
+  if (window.innerWidth <= 700) return;
+
   function layout() {
     const w = ring.clientWidth, h = ring.clientHeight;
     const cx = w / 2, cy = h / 2;
@@ -1347,7 +1433,7 @@ ReactDOM.createRoot(document.getElementById('tweaks-root')).render(React.createE
             <line x1="278" y1="43" x2="278" y2="30" stroke="#d97757" stroke-width="0.8" opacity="0.45"/>
             <polygon points="276,31 278,25 280,31" fill="#d97757" opacity="0.45"/>
             <path d="M107,42 Q190,4 273,42" stroke="#d97757" stroke-width="1.2" stroke-dasharray="4,2" fill="none" opacity="0.4"/>
-            <text x="190" y="84" text-anchor="middle" font-family="monospace" font-size="8" fill="#5a5a56" opacity="0.6">field-mediated long-range coordination</text>
+            <text x="190" y="84" text-anchor="middle" font-family="monospace" font-size="8" fill="#5a5a56" opacity="0.6">field-mediated patterning</text>
           </svg>`
     },
     {
@@ -1611,12 +1697,12 @@ ReactDOM.createRoot(document.getElementById('tweaks-root')).render(React.createE
 
   // Reuse data from the tape
   const items = [
-    { subtitle:'field-mediated patterning', title:'How electric fields might coordinate collective cell decisions' },
+    { subtitle:'field-mediated patterning',              title:'How electric fields might coordinate collective cell decisions' },
     { subtitle:'non-neural computation',                  title:'How bioelectric tissues might compute without a brain' },
-    { subtitle:'collective communication',               title:'How inter-embryonic communication might create collective memories' },
-    { subtitle:'gene network attention',                   title:'How gene networks might use attention to compute and remember' },
-    { subtitle:'multiscale patterning',                 title:'How multicellular patterning networks might leverage coarse-grained causation' },
-    { subtitle:'minimal cognition',                  title:'How minimal adaptive agents cognize in dynamic state space' }
+    { subtitle:'collective communication',                title:'How inter-embryonic communication might create collective memories' },
+    { subtitle:'gene network attention',                  title:'How gene networks might use attention to compute and remember' },
+    { subtitle:'multiscale patterning',                   title:'How multicellular patterning networks might leverage coarse-grained causation' },
+    { subtitle:'minimal cognition',                       title:'How minimal adaptive agents cognize in dynamic state space' }
   ];
 
   let ring, canvas, ctx, cards = [], angle = 0, paused = false, animId = null, built = false;
@@ -1757,7 +1843,80 @@ ReactDOM.createRoot(document.getElementById('tweaks-root')).render(React.createE
     });
   }
 
+  // ── MOBILE FLAT CAROUSEL ──
+  function buildMobileCarousel() {
+    const wrap = document.getElementById('layout-carousel');
+    if (!wrap) return;
+
+    // Pull SVGs from tape (populated even when tape is hidden)
+    const tapeItems = document.querySelectorAll('#tape-track .tape-item');
+    const svgs = [];
+    for (let i = 0; i < items.length && i < tapeItems.length; i++) {
+      const svgEl = tapeItems[i].querySelector('svg');
+      svgs.push(svgEl ? svgEl.outerHTML : '');
+    }
+
+    wrap.innerHTML =
+      '<div class="cm-track" id="cm-track">' +
+        items.map((item, i) =>
+          '<div class="cm-card" data-idx="' + i + '">' +
+            (svgs[i] || '') +
+            '<div class="tape-item-label">' + item.subtitle + '</div>' +
+            '<div class="tape-item-title">' + item.title + '</div>' +
+          '</div>'
+        ).join('') +
+      '</div>' +
+      '<div class="cm-dots" id="cm-dots">' +
+        items.map((_, i) =>
+          '<div class="cm-dot' + (i === 0 ? ' active' : '') + '" data-i="' + i + '"></div>'
+        ).join('') +
+      '</div>' +
+      '<p class="carousel-hint">swipe · tap to expand</p>';
+
+    const track   = wrap.querySelector('#cm-track');
+    const allDots = wrap.querySelectorAll('.cm-dot');
+    const allCards = wrap.querySelectorAll('.cm-card');
+    let activeIdx = 0;
+
+    function setActive(i) {
+      activeIdx = i;
+      allCards.forEach((c, j) => c.classList.toggle('active', j === i));
+      allDots.forEach((d, j) => d.classList.toggle('active', j === i));
+      if (window.__showTapeDetail) window.__showTapeDetail(i);
+    }
+
+    allDots.forEach((dot, i) => {
+      dot.addEventListener('click', () => {
+        const card = allCards[i];
+        const scrollLeft = card.offsetLeft - (track.clientWidth - card.offsetWidth) / 2;
+        track.scrollTo({ left: Math.max(0, scrollLeft), behavior: 'smooth' });
+        setActive(i);
+      });
+    });
+
+    allCards.forEach((card, i) => {
+      card.addEventListener('click', () => setActive(i));
+    });
+
+    track.addEventListener('scroll', () => {
+      const centre = track.scrollLeft + track.clientWidth / 2;
+      let closest = 0, minDist = Infinity;
+      allCards.forEach((card, i) => {
+        const dist = Math.abs(card.offsetLeft + card.offsetWidth / 2 - centre);
+        if (dist < minDist) { minDist = dist; closest = i; }
+      });
+      if (closest !== activeIdx) setActive(closest);
+    }, { passive: true });
+
+    setActive(0);
+  }
+
   window.__carouselInit = function() {
+    // Mobile: render a flat swipe carousel instead of 3D ring
+    if (window.innerWidth <= 700) {
+      buildMobileCarousel();
+      return;
+    }
     if (!built) buildCards();
     if (animId) cancelAnimationFrame(animId);
     canvas = document.getElementById('constellation-canvas');
@@ -1767,9 +1926,8 @@ ReactDOM.createRoot(document.getElementById('tweaks-root')).render(React.createE
     if (wrap && !wrap.__mouseBound) {
       wrap.addEventListener('mousemove', e => {
         const rect = wrap.getBoundingClientRect();
-        const x = (e.clientX - rect.left) / rect.width; // 0..1
-        const offset = (x - 0.5) * 2; // -1..1
-        // Dead zone in middle 30%
+        const x = (e.clientX - rect.left) / rect.width;
+        const offset = (x - 0.5) * 2;
         const dead = 0.15;
         let signed = 0;
         if (offset > dead) signed = (offset - dead) / (1 - dead);
@@ -1792,6 +1950,15 @@ ReactDOM.createRoot(document.getElementById('tweaks-root')).render(React.createE
       window.__carouselInit();
     }
   });
+
+  // Re-init on resize so mobile↔desktop transition works cleanly
+  window.addEventListener('resize', () => {
+    const wrap = document.getElementById('layout-carousel');
+    if (!wrap || wrap.style.display === 'none') return;
+    if (animId) { cancelAnimationFrame(animId); animId = null; }
+    built = false;
+    window.__carouselInit();
+  });
 })();
 
 // ── METRO MAP ──
@@ -1806,10 +1973,10 @@ ReactDOM.createRoot(document.getElementById('tweaks-root')).render(React.createE
   const stations = [
     { id:0, x:100, y:75,  line:'A', subtitle:'field-mediated patterning',  title:'How electric fields might coordinate collective cell decisions' },
     { id:1, x:380, y:75,  line:'A', subtitle:'non-neural computation',         title:'How bioelectric tissues might compute without a brain' },
-    { id:2, x:660, y:75,  line:'A', subtitle:'collective communication',      title:'How inter-embryonic communication might create collective memories' },
+    { id:2, x:660, y:75,  line:'A', subtitle:'collective communication',        title:'How inter-embryonic communication might create collective memories' },
     { id:3, x:660, y:185, line:'B', subtitle:'gene network attention',           title:'How gene networks might use attention to compute and remember' },
-    { id:4, x:380, y:185, line:'B', subtitle:'multiscale patterning',         title:'How multicellular patterning networks might leverage coarse-grained causation' },
-    { id:5, x:100, y:185, line:'B', subtitle:'minimal cognition',           title:'How minimal adaptive agents cognize in dynamic state space' },
+    { id:4, x:380, y:185, line:'B', subtitle:'multiscale patterning',             title:'How multicellular patterning networks might leverage coarse-grained causation' },
+    { id:5, x:100, y:185, line:'B', subtitle:'minimal cognition',                 title:'How minimal adaptive agents cognize in dynamic state space' },
   ];
 
   const texts = [
