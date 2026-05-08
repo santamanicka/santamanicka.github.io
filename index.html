@@ -209,7 +209,7 @@
   }
   @media (max-width: 700px) {
     .about-split, .about-split.about-split-rev { grid-template-columns: 1fr; }
-    .about-split.about-split-rev .about-fig { order: -1; }
+    .about-split.about-split-rev .about-fig { order: 1; }
   }
 
 
@@ -298,7 +298,7 @@
   .carousel-card .tape-item-title { margin-top: 0.2rem; }
   .carousel-hint {
     text-align: center; font-family: var(--sans); font-size: 0.75rem;
-    color: var(--muted); opacity: 0.6; margin-top: 0.4rem;
+    color: var(--muted); opacity: 0.6; margin-bottom: 0.5rem;
   }
 
   /* ── RESEARCH TAPE ── */
@@ -1857,6 +1857,7 @@ ReactDOM.createRoot(document.getElementById('tweaks-root')).render(React.createE
     }
 
     wrap.innerHTML =
+      '<p class="carousel-hint">swipe · tap to expand</p>' +
       '<div class="cm-track" id="cm-track">' +
         items.map((item, i) =>
           '<div class="cm-card" data-idx="' + i + '">' +
@@ -1870,8 +1871,7 @@ ReactDOM.createRoot(document.getElementById('tweaks-root')).render(React.createE
         items.map((_, i) =>
           '<div class="cm-dot' + (i === 0 ? ' active' : '') + '" data-i="' + i + '"></div>'
         ).join('') +
-      '</div>' +
-      '<p class="carousel-hint">swipe · tap to expand</p>';
+      '</div>';
 
     const track   = wrap.querySelector('#cm-track');
     const allDots = wrap.querySelectorAll('.cm-dot');
