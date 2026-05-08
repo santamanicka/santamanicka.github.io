@@ -31,8 +31,8 @@
     background: var(--bg);
     color: var(--text);
     font-family: var(--serif);
-    font-size: 1.1rem;
-    line-height: 1.75;
+    font-size: 1.2rem;
+    line-height: 1.8;
     overflow-x: hidden;
   }
 
@@ -123,8 +123,8 @@
     animation: fadeUp 0.7s calc(0.5s * var(--anim-speed)) forwards;
   }
   .hero-tagline {
-    font-size: 1.65rem; color: var(--text);
-    max-width: 380px; font-style: italic;
+    font-size: clamp(1.6rem, 3vw, 2rem); color: var(--text);
+    max-width: 420px; font-style: italic;
     text-align: center; line-height: 1.35;
     margin: 0; position: relative; z-index: 2;
   }
@@ -264,6 +264,10 @@
     height: 360px; position: relative;
     width: 100%;
     display: flex; align-items: center; justify-content: center;
+  }
+  #constellation-canvas {
+    position: absolute; inset: 0; z-index: 10;
+    pointer-events: none; width: 100%; height: 100%;
   }
   .carousel-stage {
     position: relative; width: 100%; height: 100%;
@@ -434,7 +438,7 @@
     letter-spacing: 0.1em; color: var(--accent); margin-bottom: 0.5rem; font-weight: 500;
   }
   .research-text h3 { font-size: 1.1rem; margin-bottom: 0.75rem; }
-  .research-text p { font-size: 0.97rem; color: var(--muted); line-height: 1.7; }
+  .research-text p { font-size: 1.05rem; color: var(--muted); line-height: 1.75; }
   .research-refs {
     margin-top: 1rem; font-family: var(--sans); font-size: 0.76rem; color: var(--muted);
     display: flex; flex-wrap: wrap; gap: 0.4rem;
@@ -830,6 +834,7 @@
 
   <!-- Carousel (3D) -->
   <div class="carousel-wrapper reveal reveal-delay-2" id="layout-carousel">
+    <canvas id="constellation-canvas"></canvas>
     <div class="carousel-stage">
       <div class="carousel-ring" id="carousel-ring"></div>
     </div>
@@ -1585,11 +1590,24 @@ ReactDOM.createRoot(document.getElementById('tweaks-root')).render(React.createE
 
 // ── 3D CAROUSEL ──
 (function() {
-  const RADIUS = 320;       // ring radius in px (smaller = denser)
+  const RADIUS = 320;
   const BASE_SPEED = 0.0015;
-  const MAX_BOOST = 0.012;  // additional rad/frame at edge
+  const MAX_BOOST = 0.012;
   let speed = BASE_SPEED;
-  const TILT = -12;         // x-axis tilt (deg) — set in CSS .carousel-stage
+  const TILT = -12;
+
+  // Conceptual connections: [cardA, cardB, label]
+  const CONNECTIONS = [
+    [0, 1, 'bioelectricity'],
+    [1, 2, 'memory'],
+    [2, 3, 'bistable dynamics'],
+    [3, 4, 'network theory'],
+    [4, 5, 'causal minimalism'],
+    [5, 0, 'minimal models'],
+    [1, 3, 'computation'],
+    [0, 4, 'collective coordination'],
+    [2, 5, 'cognition'],
+  ];
 
   // Reuse data from the tape
   const items = [
@@ -1601,7 +1619,11 @@ ReactDOM.createRoot(document.getElementById('tweaks-root')).render(React.createE
     { subtitle:'minimal adaptive agents',                  title:'How minimal adaptive agents cognize in dynamic state space' }
   ];
 
-  let ring, cards = [], angle = 0, paused = false, animId = null, built = false;
+  let ring, canvas, ctx, cards = [], angle = 0, paused = false, animId = null, built = false;
+  let hoverIdx = -1, breatheT = 0;
+
+  // Store last 2D positions for constellation drawing
+  let card2D = [];
 
   function buildCards() {
     ring = document.getElementById('carousel-ring');
@@ -1624,8 +1646,8 @@ ReactDOM.createRoot(document.getElementById('tweaks-root')).render(React.createE
       card.innerHTML = `${svgs[i] || ''}
         <div class="tape-item-label">${item.subtitle}</div>
         <div class="tape-item-title">${item.title}</div>`;
-      card.addEventListener('mouseenter', () => onHover(i));
-      card.addEventListener('mouseleave', onLeave);
+      card.addEventListener('mouseenter', () => { hoverIdx = i; onHover(i); });
+      card.addEventListener('mouseleave', () => { hoverIdx = -1; onLeave(); });
       ring.appendChild(card);
       cards.push(card);
     });
@@ -1658,12 +1680,88 @@ ReactDOM.createRoot(document.getElementById('tweaks-root')).render(React.createE
       cards[i].style.opacity = opacity.toFixed(3);
       cards[i].style.zIndex = Math.round(z + RADIUS);
     }
+    drawConstellation();
     animId = requestAnimationFrame(frame);
+  }
+
+  function drawConstellation() {
+    if (!canvas || !ctx) return;
+    const wrap = document.getElementById('layout-carousel');
+    if (!wrap) return;
+    const wRect = wrap.getBoundingClientRect();
+    if (canvas.width !== wRect.width || canvas.height !== wRect.height) {
+      canvas.width = wRect.width;
+      canvas.height = wRect.height;
+    }
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    breatheT += 0.012;
+    const breathe = 0.5 + 0.5 * Math.sin(breatheT);
+
+    // Get 2D centres of each card relative to wrapper
+    card2D = cards.map(card => {
+      const r = card.getBoundingClientRect();
+      return {
+        x: r.left - wRect.left + r.width / 2,
+        y: r.top - wRect.top + r.height / 2,
+        op: parseFloat(card.style.opacity) || 0.5
+      };
+    });
+
+    // Accent colour
+    const accentRaw = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#ff9300';
+    function hexToRgb(h) {
+      h = h.replace('#','');
+      return [parseInt(h.slice(0,2),16), parseInt(h.slice(2,4),16), parseInt(h.slice(4,6),16)].join(',');
+    }
+    const rgb = hexToRgb(accentRaw);
+
+    CONNECTIONS.forEach(([a, b, label]) => {
+      if (!card2D[a] || !card2D[b]) return;
+      const pa = card2D[a], pb = card2D[b];
+      const isActive = hoverIdx === a || hoverIdx === b;
+      const depthFactor = (pa.op + pb.op) / 2;
+      const baseOp = (0.4 + 0.15 * breathe) * depthFactor;
+      const lineOp = isActive ? 0.85 * depthFactor : baseOp;
+
+      const mx = (pa.x + pb.x) / 2;
+      const my = (pa.y + pb.y) / 2 - 32;
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(pa.x, pa.y);
+      ctx.quadraticCurveTo(mx, my, pb.x, pb.y);
+      ctx.strokeStyle = `rgba(${rgb},${lineOp.toFixed(3)})`;
+      ctx.lineWidth = isActive ? 2.0 : 1.2;
+      if (!isActive) ctx.setLineDash([4, 5]);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.restore();
+
+      // Concept label along the arc midpoint
+      if (isActive) {
+        ctx.save();
+        ctx.font = `500 9.5px 'DM Sans', system-ui, sans-serif`;
+        const tw = ctx.measureText(label).width;
+        const lx = mx, ly = my - 4;
+        ctx.fillStyle = `rgba(250,249,247,0.88)`;
+        ctx.beginPath();
+        ctx.roundRect ? ctx.roundRect(lx - tw/2 - 6, ly - 9, tw + 12, 17, 4)
+                       : ctx.rect(lx - tw/2 - 6, ly - 9, tw + 12, 17);
+        ctx.fill();
+        ctx.fillStyle = `rgba(${rgb},0.95)`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(label, lx, ly);
+        ctx.restore();
+      }
+    });
   }
 
   window.__carouselInit = function() {
     if (!built) buildCards();
     if (animId) cancelAnimationFrame(animId);
+    canvas = document.getElementById('constellation-canvas');
+    ctx = canvas ? canvas.getContext('2d') : null;
     paused = false;
     const wrap = document.getElementById('layout-carousel');
     if (wrap && !wrap.__mouseBound) {
