@@ -897,7 +897,7 @@
 <!-- RESEARCH -->
 <section id="research">
   <div class="section-label reveal">Research</div>
-  <h2 class="reveal reveal-delay-1">Each project builds a minimal model of a biological phenomenon,<br>then uses the cognitive lens to ask: <em>what is this system computing?</em></h2>
+  <h2 class="reveal reveal-delay-1">Each project builds a minimal model of a biological phenomenon,<br> then uses the cognitive lens to ask: <em>what is this system computing?</em></h2>
 
   <!-- Tape -->
   <div class="tape-outer reveal reveal-delay-2" id="layout-tape" style="display:none;">
@@ -944,7 +944,7 @@
     <div class="pub-item" id="pub-field">
       <a href="https://www.cell.com/cell-reports-physical-science/fulltext/S2666-3864(25)00464-3" target="_blank">
         Field-mediated bioelectric basis of morphogenetic prepatterning</a>
-      <div class="pub-meta">S. Manicka, M. Levin · <span class="pub-journal">Cell Reports Physical Science</span></div>
+      <div class="pub-meta">S. Manicka, M. Levin · <span class="pub-journal">Cell Reports Physical Science, 6(10)</span></div>
     </div>
   </div>
 
@@ -1014,16 +1014,16 @@
     <div class="pub-item" id="pub-referential">
       <a href="https://doi.org/10.7551/978-0-262-31050-5-ch052" target="_blank">
         Analysis of evolved agents performing referential communication</a>
-      <div class="pub-meta">S. Manicka · <span class="pub-journal">ALIFE 2012</span></div>
+      <div class="pub-meta">S. Manicka · <span class="pub-journal">ALIFE Proceedings 2012</span></div>
     </div>
     <div class="pub-item">
       <a href="https://doi.org/10.1007/978-3-642-21283-3_12" target="_blank">
         Local ultrastability in a real system based on programmable springs</a>
-      <div class="pub-meta">S. Manicka, E. A. Di Paolo · <span class="pub-journal">ECAL 2009</span></div>
+      <div class="pub-meta">S. Manicka, E. A. Di Paolo · <span class="pub-journal">ECAL Proceedings 2009</span></div>
     </div>
     <div class="pub-item" id="pub-psychoanalysis">
       <span style="font-family:var(--serif);">'Psychoanalysis' of a minimal agent</span>
-      <div class="pub-meta">S. Manicka, I. Harvey · <span class="pub-journal">ALIFE 2008</span></div>
+      <div class="pub-meta">S. Manicka, I. Harvey · <span class="pub-journal">ALIFE Proceedings 2008</span></div>
     </div>
   </div>
 </section>
@@ -1059,13 +1059,25 @@
       <a href="https://github.com/santamanicka/BooleanCanalization" target="_blank">BooleanCanalization</a>
       <p>R library for effective connectivity and unified canalization</p>
     </div>
-    <div class="software-card reveal reveal-delay-2">
-      <a href="https://github.com/santamanicka/GeneRegulatoryNetworkMemory" target="_blank">GeneRegulatoryNetworkMemory</a>
-      <p>Memory analysis framework for gene regulatory networks</p>
-    </div>
     <div class="software-card reveal reveal-delay-3">
       <a href="https://github.com/santamanicka/PlatonicCriticality" target="_blank">PlatonicCriticality</a>
       <p>Do the integers themselves exhibit scale-free criticality?</p>
+    </div>
+    <div class="software-card reveal">
+      <a href="https://github.com/santamanicka/PsychoanalysisMinimalAgent" target="_blank">PsychoanalysisMinimalAgent</a>
+      <p>Evolving CTRNNs for the Secretary Problem — interpretability of a minimal agent (Artificial Life 2008)</p>
+    </div>
+    <div class="software-card reveal reveal-delay-1">
+      <a href="https://github.com/santamanicka/ReferentialCommunication" target="_blank">ReferentialCommunication</a>
+      <p>Recurrent neural net agents evolving referential communication strategies (Artificial Life 2012)</p>
+    </div>
+    <div class="software-card reveal reveal-delay-2">
+      <a href="https://github.com/santamanicka/UltrastableProgrammableSpring" target="_blank">UltrastableProgrammableSpring</a>
+      <p>Ashby-inspired adaptive control for a programmable spring actuator (ECAL 2009)</p>
+    </div>
+    <div class="software-card reveal reveal-delay-3">
+      <a href="https://github.com/santamanicka/ChessSymbolicAI" target="_blank">ChessSymbolicAI</a>
+      <p>Chess engine with minimax and alpha-beta pruning in Turbo C++ (2000)</p>
     </div>
   </div>
 </section>
@@ -1106,7 +1118,15 @@
 <section id="contact">
   <div class="section-label reveal">Contact</div>
   <div class="contact-links reveal reveal-delay-1">
-    <a href="/cdn-cgi/l/email-protection#4330222d372c302b6d2e222d2a20282203242e222a2f6d202c2e"><span class="__cf_email__" data-cfemail="95e6f4fbe1fae6fdbbf8f4fbfcf6fef4d5f2f8f4fcf9bbf6faf8">[email&#160;protected]</span></a>
+    <a href="#" id="contact-email"></a>
+    <script>
+      (function() {
+        var u = 'santosh.manicka', d = 'gmail.com';
+        var el = document.getElementById('contact-email');
+        el.href = 'mailto:' + u + '@' + d;
+        el.textContent = u.replace('.', ' [dot] ') + ' [at] ' + d.replace('.', ' [dot] ');
+      })();
+    </script>
     <a href="https://scholar.google.com/citations?user=4cc0wewAAAAJ&hl=en" target="_blank">Google Scholar</a>
     <a href="https://github.com/santamanicka" target="_blank">GitHub</a>
     <a href="https://allencenter.tufts.edu/santosh-manicka-affiliate-research-scientist/" target="_blank">Allen Discovery Center</a>
@@ -1118,7 +1138,7 @@
 <footer>© Santosh Manicka &nbsp;·&nbsp; Designed with <a href="https://claude.ai" style="color:var(--muted);text-decoration:underline;text-underline-offset:3px;">Claude</a></footer>
 
 <!-- TWEAKS (React) -->
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script type="text/babel" src="tweaks-panel.jsx"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
 <script type="text/babel">
 const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "accentColor": "#ff9300",
