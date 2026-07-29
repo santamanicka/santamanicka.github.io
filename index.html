@@ -639,6 +639,7 @@
     .carousel-wrapper { perspective: none; perspective-origin: unset; height: auto; min-height: 0; flex-direction: column; align-items: stretch; }
     .carousel-stage { transform: none !important; }
     #constellation-canvas { display: none; }
+    #carousel-edge-hint { display: none; }
 
     /* Tape detail – single column */
     .tape-detail-inner { grid-template-columns: 1fr; gap: 1rem; }
@@ -921,6 +922,7 @@
       <div class="carousel-ring" id="carousel-ring"></div>
     </div>
   </div>
+  <p class="carousel-hint" id="carousel-edge-hint" style="margin-top:3rem">hover left or right of the spindle to spin faster · hover a card to see how it connects to others</p>
 
   <!-- Detail panel (shared) -->
   <div class="tape-detail" id="tape-detail" aria-live="polite">
@@ -1173,10 +1175,12 @@ function TweaksApp() {
     const tape = document.getElementById('layout-tape');
     const metro = document.getElementById('layout-metro');
     const carousel = document.getElementById('layout-carousel');
+    const edgeHint = document.getElementById('carousel-edge-hint');
     if (!tape || !metro || !carousel) return;
     tape.style.display = 'none';
     metro.style.display = 'none';
     carousel.style.display = 'none';
+    if (edgeHint) edgeHint.style.display = 'none';
     if (window.__metroStop) window.__metroStop();
     if (window.__carouselStop) window.__carouselStop();
     if (tweaks.researchLayout === 'metro') {
@@ -1184,6 +1188,7 @@ function TweaksApp() {
       if (window.__metroInit) window.__metroInit();
     } else if (tweaks.researchLayout === 'carousel') {
       carousel.style.display = 'block';
+      if (edgeHint) edgeHint.style.display = '';
       if (window.__carouselInit) window.__carouselInit();
     } else {
       tape.style.display = '';
