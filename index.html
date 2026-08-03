@@ -389,36 +389,6 @@
     .tape-detail-inner { grid-template-columns: 1fr; }
   }
 
-  /* ── METRO MAP ── */
-  .metro-wrapper { margin-top: 2rem; }
-  .metro-svg-wrap {
-    background: var(--surface); border-radius: 12px;
-    border: 1px solid rgba(0,0,0,0.07); padding: 1.5rem;
-    overflow: visible;
-  }
-  .metro-svg-wrap svg { width: 100%; height: auto; display: block; overflow: visible; }
-  .m-station { cursor: pointer; }
-  .m-station-ring {
-    fill: var(--bg); stroke-width: 2.5;
-    transition: r 0.2s;
-  }
-  .m-station-thumb { pointer-events: none; }
-  .m-station-label {
-    font-family: var(--mono); font-size: 9px; fill: var(--muted);
-    pointer-events: none;
-  }
-  .m-station-title {
-    font-family: var(--serif); font-size: 11.5px; fill: var(--text);
-    pointer-events: none;
-  }
-  .m-station.active .m-station-ring { filter: drop-shadow(0 0 6px rgba(var(--accent-rgb),.5)); }
-  .m-bead { pointer-events: none; filter: drop-shadow(0 0 5px rgba(217,119,87,.8)); }
-  .m-hint {
-    font-family: var(--sans); font-size: 0.75rem; color: var(--muted);
-    text-align: center; margin-top: 0.6rem; opacity: 0.6;
-  }
-
-
   .research-grid { display: flex; flex-direction: column; gap: 3.5rem; margin-top: 2rem; }
   .research-item {
     display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start;
@@ -477,6 +447,7 @@
     padding: 0.9rem 0;
     border-bottom: 1px solid rgba(0,0,0,0.05);
     transition: padding-left 0.25s;
+    scroll-margin-top: 90px;
   }
   .pub-item:hover { padding-left: 0.5rem; }
   .pub-item a {
@@ -907,14 +878,6 @@
     </div>
   </div>
 
-  <!-- Metro map -->
-  <div class="metro-wrapper reveal reveal-delay-2" id="layout-metro" style="display:none;">
-    <div class="metro-svg-wrap">
-      <svg id="metro-svg" viewBox="0 0 900 260" xmlns="http://www.w3.org/2000/svg"></svg>
-    </div>
-    <p class="m-hint">hover a station to explore · bead traces connections</p>
-  </div>
-
   <!-- Carousel (3D) -->
   <div class="carousel-wrapper reveal reveal-delay-2" id="layout-carousel">
     <canvas id="constellation-canvas"></canvas>
@@ -940,6 +903,22 @@
   <p class="reveal reveal-delay-2" style="font-family:var(--sans);font-size:0.85rem;color:var(--muted);margin-bottom:2rem;">
     Full list on <a href="https://scholar.google.com/citations?user=4cc0wewAAAAJ&hl=en" style="color:var(--accent);">Google Scholar</a>.
   </p>
+
+  <div class="pub-year-group reveal">
+    <div class="pub-year">In preparation</div>
+    <div class="pub-item" id="pub-topoietic">
+      <span style="font-family:var(--serif);">A topoietic model of collective morphogenesis and individuation</span>
+      <div class="pub-meta">S. Manicka, M. Levin · <span class="pub-journal">Preprint in progress</span></div>
+    </div>
+    <div class="pub-item" id="pub-grnattention">
+      <span style="font-family:var(--serif);">How gene regulatory networks might use attention to remember: a computational exploration</span>
+      <div class="pub-meta">N. A-Rahim, S. Manicka, M. Levin · <span class="pub-journal">Preprint in progress</span></div>
+    </div>
+    <div class="pub-item" id="pub-holographic">
+      <span style="font-family:var(--serif);">Boundary Codes and Bulk Patterns: Towards Generative Holographic Morphogenesis</span>
+      <div class="pub-meta">S. Manicka, M. Levin · <span class="pub-journal">Preprint in progress</span></div>
+    </div>
+  </div>
 
   <div class="pub-year-group reveal">
     <div class="pub-year">2025</div>
@@ -1018,7 +997,7 @@
         Analysis of evolved agents performing referential communication</a>
       <div class="pub-meta">S. Manicka · <span class="pub-journal">ALIFE Proceedings 2012</span></div>
     </div>
-    <div class="pub-item">
+    <div class="pub-item" id="pub-ultrastability">
       <a href="https://doi.org/10.1007/978-3-642-21283-3_12" target="_blank">
         Local ultrastability in a real system based on programmable springs</a>
       <div class="pub-meta">S. Manicka, E. A. Di Paolo · <span class="pub-journal">ECAL Proceedings 2009</span></div>
@@ -1173,20 +1152,14 @@ function TweaksApp() {
 
   React.useEffect(() => {
     const tape = document.getElementById('layout-tape');
-    const metro = document.getElementById('layout-metro');
     const carousel = document.getElementById('layout-carousel');
     const edgeHint = document.getElementById('carousel-edge-hint');
-    if (!tape || !metro || !carousel) return;
+    if (!tape || !carousel) return;
     tape.style.display = 'none';
-    metro.style.display = 'none';
     carousel.style.display = 'none';
     if (edgeHint) edgeHint.style.display = 'none';
-    if (window.__metroStop) window.__metroStop();
     if (window.__carouselStop) window.__carouselStop();
-    if (tweaks.researchLayout === 'metro') {
-      metro.style.display = 'block';
-      if (window.__metroInit) window.__metroInit();
-    } else if (tweaks.researchLayout === 'carousel') {
+    if (tweaks.researchLayout === 'carousel') {
       carousel.style.display = 'block';
       if (edgeHint) edgeHint.style.display = '';
       if (window.__carouselInit) window.__carouselInit();
@@ -1203,7 +1176,7 @@ function TweaksApp() {
       React.createElement(TweakRadio, {
         label: "Layout",
         value: tweaks.researchLayout,
-        options: ["tape","metro","carousel"],
+        options: ["tape","carousel"],
         onChange: v => setTweak('researchLayout', v)
       })
     ),
@@ -1439,7 +1412,7 @@ ReactDOM.createRoot(document.getElementById('tweaks-root')).render(React.createE
 
   const items = [
     {
-      subtitle: 'field-mediated patterning',
+      subtitle: 'stigmergic pattern genesis',
       title: 'How electric fields might coordinate collective cell decisions',
       text: `Cells in a tissue are coupled by gap junctions and bathed in a self-generated electric field. A stigmergic loop — where each cell modifies the shared medium it also reads — allows a lattice of identical cells to spontaneously break symmetry and produce voltage pre-patterns. The field acts as a single low-dimensional control parameter, catalyzing long-range causal interactions among cells that have no direct knowledge of one another.`,
       refs: [['Manicka & Levin, 2025','#pub-field'],['Manicka & Levin, 2019','#pub-coglens'],['Manicka, Pai & Levin, 2023','#pub-frogbrain']],
@@ -1486,65 +1459,70 @@ ReactDOM.createRoot(document.getElementById('tweaks-root')).render(React.createE
     },
     {
       subtitle: 'collective communication',
-      title: 'How inter-embryonic communication might create collective memories',
-      text: `A voltage pattern may last seconds; a cell fate lasts a lifetime. The cascade from membrane voltage through calcium influx to CaMKII activation creates a bistable switch. When embryos are stressed, CaMKII-derived signals produce a diffusive stress field. A single embryo's signal is too weak — but when multiple stressed embryos share a medium, their fields sum and cross a collective threshold, triggering group rescue.`,
-      refs: [['Manicka & Levin, 2025','#pub-field']],
+      title: 'How geometry alone might let embryo collectives rescue themselves',
+      text: `Embryo groups survive teratogenic stress far better than individuals — cross-embryo morphogenetic assistance. We show a mechanism sufficient to explain it, topoiesis: every stressed embryo constitutively emits a diffusible signal (eATP/adenosine) that decays and is absorbed at the group's edge, so larger groups retain more of what they emit and the field rises with group size. A calibrated model reproduces the full rescue curve and predicts a rescued interior enclosed by a failing periphery, set before any embryo commits to its fate.`,
+      refs: [['Manicka & Levin (preprint, in prep)','#pub-topoietic'],['Manicka & Levin, 2025','#pub-field']],
       svg: `<svg viewBox="0 0 380 90" xmlns="http://www.w3.org/2000/svg" style="background:white;">
-            <line x1="12" y1="70" x2="175" y2="70" stroke="#e0dfd8" stroke-width="0.5"/>
-            <path d="M12,68 C18,68 22,22 30,20 L55,20 C62,20 68,50 78,62 C85,68 95,69 175,69" stroke="#5a5a56" stroke-width="1" fill="none" opacity="0.25"/>
-            <path d="M12,68 C30,68 55,55 75,38 C95,22 110,16 130,15 L175,15" stroke="#d97757" stroke-width="1.8" fill="none" opacity="0.75"/>
-            <text x="50" y="17" font-family="monospace" font-size="7" fill="#5a5a56" opacity="0.6">Vmem</text>
-            <text x="155" y="12" font-family="monospace" font-size="7" fill="#d97757" opacity="0.75" text-anchor="end">CaMKII</text>
-            <text x="22" y="82" font-family="monospace" font-size="7" fill="#5a5a56" opacity="0.6">signal</text>
-            <text x="145" y="82" font-family="monospace" font-size="7" fill="#d97757" opacity="0.65" text-anchor="end">memory</text>
-            <line x1="190" y1="8" x2="190" y2="82" stroke="#e0dfd8" stroke-width="0.5" stroke-dasharray="3,3"/>
-            <g transform="translate(228,28)"><ellipse cx="0" cy="0" rx="12" ry="8" fill="#f0efe8" stroke="#c8c7c0" stroke-width="0.8"/><circle cx="-4" cy="-1" r="2" fill="#d97757" opacity="0.6"/><circle cx="4" cy="-1" r="2" fill="#d97757" opacity="0.6"/></g>
-            <g transform="translate(260,60)"><ellipse cx="0" cy="0" rx="12" ry="8" fill="#f0efe8" stroke="#c8c7c0" stroke-width="0.8"/><circle cx="-4" cy="-1" r="2" fill="#d97757" opacity="0.6"/><circle cx="4" cy="-1" r="2" fill="#d97757" opacity="0.6"/></g>
-            <g transform="translate(228,60)"><ellipse cx="0" cy="0" rx="12" ry="8" fill="#f0efe8" stroke="#c8c7c0" stroke-width="0.8"/><circle cx="-4" cy="-1" r="2" fill="#d97757" opacity="0.6"/><circle cx="4" cy="-1" r="2" fill="#d97757" opacity="0.6"/></g>
-            <path d="M241,30 C248,34 248,38 255,42" stroke="#d97757" stroke-width="0.7" fill="none" opacity="0.3"/>
-            <path d="M241,58 C248,52 248,48 255,44" stroke="#d97757" stroke-width="0.7" fill="none" opacity="0.3"/>
-            <path d="M228,50 C232,46 236,44 240,42" stroke="#d97757" stroke-width="0.7" fill="none" opacity="0.3"/>
-            <circle cx="258" cy="42" r="3" fill="#d97757" opacity="0.4"/>
-            <line x1="264" y1="42" x2="290" y2="42" stroke="#d97757" stroke-width="1" opacity="0.5"/>
-            <line x1="295" y1="18" x2="295" y2="68" stroke="#d97757" stroke-width="1.2" stroke-dasharray="4,2" opacity="0.5"/>
-            <text x="295" y="78" text-anchor="middle" font-family="monospace" font-size="7" fill="#d97757" opacity="0.65">threshold</text>
-            <line x1="300" y1="42" x2="325" y2="42" stroke="#d97757" stroke-width="1.2" opacity="0.6"/>
-            <polygon points="325,40 332,42 325,44" fill="#d97757" opacity="0.6"/>
-            <text x="352" y="46" text-anchor="middle" font-family="monospace" font-size="8" fill="#d97757" opacity="0.75" font-weight="bold">RESCUE</text>
+            <defs>
+              <radialGradient id="topoField" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#d97757" stop-opacity="0.55"/>
+                <stop offset="100%" stop-color="#d97757" stop-opacity="0"/>
+              </radialGradient>
+            </defs>
+            <circle cx="55" cy="42" r="34" fill="url(#topoField)"/>
+            <circle cx="55" cy="42" r="34" fill="none" stroke="#c8c7c0" stroke-width="1" stroke-dasharray="2,2" opacity="0.6"/>
+            <g fill="#f0efe8" stroke="#c8c7c0" stroke-width="1">
+              <circle cx="55" cy="17" r="6"/><circle cx="34" cy="30" r="6"/><circle cx="76" cy="30" r="6"/>
+              <circle cx="34" cy="54" r="6"/><circle cx="76" cy="54" r="6"/><circle cx="55" cy="67" r="6"/>
+              <circle cx="55" cy="42" r="6" fill="#d97757" opacity="0.7"/>
+            </g>
+            <text x="55" y="84" text-anchor="middle" font-family="monospace" font-size="7" fill="#5a5a56" opacity="0.6">F=0 at edge</text>
+            <line x1="115" y1="8" x2="115" y2="82" stroke="#e0dfd8" stroke-width="0.5" stroke-dasharray="3,3"/>
+            <line x1="135" y1="72" x2="365" y2="72" stroke="#e0dfd8" stroke-width="0.6"/>
+            <line x1="135" y1="72" x2="135" y2="12" stroke="#e0dfd8" stroke-width="0.6"/>
+            <path d="M135,71 C150,71 160,70 175,66 C195,60 215,42 240,26 C265,14 300,10 360,9" stroke="#d97757" stroke-width="1.8" fill="none" opacity="0.8"/>
+            <circle cx="150" cy="71" r="2" fill="#d97757" opacity="0.6"/>
+            <circle cx="210" cy="47" r="2" fill="#d97757" opacity="0.6"/>
+            <circle cx="300" cy="11" r="2" fill="#d97757" opacity="0.6"/>
+            <text x="250" y="82" text-anchor="middle" font-family="monospace" font-size="7" fill="#5a5a56" opacity="0.6">group size N</text>
+            <text x="139" y="20" font-family="monospace" font-size="7" fill="#d97757" opacity="0.7">rescue %</text>
           </svg>`
     },
     {
       subtitle: 'gene network attention',
-      title: 'How gene networks might use attention to compute and remember',
-      text: `A gene with eight regulators may in practice be controlled by two — the rest are buffered by the logic of the regulatory function. I developed measures that expose this hidden simplicity: effective connectivity (K_eff) counts the inputs that truly matter; unified canalization (K_u) exploits permutation symmetry among interchangeable ones. Across 70+ published biological networks, these measures explain why living systems sit near dynamical criticality even when their wiring predicts chaos.`,
-      refs: [['Manicka, Marques-Pita & Rocha, 2022','#pub-keff'],['Manicka et al., 2023','#pub-nonlinearity'],['Biswas, Manicka et al., 2021','#pub-grnmemory']],
+      title: 'How gene regulatory networks might use attention to remember',
+      text: `Conditioning a gene network doesn't add regulatory influence, it redistributes it. Using effective connectivity to track how strongly each gene actually drives its targets, we find that across 60+ Boolean models of biological networks, the pathway from a paired stimulus to the response gene consistently gains influence after conditioning, while the surrounding network loses it — a process we call molding: the regulatory landscape reshaped the way a chisel reveals form in clay, local order purchased at the cost of global degrees of freedom.`,
+      refs: [['A-Rahim, Manicka & Levin (preprint, in prep)','#pub-grnattention'],['Biswas, Manicka et al., 2021','#pub-grnmemory']],
       svg: `<svg viewBox="0 0 380 90" xmlns="http://www.w3.org/2000/svg" style="background:white;">
-            <g stroke="#5a5a56" stroke-width="0.7" opacity="0.12"><line x1="12" y1="8" x2="85" y2="42"/><line x1="12" y1="19" x2="85" y2="43"/><line x1="12" y1="30" x2="85" y2="44"/><line x1="12" y1="63" x2="85" y2="48"/><line x1="12" y1="74" x2="85" y2="49"/><line x1="12" y1="85" x2="85" y2="50"/></g>
-            <g stroke="#d97757" stroke-width="1.8" opacity="0.6"><line x1="12" y1="41" x2="85" y2="45"/><line x1="12" y1="52" x2="85" y2="47"/></g>
-            <g fill="#5a5a56" opacity="0.15"><circle cx="12" cy="8" r="3"/><circle cx="12" cy="19" r="3"/><circle cx="12" cy="30" r="3"/><circle cx="12" cy="63" r="3"/><circle cx="12" cy="74" r="3"/><circle cx="12" cy="85" r="3"/></g>
-            <g fill="#d97757" opacity="0.6"><circle cx="12" cy="41" r="3.5"/><circle cx="12" cy="52" r="3.5"/></g>
-            <circle cx="97" cy="46" r="12" fill="#d97757" opacity="0.8" stroke="#bf5a3a" stroke-width="1"/>
-            <line x1="111" y1="46" x2="131" y2="46" stroke="#d97757" stroke-width="1" opacity="0.4"/>
-            <polygon points="131,43.5 138,46 131,48.5" fill="#d97757" opacity="0.4"/>
-            <text x="150" y="43" font-family="monospace" font-size="9" fill="#d97757" opacity="0.8">Keff=2</text>
-            <text x="90" y="84" text-anchor="middle" font-family="monospace" font-size="7" fill="#5a5a56" opacity="0.6">attention</text>
+            <defs><marker id="grnArr" markerWidth="6" markerHeight="4" refX="5" refY="2" orient="auto"><polygon points="0 0,6 2,0 4" fill="#d97757"/></marker></defs>
+            <text x="45" y="12" text-anchor="middle" font-family="monospace" font-size="7" fill="#5a5a56" opacity="0.6">before</text>
+            <path d="M15,66 Q28,30 45,28 Q62,30 75,66 Z" fill="#d97757" opacity="0.35"/>
+            <circle cx="45" cy="28" r="4" fill="#d97757" opacity="0.8"/>
+            <text x="45" y="21" text-anchor="middle" font-family="monospace" font-size="6.5" fill="#5a5a56" opacity="0.7">UCS</text>
+            <circle cx="75" cy="66" r="4" fill="#7a7a70" opacity="0.4"/>
+            <text x="80" y="80" text-anchor="middle" font-family="monospace" font-size="6.5" fill="#5a5a56" opacity="0.55">CS</text>
+            <circle cx="45" cy="70" r="4" fill="#bf5a3a"/>
+            <text x="45" y="83" text-anchor="middle" font-family="monospace" font-size="6.5" fill="#5a5a56" opacity="0.65">R</text>
+            <line x1="45" y1="32" x2="45" y2="65" stroke="#d97757" stroke-width="2" opacity="0.75" marker-end="url(#grnArr)"/>
             <line x1="190" y1="8" x2="190" y2="82" stroke="#e0dfd8" stroke-width="0.5" stroke-dasharray="3,3"/>
-            <line x1="205" y1="73" x2="370" y2="73" stroke="#e0dfd8" stroke-width="0.8"/>
-            <line x1="205" y1="73" x2="205" y2="10" stroke="#e0dfd8" stroke-width="0.8"/>
-            <path d="M207,72 L207,30 L219,30 L219,72" stroke="#5a5a56" stroke-width="1" fill="none" opacity="0.4"/>
-            <text x="213" y="24" text-anchor="middle" font-family="monospace" font-size="7" fill="#5a5a56" opacity="0.55">input</text>
-            <path d="M219,30 C240,30 265,38 295,48 C320,54 345,58 368,61" stroke="#d97757" stroke-width="1.5" fill="none" opacity="0.65"/>
-            <path d="M219,30 C230,30 243,48 258,62 C265,68 272,72 280,73 L368,73" stroke="#5a5a56" stroke-width="1.2" fill="none" stroke-dasharray="4,3" opacity="0.4"/>
-            <text x="355" y="55" text-anchor="end" font-family="monospace" font-size="7" fill="#d97757" opacity="0.7">bio</text>
-            <text x="285" y="68" text-anchor="middle" font-family="monospace" font-size="7" fill="#5a5a56" opacity="0.55">rnd</text>
-            <text x="287" y="84" text-anchor="middle" font-family="monospace" font-size="7" fill="#5a5a56" opacity="0.6">memory</text>
+            <text x="300" y="12" text-anchor="middle" font-family="monospace" font-size="7" fill="#5a5a56" opacity="0.6">after (molded)</text>
+            <path d="M270,68 Q283,44 296,42 Q309,44 322,68 Z" fill="#7a7a70" opacity="0.28"/>
+            <path d="M300,70 Q318,26 336,24 Q354,26 366,60 Z" fill="#d97757" opacity="0.4"/>
+            <circle cx="296" cy="42" r="4" fill="#7a7a70" opacity="0.55"/>
+            <text x="296" y="35" text-anchor="middle" font-family="monospace" font-size="6.5" fill="#5a5a56" opacity="0.6">UCS</text>
+            <circle cx="336" cy="24" r="4" fill="#d97757" opacity="0.85"/>
+            <text x="336" y="17" text-anchor="middle" font-family="monospace" font-size="6.5" fill="#d97757" opacity="0.8">CS</text>
+            <circle cx="316" cy="70" r="4" fill="#bf5a3a"/>
+            <text x="316" y="83" text-anchor="middle" font-family="monospace" font-size="6.5" fill="#5a5a56" opacity="0.65">R</text>
+            <line x1="296" y1="46" x2="313" y2="66" stroke="#7a7a70" stroke-width="1.3" opacity="0.5" marker-end="url(#grnArr)"/>
+            <line x1="336" y1="28" x2="319" y2="66" stroke="#d97757" stroke-width="2.2" opacity="0.8" marker-end="url(#grnArr)"/>
           </svg>`
     },
     {
-      subtitle: 'multiscale patterning',
+      subtitle: 'causal network emergence',
       title: 'How multicellular patterning networks might leverage coarse-grained causation',
-      text: `A ring of twelve cells, each containing an identical local gene network, can learn to maintain and regenerate a spatial pattern — if you let the inner network tune the outer network's weights. I use machine learning to discover two-level architectures, then causal-network analysis to interpret what the learned system actually does: breaking symmetry, establishing long-range influence, and partitioning into modular control domains.`,
-      refs: [['Manicka & Levin, 2022','#pub-mindev'],['Manicka et al., 2019','#pub-esn']],
+      text: `A ring of twelve cells, each containing an identical local gene network, can learn to maintain and regenerate a spatial pattern — if you let the inner network tune the outer network's weights. I use machine learning to discover two-level architectures, then causal-network analysis to interpret what the learned system actually does. Coarse-grained into macroscopic causal networks, the system's behavior becomes legible in a way the microscopic wiring never is: breaking symmetry, establishing long-range influence, and partitioning into modular control domains are visible at the macro scale precisely because they are invisible at the micro scale.`,
+      refs: [['Manicka & Levin, 2022','#pub-mindev'],['Manicka & Levin, 2019','#pub-coglens']],
       svg: `<svg viewBox="0 0 380 90" xmlns="http://www.w3.org/2000/svg" style="background:white;">
             <defs><marker id="cgArr2" markerWidth="6" markerHeight="4" refX="5" refY="2" orient="auto"><polygon points="0 0,6 2,0 4" fill="#d97757"/></marker></defs>
             <g stroke="#c8c7c0" stroke-width="1.2" opacity="0.25"><line x1="111" y1="44" x2="103" y2="25"/><line x1="103" y1="25" x2="85" y2="18"/><line x1="85" y1="18" x2="67" y2="25"/><line x1="67" y1="25" x2="59" y2="44"/><line x1="59" y1="44" x2="67" y2="63"/><line x1="67" y1="63" x2="85" y2="70"/><line x1="85" y1="70" x2="103" y2="63"/><line x1="103" y1="63" x2="111" y2="44"/></g>
@@ -1596,6 +1574,46 @@ ReactDOM.createRoot(document.getElementById('tweaks-root')).render(React.createE
             <text x="250" y="13" text-anchor="middle" font-family="monospace" font-size="7" fill="#d97757" opacity="0.7">state</text>
             <text x="287" y="84" text-anchor="middle" font-family="monospace" font-size="7" fill="#5a5a56" opacity="0.6">state encodes world</text>
           </svg>`
+    },
+    {
+      subtitle: 'holographic pattern control',
+      title: 'How a compact boundary code might generate a whole tissue pattern',
+      text: `The same tissue, with every intrinsic cell property held fixed, self-organizes into qualitatively different patterns — polarity, stripes, concentric domains — depending only on a brief boundary signal. We call this a generative hologram: the boundary contributes a compact address, not a blueprint, and the tissue's own attractor dynamics elaborate it into a high-dimensional pattern. The information cost of steering development is bounded by the tissue's small address space, not by the target pattern's complexity.`,
+      refs: [['Manicka & Levin (preprint, in prep)','#pub-holographic'],['Manicka & Levin, 2025','#pub-field']],
+      svg: `<svg viewBox="0 0 380 90" xmlns="http://www.w3.org/2000/svg" style="background:white;">
+            <defs><marker id="holArr" markerWidth="6" markerHeight="4" refX="5" refY="2" orient="auto"><polygon points="0 0,6 2,0 4" fill="#d97757"/></marker></defs>
+            <circle cx="42" cy="42" r="28" fill="none" stroke="#c8c7c0" stroke-width="1" stroke-dasharray="2,2" opacity="0.5"/>
+            <g fill="#d97757">
+              <circle cx="42" cy="14" r="3.2" opacity="0.85"/>
+              <circle cx="62" cy="22" r="3.2" opacity="0.5"/>
+              <circle cx="70" cy="42" r="3.2" opacity="0.85"/>
+              <circle cx="62" cy="62" r="3.2" opacity="0.3"/>
+              <circle cx="42" cy="70" r="3.2" opacity="0.6"/>
+              <circle cx="22" cy="62" r="3.2" opacity="0.3"/>
+              <circle cx="14" cy="42" r="3.2" opacity="0.5"/>
+              <circle cx="22" cy="22" r="3.2" opacity="0.85"/>
+            </g>
+            <text x="42" y="84" text-anchor="middle" font-family="monospace" font-size="7" fill="#5a5a56" opacity="0.6">boundary code</text>
+            <line x1="76" y1="42" x2="104" y2="42" stroke="#d97757" stroke-width="1.2" opacity="0.6" marker-end="url(#holArr)"/>
+            <line x1="118" y1="8" x2="118" y2="82" stroke="#e0dfd8" stroke-width="0.5" stroke-dasharray="3,3"/>
+            <g transform="translate(155,15)">
+              <ellipse cx="0" cy="18" rx="17" ry="21" fill="#f0efe8" stroke="#c8c7c0" stroke-width="1"/>
+              <path d="M-17,10 A17,21 0 0,1 17,10 Z" fill="#d97757" opacity="0.3"/>
+            </g>
+            <text x="155" y="80" text-anchor="middle" font-family="monospace" font-size="6.5" fill="#5a5a56" opacity="0.55">polarity</text>
+            <g transform="translate(225,15)">
+              <ellipse cx="0" cy="18" rx="17" ry="21" fill="#f0efe8" stroke="#c8c7c0" stroke-width="1"/>
+              <rect x="-17" y="-3" width="12" height="42" fill="#d97757" opacity="0.32"/>
+            </g>
+            <text x="225" y="80" text-anchor="middle" font-family="monospace" font-size="6.5" fill="#5a5a56" opacity="0.55">stripes</text>
+            <g transform="translate(295,15)">
+              <ellipse cx="0" cy="18" rx="17" ry="21" fill="#f0efe8" stroke="#c8c7c0" stroke-width="1"/>
+              <ellipse cx="0" cy="18" rx="10" ry="13" fill="none" stroke="#d97757" stroke-width="1" opacity="0.6"/>
+              <ellipse cx="0" cy="18" rx="4.5" ry="5.5" fill="#d97757" opacity="0.4"/>
+            </g>
+            <text x="295" y="80" text-anchor="middle" font-family="monospace" font-size="6.5" fill="#5a5a56" opacity="0.55">concentric</text>
+            <text x="225" y="8" text-anchor="middle" font-family="monospace" font-size="7" fill="#5a5a56" opacity="0.55">same tissue, different address</text>
+          </svg>`
     }
   ];
 
@@ -1607,12 +1625,25 @@ ReactDOM.createRoot(document.getElementById('tweaks-root')).render(React.createE
   let closeTimer = null;
 
   detail.addEventListener('mouseenter', () => { detailHover = true; if (closeTimer) { clearTimeout(closeTimer); closeTimer = null; } });
-  detail.addEventListener('mouseleave', () => { detailHover = false; detail.classList.remove('open'); });
+  detail.addEventListener('mouseleave', () => { detailHover = false; if (!window.__detailCloseSuppressed) detail.classList.remove('open'); });
+
+  // Clicking a reference link scrolls the page out from under the cursor, which
+  // otherwise fires mouseleave mid-scroll and collapses the panel, shifting the
+  // target position and making the browser overshoot it. Keep the panel open
+  // for a moment so the scroll lands on a stable layout.
+  detail.addEventListener('click', (e) => {
+    if (e.target.closest('.tape-detail-refs a')) window.__suppressDetailCloseFor(1000);
+  });
+  window.__suppressDetailCloseFor = function(ms) {
+    window.__detailCloseSuppressed = true;
+    if (window.__detailCloseSuppressTimer) clearTimeout(window.__detailCloseSuppressTimer);
+    window.__detailCloseSuppressTimer = setTimeout(() => { window.__detailCloseSuppressed = false; }, ms || 1000);
+  };
 
   window.__scheduleCloseDetail = function() {
     if (closeTimer) clearTimeout(closeTimer);
     closeTimer = setTimeout(() => {
-      if (!detailHover) detail.classList.remove('open');
+      if (!detailHover && !window.__detailCloseSuppressed) detail.classList.remove('open');
     }, 150);
   };
   window.__cancelCloseDetail = function() {
@@ -1717,16 +1748,18 @@ ReactDOM.createRoot(document.getElementById('tweaks-root')).render(React.createE
     [1, 3, 'computation'],
     [0, 4, 'collective coordination'],
     [2, 5, 'cognition'],
+    [0, 6, 'compression'],
   ];
 
   // Reuse data from the tape
   const items = [
-    { subtitle:'field-mediated patterning',              title:'How electric fields might coordinate collective cell decisions' },
+    { subtitle:'stigmergic pattern genesis',              title:'How electric fields might coordinate collective cell decisions' },
     { subtitle:'non-neural computation',                  title:'How bioelectric tissues might compute without a brain' },
-    { subtitle:'collective communication',                title:'How inter-embryonic communication might create collective memories' },
-    { subtitle:'gene network attention',                  title:'How gene networks might use attention to compute and remember' },
-    { subtitle:'multiscale patterning',                   title:'How multicellular patterning networks might leverage coarse-grained causation' },
-    { subtitle:'minimal cognition',                       title:'How minimal adaptive agents cognize in dynamic state space' }
+    { subtitle:'collective communication',                 title:'How geometry alone might let embryo collectives rescue themselves' },
+    { subtitle:'gene network attention',                  title:'How gene regulatory networks might use attention to remember' },
+    { subtitle:'causal network emergence',                title:'How multicellular patterning networks might leverage coarse-grained causation' },
+    { subtitle:'minimal cognition',                       title:'How minimal adaptive agents cognize in dynamic state space' },
+    { subtitle:'holographic pattern control',             title:'How a compact boundary code might generate a whole tissue pattern' }
   ];
 
   let ring, canvas, ctx, cards = [], angle = 0, paused = false, animId = null, built = false;
@@ -1984,187 +2017,6 @@ ReactDOM.createRoot(document.getElementById('tweaks-root')).render(React.createE
     window.__carouselInit();
   });
 })();
-
-// ── METRO MAP ──
-(function() {
-  const NS = 'http://www.w3.org/2000/svg';
-  const LINE_A = '#d97757';
-  const LINE_B = '#2563a8';
-  const TRANSFER = '#888';
-  const CROSS = '#bbb';
-  const BEAD_COLOR = '#d97757';
-
-  const stations = [
-    { id:0, x:100, y:75,  line:'A', subtitle:'field-mediated patterning',  title:'How electric fields might coordinate collective cell decisions' },
-    { id:1, x:380, y:75,  line:'A', subtitle:'non-neural computation',         title:'How bioelectric tissues might compute without a brain' },
-    { id:2, x:660, y:75,  line:'A', subtitle:'collective communication',        title:'How inter-embryonic communication might create collective memories' },
-    { id:3, x:660, y:185, line:'B', subtitle:'gene network attention',           title:'How gene networks might use attention to compute and remember' },
-    { id:4, x:380, y:185, line:'B', subtitle:'multiscale patterning',             title:'How multicellular patterning networks might leverage coarse-grained causation' },
-    { id:5, x:100, y:185, line:'B', subtitle:'minimal cognition',                 title:'How minimal adaptive agents cognize in dynamic state space' },
-  ];
-
-  const texts = [
-    'Cells in a tissue are coupled by gap junctions and bathed in a self-generated electric field. A stigmergic loop — where each cell modifies the shared medium it also reads — allows a lattice of identical cells to spontaneously break symmetry and produce voltage pre-patterns. The field acts as a single low-dimensional control parameter, catalyzing long-range causal interactions among cells that have no direct knowledge of one another.',
-    'A small bioelectric network can implement AND, OR, and NOT logic gates through learned ion channel conductance parameters. The inputs are transient: set externally, then removed. Yet the output persists. The network dynamically fixes the input state after each stimulus — a form of memory that emerges from learned ion-channel dynamics, not from any dedicated memory structure.',
-    'A voltage pattern may last seconds; a cell fate lasts a lifetime. The cascade from membrane voltage through calcium influx to CaMKII activation creates a bistable switch. When embryos are stressed, CaMKII-derived signals produce a diffusive stress field. Multiple stressed embryos sharing a medium sum their fields to cross a collective threshold, triggering group rescue.',
-    'A gene with eight regulators may in practice be controlled by two — the rest are buffered by the logic of the regulatory function. Effective connectivity (K_eff) and unified canalization (K_u) expose this hidden simplicity. Across 70+ published biological networks, these measures explain why living systems sit near dynamical criticality even when their wiring predicts chaos.',
-    'A ring of twelve cells can learn to maintain and regenerate a spatial pattern if you let the inner network tune the outer network\'s weights. I use machine learning to discover two-level architectures, then causal-network analysis to interpret what the learned system actually does: breaking symmetry, establishing long-range influence, and partitioning into modular control domains.',
-    'Before working on tissues, I asked the same question about minimal adaptive agents: given a system with only a handful of neurons and a body, what is it actually computing? I built the simplest agent that could sustain itself in a continuous environment, then subjected it to an exhaustive dynamical \'psychoanalysis\' — mapping how internal states, sensorimotor coupling, and environmental feedback jointly produce cognition-like behavior.'
-  ];
-
-  const refs = [
-    [['Manicka & Levin, 2025','#pub-field'],['Manicka & Levin, 2019','#pub-coglens']],
-    [['Manicka & Levin, 2019','#pub-ben']],
-    [['Manicka & Levin, 2025','#pub-field']],
-    [['Manicka, Marques-Pita & Rocha, 2022','#pub-keff'],['Manicka et al., 2023','#pub-nonlinearity']],
-    [['Manicka & Levin, 2022','#pub-mindev']],
-    [['Manicka & Harvey, 2008','#pub-psychoanalysis'],['Manicka & Di Paolo, 2009','#pub-ultrastability']]
-  ];
-
-  // Loop path: 0→1→2→3→4→5→0
-  const loopSegs = [[0,1],[1,2],[2,3],[3,4],[4,5],[5,0]];
-  const R = 20; // station radius
-  const SPEED = 0.00055;
-
-  let svg, beadEl, beadGlow, stationEls = [], animId = null;
-  let t = 0, paused = false, activeStation = -1, nearStation = -1;
-
-  function mk(tag, attrs) {
-    const el = document.createElementNS(NS, tag);
-    Object.entries(attrs).forEach(([k,v]) => el.setAttribute(k,v));
-    return el;
-  }
-
-  function beadPos(t) {
-    const n = loopSegs.length, segT = t * n;
-    const seg = Math.floor(segT) % n, frac = segT - Math.floor(segT);
-    const a = stations[loopSegs[seg][0]], b = stations[loopSegs[seg][1]];
-    return { x: a.x+(b.x-a.x)*frac, y: a.y+(b.y-a.y)*frac, seg, frac };
-  }
-
-  function buildSVG() {
-    svg = document.getElementById('metro-svg');
-    if (!svg) return;
-    svg.innerHTML = '';
-
-    // Line A (top)
-    svg.appendChild(mk('path', { d:`M${stations[0].x},${stations[0].y} L${stations[1].x},${stations[1].y} L${stations[2].x},${stations[2].y}`, stroke:LINE_A, 'stroke-width':'4', fill:'none', 'stroke-linecap':'round', opacity:'0.5' }));
-    // Line B (bottom)
-    svg.appendChild(mk('path', { d:`M${stations[3].x},${stations[3].y} L${stations[4].x},${stations[4].y} L${stations[5].x},${stations[5].y}`, stroke:LINE_B, 'stroke-width':'4', fill:'none', 'stroke-linecap':'round', opacity:'0.5' }));
-    // Transfer right
-    svg.appendChild(mk('line', { x1:660, y1:75, x2:660, y2:185, stroke:TRANSFER, 'stroke-width':'2.5', 'stroke-dasharray':'5,4', opacity:'0.5' }));
-    // Transfer left
-    svg.appendChild(mk('line', { x1:100, y1:75, x2:100, y2:185, stroke:TRANSFER, 'stroke-width':'2.5', 'stroke-dasharray':'5,4', opacity:'0.5' }));
-    // Cross-link S1↔S4 (shared: network computation theme)
-    svg.appendChild(mk('line', { x1:380, y1:75, x2:380, y2:185, stroke:CROSS, 'stroke-width':'1.5', 'stroke-dasharray':'3,5', opacity:'0.35' }));
-    const crossLbl = mk('text', { x:392, y:133, 'font-family':'monospace', 'font-size':'8', fill:'#aaa', opacity:'0.7' });
-    crossLbl.textContent = 'network ↔ computation';
-    svg.appendChild(crossLbl);
-
-    // Line labels
-    const lA = mk('text', { x:100, y:42, 'font-family':'monospace', 'font-size':'8', fill:LINE_A, opacity:'0.7', 'font-weight':'500' });
-    lA.textContent = 'line A — bioelectricity';
-    svg.appendChild(lA);
-    const lB = mk('text', { x:100, y:230, 'font-family':'monospace', 'font-size':'8', fill:LINE_B, opacity:'0.7', 'font-weight':'500' });
-    lB.textContent = 'line B — network theory';
-    svg.appendChild(lB);
-
-    stationEls = stations.map((s, i) => {
-      const g = mk('g', { class:'m-station', style:'cursor:pointer' });
-      g.dataset.idx = i;
-
-      // Glow ring
-      const glow = mk('circle', { cx:s.x, cy:s.y, r:R+6, fill:'none', stroke:s.line==='A'?LINE_A:LINE_B, 'stroke-width':'2', opacity:'0' });
-      // White fill
-      const ring = mk('circle', { cx:s.x, cy:s.y, r:R, fill:'white', stroke:s.line==='A'?LINE_A:LINE_B, 'stroke-width':'2.5' });
-      // Number
-      const num = mk('text', { x:s.x, y:s.y+4, 'text-anchor':'middle', 'font-family':'monospace', 'font-size':'12', fill:s.line==='A'?LINE_A:LINE_B, 'font-weight':'600' });
-      num.textContent = i+1;
-
-      // Label (above for top stations, below for bottom)
-      const isTop = s.y < 130;
-      const lblY = isTop ? s.y - R - 8 : s.y + R + 16;
-      const lbl = mk('text', { x:s.x, y:lblY, 'text-anchor':'middle', 'font-family':'monospace', 'font-size':'7.5', fill:'#888' });
-      lbl.textContent = s.subtitle;
-
-      g.appendChild(glow); g.appendChild(ring); g.appendChild(num); g.appendChild(lbl);
-      g.addEventListener('mouseenter', () => hoverStation(i));
-      g.addEventListener('mouseleave', () => leaveStation());
-      svg.appendChild(g);
-      return { g, ring, glow };
-    });
-
-    // Bead glow
-    beadGlow = mk('circle', { r:'10', fill:BEAD_COLOR, opacity:'0.25', 'pointer-events':'none' });
-    svg.appendChild(beadGlow);
-    beadEl = mk('circle', { r:'5', fill:BEAD_COLOR, 'pointer-events':'none', style:'filter:drop-shadow(0 0 4px rgba(217,119,87,.9))' });
-    svg.appendChild(beadEl);
-  }
-
-  function setBeadXY(x, y) {
-    beadEl.setAttribute('cx', x); beadEl.setAttribute('cy', y);
-    beadGlow.setAttribute('cx', x); beadGlow.setAttribute('cy', y);
-  }
-
-  function hlStation(i, on) {
-    if (!stationEls[i]) return;
-    const { ring, glow } = stationEls[i];
-    ring.setAttribute('r', on ? R+3 : R);
-    glow.setAttribute('opacity', on ? '0.6' : '0');
-  }
-
-  function hoverStation(i) {
-    paused = true;
-    if (activeStation >= 0 && activeStation !== i) hlStation(activeStation, false);
-    activeStation = i;
-    hlStation(i, true);
-    // show detail
-    const detail = document.getElementById('tape-detail');
-    const inner = document.getElementById('tape-detail-inner');
-    const s = stations[i];
-    const refHtml = refs[i].map(([l,h]) => `<a href="${h}">${l}</a>`).join(' · ');
-    inner.innerHTML = `<div class="tape-detail-text" style="grid-column:1/-1">
-      <div class="tape-detail-subtitle">${s.subtitle}</div>
-      <h3>${s.title}</h3>
-      <p>${texts[i]}</p>
-      <div class="tape-detail-refs">${refHtml}</div>
-    </div>`;
-    detail.classList.add('open');
-  }
-
-  function leaveStation() {
-    paused = false;
-    if (activeStation >= 0) { hlStation(activeStation, false); activeStation = -1; }
-    document.getElementById('tape-detail').classList.remove('open');
-  }
-
-  function animate() {
-    if (!paused) t = (t + SPEED) % 1;
-    const { x, y, seg, frac } = beadPos(t);
-    setBeadXY(x, y);
-    // Proximity highlight
-    let near = -1;
-    if (frac < 0.15) near = loopSegs[seg][0];
-    else if (frac > 0.85) near = loopSegs[seg][1];
-    if (near !== nearStation) {
-      if (nearStation >= 0 && activeStation !== nearStation) hlStation(nearStation, false);
-      nearStation = near;
-      if (near >= 0 && activeStation !== near) hlStation(near, true);
-    }
-    animId = requestAnimationFrame(animate);
-  }
-
-  window.__metroInit = function() {
-    if (animId) { cancelAnimationFrame(animId); animId = null; }
-    buildSVG();
-    t = 0; paused = false; activeStation = -1; nearStation = -1;
-    animate();
-  };
-  window.__metroStop = function() {
-    if (animId) { cancelAnimationFrame(animId); animId = null; }
-  };
-})();
-
 </script>
 </body>
 </html>
