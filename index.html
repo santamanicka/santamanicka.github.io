@@ -450,7 +450,9 @@
     scroll-margin-top: 90px;
   }
   .pub-item:hover { padding-left: 0.5rem; }
-  .pub-item a {
+  /* Unlinked entries (preprints in progress, items without a URL) share the
+     linked entries' typography so the list reads uniformly. */
+  .pub-item a, .pub-item .pub-title {
     font-size: 1rem; color: var(--text); text-decoration: none;
     font-family: var(--serif); line-height: 1.4;
     border-bottom: 1px solid transparent;
@@ -617,7 +619,7 @@
 
     /* Publications */
     .pub-item:hover { padding-left: 0; }
-    .pub-item a { font-size: 0.93rem; }
+    .pub-item a, .pub-item .pub-title { font-size: 0.93rem; }
 
     /* Software */
     .software-grid { grid-template-columns: 1fr; }
@@ -869,7 +871,7 @@
 <!-- RESEARCH -->
 <section id="research">
   <div class="section-label reveal">Research</div>
-  <h2 class="reveal reveal-delay-1">Each project builds a minimal model of a biological phenomenon,<br> then uses the cognitive lens to ask: <em>what is this system computing?</em></h2>
+  <h2 class="reveal reveal-delay-1">Each project builds a minimal model or a new measure,<br> then uses the cognitive lens to ask: <em>what is this system computing?</em></h2>
 
   <!-- Tape -->
   <div class="tape-outer reveal reveal-delay-2" id="layout-tape" style="display:none;">
@@ -907,15 +909,15 @@
   <div class="pub-year-group reveal">
     <div class="pub-year">In preparation</div>
     <div class="pub-item" id="pub-topoietic">
-      <span style="font-family:var(--serif);">A topoietic model of collective morphogenesis and individuation</span>
+      <span class="pub-title">A topoietic model of collective morphogenesis and individuation</span>
       <div class="pub-meta">S. Manicka, M. Levin · <span class="pub-journal">Preprint in progress</span></div>
     </div>
     <div class="pub-item" id="pub-grnattention">
-      <span style="font-family:var(--serif);">How gene regulatory networks might use attention to remember: a computational exploration</span>
+      <span class="pub-title">How gene regulatory networks might use attention to remember: a computational exploration</span>
       <div class="pub-meta">N. A-Rahim, S. Manicka, M. Levin · <span class="pub-journal">Preprint in progress</span></div>
     </div>
     <div class="pub-item" id="pub-holographic">
-      <span style="font-family:var(--serif);">Boundary Codes and Bulk Patterns: Towards Generative Holographic Morphogenesis</span>
+      <span class="pub-title">Boundary Codes and Bulk Patterns: Towards Generative Holographic Morphogenesis</span>
       <div class="pub-meta">S. Manicka, M. Levin · <span class="pub-journal">Preprint in progress</span></div>
     </div>
   </div>
@@ -1003,7 +1005,7 @@
       <div class="pub-meta">S. Manicka, E. A. Di Paolo · <span class="pub-journal">ECAL Proceedings 2009</span></div>
     </div>
     <div class="pub-item" id="pub-psychoanalysis">
-      <span style="font-family:var(--serif);">'Psychoanalysis' of a minimal agent</span>
+      <span class="pub-title">'Psychoanalysis' of a minimal agent</span>
       <div class="pub-meta">S. Manicka, I. Harvey · <span class="pub-journal">ALIFE Proceedings 2008</span></div>
     </div>
   </div>
